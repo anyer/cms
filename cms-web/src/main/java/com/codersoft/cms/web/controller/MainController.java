@@ -8,21 +8,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by wow-lj on 2017/12/28.
  */
 @Controller
-@RequestMapping("/")
+@RequestMapping()
 public class MainController {
 
-    @RequestMapping("hello")
-    @ResponseBody
+    @RequestMapping("/index")
     public String index(){
-
-        return "hello";
+        return "admin/login";
     }
 
-    @RequestMapping("test")
-    @ResponseBody
-    public String test(){
+    //Todo 测试邮件发送
+    @RequestMapping("/test")
+    public void emailTest() {
 
-        return "test";
     }
-
 }

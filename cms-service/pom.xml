@@ -4,13 +4,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>cms</artifactId>
-        <groupId>xin.purelove</groupId>
+        <groupId>com.codersoft</groupId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../cms/pom.xml</relativePath>
+        <relativePath>../../cms/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cms-service</artifactId>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+    </properties>
+
+    <dependencies>
+        <!--添加 cms-dao module依赖-->
+        <dependency>
+            <groupId>com.codersoft</groupId>
+            <artifactId>cms-dao</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

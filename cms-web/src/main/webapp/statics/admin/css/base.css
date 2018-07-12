@@ -1,0 +1,92 @@
+* {
+    padding: 0 0;
+    margin: 0 0;
+    font-size: 14px;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, \\5FAE\8F6F\96C5\9ED1, Arial, sans-serif;
+}
+
+i {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.base-body {
+    width: 100%;
+    height: 100%;
+}
+
+.base-main {
+    margin: auto 0;
+}
+
+.login-box, .forget-box, .reset-box, .register-box {
+    position: absolute; left: 50%; top: 50%;
+    /*border: 1px saddlebrown solid;*/
+}
+
+.login-box {
+    width: 310px;
+    height: 300px;
+    margin-left: -155px;    /* 宽度的一半 */
+    margin-top: -150px;    /* 高度的一半 */
+}
+.forget-box {
+    width: 310px;
+    height: 180px;
+    margin-left: -155px;    /* 宽度的一半 */
+    margin-top: -90px;    /* 高度的一半 */
+}
+.reset-box {
+    width: 310px;
+    height: 180px;
+    margin-left: -155px;    /* 宽度的一半 */
+    margin-top: -90px;    /* 高度的一半 */
+}
+
+header {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 20px;
+}
+
+.layui-form-pane {
+    margin: 0 auto;
+}
+.layui-form-item {
+    text-align: center;
+}
+
+.validate-code-box {
+    position: relative;
+}
+.validate-code-box img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    border: 1px solid #E6E6E6;
+}
+.forgot-password-box {
+    /*text-align: right;*/
+    position: relative;
+}
+.forgot-password-box input {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.forgot-password-box a {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 36px;
+}
+.forgot-password-box a:hover,.return-login a:hover{
+    text-decoration: underline;
+}
+.return-login {
+    text-align: left;
+}

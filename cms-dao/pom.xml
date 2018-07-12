@@ -6,30 +6,65 @@
         <artifactId>cms</artifactId>
         <groupId>com.codersoft</groupId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../cms/pom.xml</relativePath>
+        <relativePath>../../cms/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cms-dao</artifactId>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+
+        <!-- jar包版本 -->
+        <mysql-connector.version>5.1.43</mysql-connector.version>
+        <mybatis-core.vasion>3.4.0</mybatis-core.vasion>
+        <mybatis-spring.version>1.3.0</mybatis-spring.version>
+        <mybatis-pagehelper.version>4.1.4</mybatis-pagehelper.version>
+        <druid.version>1.0.18</druid.version>
+    </properties>
 
     <dependencies>
+        <!--添加 cms-common module依赖-->
+        <dependency>
+            <groupId>com.codersoft</groupId>
+            <artifactId>cms-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- mysql数据库连接jar包 -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.43</version>
+            <version>${mysql-connector.version}</version>
         </dependency>
-
+        <!-- MyBatis核心包 -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
-            <version>3.4.0</version>
+            <version>${mybatis-core.vasion}</version>
         </dependency>
-
+        <!-- MyBatis与Spring集成包 -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-spring</artifactId>
-            <version>1.3.0</version>
+            <version>${mybatis-spring.version}</version>
+        </dependency>
+
+        <!-- mybatis分页插件 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>${mybatis-pagehelper.version}</version>
+        </dependency>
+
+        <!-- 阿里数据库连接池 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
         </dependency>
 
     </dependencies>
@@ -39,7 +74,7 @@
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
-                <version>1.3.2</version>
+                <version>1.3.6</version>
                 <configuration>
                     <verbose>true</verbose>
                     <overwrite>true</overwrite>
