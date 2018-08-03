@@ -27,7 +27,7 @@ layui.define(["element","jquery"],function(exports){
     });
 
     function topNavBar(data){
-        var pdata = $.parseJSON(data);
+        var pdata = typeof data=='string' ? $.parseJSON(data) : data;
         // 显示上部菜单
         var topMenuContext = $.trim($("#topMenu").html());
         if(topMenuContext == null || topMenuContext.length == 0 ){
@@ -75,7 +75,7 @@ layui.define(["element","jquery"],function(exports){
                                 ulHtml += '</a>'
                                 ulHtml += '<dl class="layui-nav-child">';
                                 $.each(item.menuPermissionDtoList,function(index,child){
-                                    ulHtml += '<dd><a href="javascript:;" data-url="'+child.href+'">';
+                                    ulHtml += '<dd><a href="javascript:;" data-url="'+child.url+'">';
                                     if(child.icon != null){
                                         ulHtml += '<i class="layui-icon larry-icon '+child.icon+'" data-icon="'+child.icon+'"></i>';
                                     }

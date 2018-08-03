@@ -10,6 +10,10 @@ i {
     font-weight: bold;
 }
 
+a:hover {
+    text-decoration: underline;
+}
+
 .base-body {
     width: 100%;
     height: 100%;
@@ -28,19 +32,25 @@ i {
     width: 310px;
     height: 300px;
     margin-left: -155px;    /* 宽度的一半 */
-    margin-top: -150px;    /* 高度的一半 */
+    margin-top: -180px;    /* 高度的一半 */
 }
 .forget-box {
     width: 310px;
     height: 180px;
     margin-left: -155px;    /* 宽度的一半 */
-    margin-top: -90px;    /* 高度的一半 */
+    margin-top: -120px;    /* 高度的一半 */
 }
 .reset-box {
     width: 310px;
     height: 180px;
     margin-left: -155px;    /* 宽度的一半 */
-    margin-top: -90px;    /* 高度的一半 */
+    margin-top: -120px;    /* 高度的一半 */
+}
+.register-box {
+    width: 310px;
+    height: 400px;
+    margin-left: -160px;    /* 宽度的一半 */
+    margin-top: -230px;    /* 高度的一半 */
 }
 
 header {
@@ -60,11 +70,13 @@ header {
 .validate-code-box {
     position: relative;
 }
-.validate-code-box img {
+.validate-code-box a,img {
     position: absolute;
     top: 0;
     right: 0;
     cursor: pointer;
+}
+.validate-code-box img {
     border: 1px solid #E6E6E6;
 }
 .forgot-password-box {
@@ -84,9 +96,26 @@ header {
     vertical-align: middle;
     line-height: 36px;
 }
-.forgot-password-box a:hover,.return-login a:hover{
-    text-decoration: underline;
-}
 .return-login {
     text-align: left;
+}
+.check-box {
+    text-align: left;
+}
+.check-box input {
+    width: 85%;
+    display: inline-block;
+}
+.i-icon {
+    width: 12%;
+    height: 36px;
+    line-height: 36px;
+    font-weight: bold;
+}
+
+.i-red {
+    color: red;
+}
+.i-green {
+    color: green;
 }

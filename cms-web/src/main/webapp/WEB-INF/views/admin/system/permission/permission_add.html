@@ -1,0 +1,295 @@
+<!DOCTYPE>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>后台管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="后台管理系统">
+    <meta name="description" content="致力于提供通用版本后台管理解决方案">
+    <link rel="shortcut icon" href="../../../../../statics/admin/images/favicon.ico"
+          data-th-href="${'/statics/admin/images/favicon.ico'}">
+
+    <link rel="stylesheet" href="../../../../../statics/admin/plug/layui_v2.3.0/css/layui.css"
+          data-th-href="@{/statics/admin/plug/layui_v2.3.0/css/layui.css}">
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_9h680jcse4620529.css">
+</head>
+<body class="childrenBody" style="font-size: 12px;margin: 10px 10px 0;">
+
+<blockquote class="layui-elem-quote layui-quote-nm" style="border-radius:0.25em;color: #31708f;background-color: #d9edf7;border-width:1px; padding:6px;
+        border-color:#bce8f1;">
+    温馨提示:1.权限类型为目录时，权限路径默认“#”; 2.权限Code程序自动生成; 3.添加成功后刷新整个后台，则更新对应权限（目录、菜单）
+</blockquote>
+
+<form class="layui-form layui-form-pane">
+
+    <input id="permissionId" name="permissionId" hidden="hidden">
+    <input id="createBy" name="createBy" hidden="hidden" data-th-value="${session.sysUser.getUserName()}">
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">权限名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="perName" name="perName" class="layui-input" maxlength="20"
+                       lay-verify="required|perName" placeholder="请输入权限名称">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">权限类型</label>
+            <div class="layui-input-inline">
+                <select id="perType" name="perType" lay-filter="perTypeFilter" lay-verify="required">
+                    <option value="">请选择</option>
+                    <option value="0">0-目录</option>
+                    <option value="1">1-菜单</option>
+                    <option value="2">2-按钮</option>
+                    <option value="3">3-API</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">权限级别</label>
+            <div class="layui-input-inline">
+                <select id="perLevel" name="perLevel" lay-filter="perLevelFilter" lay-verify="required">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">父级权限</label>
+            <div class="layui-input-inline">
+                <select id="parentId" name="parentId" lay-filter="parentIdFilter" lay-verify="parentId">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">权限地址</label>
+            <div class="layui-input-inline">
+                <input type="text" id="uri" name="uri" class="layui-input" maxlength="50"
+                       lay-verify="uri" lay-filter="uriFilter" placeholder="#">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">权限图标</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="iconName" name="iconName" lay-verify="required"
+                       disabled>
+            </div>
+            <div class="layui-word-aux" style="float: left;display: block;">
+                <a id="select_icon" class="layui-btn layui-btn-mini" data-id="" title="选择图标"><i
+                        class="layui-icon larry-icon larry-tupianguanli"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">权限状态</label>
+            <div class="layui-input-inline" style="border: 1px solid #e6e6e6;background-color: #fff;height: 36px;">
+                <input type="radio" name="status" value="1" title="有效" checked>
+                <input type="radio" name="status" value="0" title="无效">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">权限编码</label>
+            <div class="layui-input-inline">
+                <input type="text" id="perCode" name="perCode" class="layui-input" maxlength="20"
+                       disabled>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+                <textarea id="description" name="description" placeholder="请输入内容" class="layui-textarea" maxlength="50"
+                          style="resize:none;min-height:40px;"></textarea>
+        </div>
+    </div>
+    </div>
+    <div class="layui-form-item" style="text-align: center;">
+        <button class="layui-btn" lay-submit="" lay-filter="addPermission">保存</button>
+        <button type="layui-btn" id="cancle" class="layui-btn layui-btn-primary">取消</button>
+    </div>
+</form>
+
+<script type="text/javascript" src="../../../../../statics/admin/plug/layui_v2.3.0/layui.js"
+        data-th-src="@{/statics/admin/plug/layui_v2.3.0/layui.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: "/statics/admin/js/"
+    }).use(['form', 'layer', 'jquery', 'common'], function () {
+        var $ = layui.$,
+            form = layui.form,
+            common = layui.common,
+            layer = parent.layer === undefined ? layui.layer : parent.layer;
+
+        /**权限类型选择框事件处理*/
+        form.on('select(perTypeFilter)', function (data) {
+
+            if (data.value == 0) {
+                //类型为目录，则父类权限ID为0
+                $('#parentId').empty().append("<option value='0'>cms</option>");
+                $('#perLevel').empty().append("<option value='0'>目录</option>");
+                $("#uri").attr("disabled", "disabled");
+                $("#perCode").val(createPerCode(0));
+            } else if (data.value == 1) {
+                //类型为菜单，则加载目录类型及父菜单类型权限
+                //加载父级菜单
+                $('#parentId').empty().append("<option value='0'>请选择</option>");
+                $('#perLevel').empty().append("<option value='1'>一级菜单</option><option value='2'>二级菜单</option>");
+                $("#perCode").val(createPerCode(1));
+            } else if (data.value == 2) {
+                //类型为按钮
+                $('#parentId').empty().append("<option value='0'>按钮</option>");
+                $('#perLevel').empty().append("<option value='0'>按钮</option>");
+                $("#perCode").val(createPerCode(2));
+            } else if (data.value == 3) {
+                //类型为API
+                $('#parentId').empty().append("<option value='0'>API</option>");
+                $('#perLevel').empty().append("<option value='0'>API</option>");
+                $("#perCode").val(createPerCode(3));
+            } else {
+                $('#parentId').removeAll().append("<option value='0'>其他</option>");
+                $('#perLevel').removeAll().append("<option value='0'>其他</option>");
+                $("#perCode").val(createPerCode(-1));
+            }
+            form.render('select');
+        });
+
+        //生成权限编码
+        function createPerCode(type) {
+
+            var randomCode = Math.random().toString(36).substr(2);
+            var code = "";
+
+            if(type == 0) {
+                code = "DIC-" + randomCode;
+            } else if (type == 1) {
+                code = "MEN-" + randomCode;
+            } else if (type == 2) {
+                code = "BTN-" + randomCode;
+            } else if (type == 3) {
+                code = "API-" + randomCode;
+            } else {
+                code = "OTH-" + randomCode;
+            }
+            return code;
+        }
+
+        /**监听权限级别选择*/
+        form.on('select(perLevelFilter)', function (data) {
+
+            var perType = $("#perType").val();
+
+            $("#uri").removeAttr("disabled", "disabled");
+            if (data.value == 0 && perType == 0) {  //目录类型
+                $("#uri").attr("disabled", "disabled");
+            } else if (data.value == 1 || data.value == 2) { //菜单类型
+                loadParentPermission();
+            } else {
+                return;
+            }
+        });
+
+        //加载父级权限
+        function loadParentPermission() {
+            var perLevel = $("#perLevel").val();
+            if (perLevel != null && perLevel != NaN) {
+                perLevel = perLevel - 1;
+            }
+            //加载父级权限
+            $.ajax({
+                url: '/admin/permission/parentList',
+                type: 'post',
+                dataType: 'json',
+                async: false,
+                data: {perLevel: perLevel},
+                success: function (data) {
+                    if (data.returnCode == "SUCCESS") {
+                        $('#parentId').empty();
+                        $(data.returnData).each(function (index, item) {
+                            $("#parentId").append(
+                                '<option value="' + item.parentId + '">' + item.perName + '</option>'
+                            );
+                        });
+                        //刷新父类权限id下拉框
+                        form.render('select');
+                    } else {
+                        common.cmsLayErrorMsg(data.returnMessage);
+                    }
+                }
+                , error: function (data) {
+                    common.cmsLayErrorMsg(data.returnExpectionMsg);
+                }
+            });
+        }
+
+        /**选择图标*/
+        $("#select_icon").click(function () {
+            var url = "/common/icon";
+            common.cmsLayOpen('选择图标', url, '485px', '370px');
+        });
+
+        /**表单验证*/
+        form.verify({
+            resName: function (value, item) {
+                //验证菜单名称
+                if (!new RegExp("^[0-9a-zA-Z\u4e00-\u9fa5]+$").test(value)) {
+                    return '权限名称只能为中文数字或者字母';
+                }
+            },
+            url: function (value, item) {
+                if (value == '') {
+                    return '权限路径不能为空';
+                }
+                //验证权限路径
+                if (value != '' && !new RegExp("^[a-zA-Z_/.#]+$").test(value)) {
+                    return '权限路径为英文下划线斜杠和点，默认为#';
+                }
+            }
+        });
+
+        /**保存菜单资源信息*/
+        form.on("submit(addPermission)", function (data) {
+            var addLoading = top.layer.msg('数据提交中，请稍候', {icon: 16, time: false, shade: 0.8});
+            var jsonData = JSON.stringify(data.field);
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+
+            $.ajax({
+                url: '/admin/permission/add',
+                type: 'post',
+                async: false,
+                dataType: 'json',
+                contentType: 'application/json',
+                data: jsonData,
+                success: function (data) {
+                    if (data.returnCode == "SUCCESS") {
+                        location.reload();
+                        top.layer.close(addLoading);
+                        common.cmsLaySuccessMsg("保存成功")
+                        parent.layer.close(index); //再执行关闭
+                        parent.location.reload();
+                    } else {
+                        top.layer.close(addLoading);
+                        common.cmsLayErrorMsg(data.returnMessage);
+                    }
+                }, error: function (data) {
+                    top.layer.close(addLoading);
+                    common.cmsLayErrorMsg(data.returnMessage);
+                    top.layer.close(index);
+                }
+            });
+            return false;
+        });
+
+        /**取消*/
+        $("#cancle").click(function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+    });
+</script>
+</body>
+</html>

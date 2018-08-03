@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 //@SessionAttributes("sysUser")
 public class AdminLoginController {
 
+    private final static byte DISABLE = 0x1;
     @Autowired
     private SysUserService sysUserService;
 
@@ -31,7 +32,7 @@ public class AdminLoginController {
      * @return
      */
     @RequestMapping("/toLogin")
-    public String login(){
+    public String toLogin(){
         return "admin/login";
     }
 
@@ -73,15 +74,34 @@ public class AdminLoginController {
             SysUser user = sysUserService.checkLogin(sysUser.getUserName(), sysUser.getPassword());
             //若有user则添加到model里并且跳转到成功页面
             if(user != null){
-//                model.addAttribute("sysUser", user);
+                //判断账号是否未激活，未激活重新发送激活邮件
+                if(user.getStatus() == 0) {
+                    //Todo 未激活邮箱账户，发送激活邮件
+                }
+                //判断账号是否停用
+                if(user.getStatus() == DISABLE) {
+                    return ResultMessageUtils.returnResultMessage(MessageCode.ACCOUNT_DISABLE);
+                }
                 //验证成功，用户名存放session
                 httpSession.setAttribute("sysUser", user);
                 return ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS);
             }
             return ResultMessageUtils.returnResultMessage(MessageCode.LOGIN_FAIL);
         }catch (Exception e) {
-            return ResultMessageUtils.returnResultMessage(MessageCode.LOGIN_ERROR, e.getMessage());
+            return ResultMessageUtils.returnResultMessage(MessageCode.LOGIN_ERROR, "登陆时异常：" + e.getMessage());
         }
+    }
+
+    /**
+     * 后台锁屏的解锁操作
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/unlock")
+    public ResultMessage unlock() {
+
+        //TODO 后台锁屏的解锁操作
+        return null;
     }
 
     /**
@@ -98,6 +118,67 @@ public class AdminLoginController {
     }
 
     /**
+     * 跳转到注册页面
+     * @return
+     */
+    @RequestMapping("/toRegister")
+    public String toRegister() {
+        return "admin/register";
+    }
+
+    /**
+     * 注册时验证用户名是否存在
+     * @param userName
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/checkUserNameIsExist")
+    public ResultMessage checkUserNameIsExist(@RequestParam("userName") String userName) {
+        SysUser sysUser = sysUserService.checkUserNameIsExist(userName);
+        if(sysUser != null) {
+            return ResultMessageUtils.returnResultMessage(MessageCode.REGISTER_USER_NAME_IS_EXIST);
+        }
+        return ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS);
+    }
+
+    /**
+     * 注册时验证邮箱是否存在
+     * @param email
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/emailIsExist")
+    public ResultMessage emailIsExist(@RequestParam("email") String email) {
+        SysUser user = sysUserService.checkEmailIsExist(email);
+        if(user != null) {
+            return ResultMessageUtils.returnResultMessage(MessageCode.REGISTER_EMAIL_IS_EXIST);
+        }
+        return ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS);
+    }
+
+    /**
+     * 注册
+     * @param sysUser
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/register")
+    public ResultMessage register(@RequestBody SysUser sysUser) {
+
+        try {
+            int res = sysUserService.register(sysUser);
+
+            if(res == 1) {
+                return ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS);
+            } else {
+                return ResultMessageUtils.returnResultMessage(MessageCode.REGISTER_FAIL);
+            }
+        }catch (Exception ex) {
+            return ResultMessageUtils.returnResultMessage(MessageCode.REGISTER_ERROR, "注册时异常：" + ex.getMessage());
+        }
+    }
+
+    /**
      * Todo 发送邮箱激活链接
      * @return
      */
@@ -111,6 +192,15 @@ public class AdminLoginController {
      */
     public ResultMessage emailActivation() {
         return null;
+    }
+
+    /**
+     * 跳转到密码找回页面
+     * @return
+     */
+    @RequestMapping("/toForgetPassword")
+    public String toForgetPassword() {
+        return "admin/forget_password";
     }
 
     /**

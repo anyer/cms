@@ -10,6 +10,32 @@ import com.codersoft.cms.dao.entity.SysUser;
  **/
 public interface SysUserService {
 
+    /**
+     * 登录验证
+     * @param username  用户名
+     * @param password  密码
+     * @return
+     */
     SysUser checkLogin(String username, String password);
 
+    /**
+     * 验证用户名是否存在
+     * @param userName  用户名
+     * @return
+     */
+    SysUser checkUserNameIsExist(String userName);
+
+    /**
+     * 验证邮箱是否存在
+     * @param email     邮箱
+     * @return
+     */
+    SysUser checkEmailIsExist(String email);
+
+    /**
+     * 用户注册
+     * @param sysUser
+     * @return
+     */
+    int register(SysUser sysUser);
 }

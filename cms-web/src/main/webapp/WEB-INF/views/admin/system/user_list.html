@@ -41,24 +41,24 @@
                                 class="layui-icon larry-icon larry-chaxun7"></i>查询</a>
                     </form>
                 </div>
-                <shiro:hasPermission name="0rbT8t2P">
+                <!--<shiro:hasPermission name="0rbT8t2P">-->
                     <div class="layui-inline">
                         <a class="layui-btn layui-btn-normal userAdd_btn"> <i
                                 class="layui-icon larry-icon larry-xinzeng1"></i>新增用户</a>
                     </div>
-                </shiro:hasPermission>
-                <shiro:hasPermission name="0jOfTHGx">
+                <!--</shiro:hasPermission>-->
+                <!--<shiro:hasPermission name="0jOfTHGx">-->
                     <div class="layui-inline">
                         <a class="layui-btn layui-btn-normal excelUserExport_btn" style="background-color:#5FB878"> <i
                                 class="layui-icon larry-icon larry-danye"></i>导出</a>
                     </div>
-                </shiro:hasPermission>
-                <shiro:hasPermission name="lBE3hz5c">
+                <!--</shiro:hasPermission>-->
+                <!--<shiro:hasPermission name="lBE3hz5c">-->
                     <div class="layui-inline">
                         <a class="layui-btn layui-btn-danger userBatchFail_btn"><i
                                 class="layui-icon larry-icon larry-shanchu"></i>批量失效</a>
                     </div>
-                </shiro:hasPermission>
+                <!--</shiro:hasPermission>-->
             </blockquote>
             <div class="larry-separate"></div>
             <!-- 用户列表 -->
@@ -69,7 +69,8 @@
     </div>
 </div>
 
-<script type="text/javascript" src="../../../../statics/admin/plug/layui_v2.3.0/layui.js"></script>
+<script type="text/javascript" src="../../../../statics/admin/plug/layui_v2.3.0/layui.js"
+        data-th-src="@{/statics/admin/plug/layui_v2.3.0/layui.js}"></script>
 <script type="text/javascript">
     var $;
     layui.config({
@@ -246,18 +247,18 @@
 <!--工具条 -->
 <script type="text/html" id="userBar">
     <div class="layui-btn-group">
-        <shiro:hasPermission name="fSv1B2kZ">
+        <!--<shiro:hasPermission name="fSv1B2kZ">-->
             <a class="layui-btn layui-btn-xs user_edit" lay-event="user_edit"><i
                     class="layui-icon larry-icon larry-bianji2"></i> 编辑</a>
-        </shiro:hasPermission>
-        <shiro:hasPermission name="mScICO9G">
+        <!--</shiro:hasPermission>-->
+        <!--<shiro:hasPermission name="mScICO9G">-->
             <a class="layui-btn layui-btn-xs layui-btn-warm  user_grant" lay-event="user_grant"><i
                     class="layui-icon larry-icon larry-jiaoseguanli3"></i>角色</a>
-        </shiro:hasPermission>
-        <shiro:hasPermission name="uBg9TdEr">
+        <!--</shiro:hasPermission>-->
+        <!--<shiro:hasPermission name="uBg9TdEr">-->
             <a class="layui-btn layui-btn-xs layui-btn-danger user_fail" lay-event="user_fail"><i
                     class="layui-icon larry-icon larry-ttpodicon"></i>失效</a>
-        </shiro:hasPermission>
+        <!--</shiro:hasPermission>-->
     </div>
 </script>
 </body>

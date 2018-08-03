@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>后台管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="后台管理系统">
+    <meta name="description" content="致力于提供通用版本后台管理解决方案">
+    <link rel="shortcut icon" href="../../../../../statics/admin/images/favicon.ico"
+          data-th-href="${'/statics/admin/images/favicon.ico'}">
+
+    <link rel="stylesheet" href="../../../../../statics/admin/plug/layui_v2.3.0/css/layui.css"
+          data-th-href="@{/statics/admin/plug/layui_v2.3.0/css/layui.css}">
+    <link rel="stylesheet" href="../../../../../statics/admin/css/global.css"
+          data-th-href="@{/statics/admin/css/global.css}">
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_9h680jcse4620529.css">
+
+    <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/common.css" media="all"
+          data-th-href="@{/statics/admin/css/common.css}">
+    <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/personal.css" media="all"
+          data-th-href="@{/statics/admin/css/personal.css}">
+<body>
+<div class="larry-grid layui-anim layui-anim-upbit larryTheme-A">
+    <div class="larry-personal">
+        <div class="layui-tab">
+            <blockquote class="layui-elem-quote mylog-info-tit">
+                <div class="layui-inline">
+                    <form class="layui-form" id="resSearchForm">
+
+                        <div class="layui-input-inline" style="width:110px;">
+                            <select name="searchTerm">
+                                <option value="perName">权限名称</option>
+                                <option value="parentName">父级权限</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline" style="width:145px;">
+                            <input type="text" name="searchContent" value="" placeholder="请输入关键字"
+                                   class="layui-input search_input">
+                        </div>
+                        <a class="layui-btn perSearchList_btn" id="perSearchList_btn" lay-submit lay-filter="perSearchFilter"><i
+                                class="layui-icon larry-icon larry-chaxun7"></i>查询</a>
+                    </form>
+                </div>
+                <div class="layui-inline">
+                    <a class="layui-btn layui-btn-normal  resAdd_btn"> <i
+                            class="layui-icon larry-icon larry-xinzeng1"></i>新增菜单</a>
+                </div>
+                <!--<div class="layui-inline">-->
+                    <!--<a class="layui-btn layui-btn-normal excelResExport_btn" style="background-color:#5FB878"> <i-->
+                            <!--class="layui-icon larry-icon larry-danye"></i>导出</a>-->
+                <!--</div>-->
+            </blockquote>
+            <div class="larry-separate"></div>
+            <!-- 菜单列表 -->
+            <div class="layui-tab-item layui-show" style="padding: 10px 15px;">
+                <table id="permissionTableList" lay-filter="perTableFilter"></table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="../../../../../statics/admin/plug/layui_v2.3.0/layui.js"
+        data-th-src="@{/statics/admin/plug/layui_v2.3.0/layui.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: "/statics/admin/js/"
+    }).use(['form', 'table', 'layer', 'common'], function () {
+        var $ = layui.$,
+            form = layui.form,
+            table = layui.table,
+            layer = layui.layer,
+            common = layui.common;
+
+        var loading = layer.load(0, {shade: [0.3, '#000']});
+
+        /**权限数据加载*/
+        table.render({
+            elem: '#permissionTableList',
+            url: '/admin/permission/list',
+            id: 'perTableFilter',
+            method: 'post',
+            height: 'full-140',
+            skin: 'row',
+            even: 'true',
+            size: 'sm',
+            cols: [
+                [
+                    {type: "numbers"},
+                    {type: "checkbox"},
+                    // {field: 'permissionId', title: 'ID', align: 'center'},
+                    // {field: 'parentId', title: '父ID', align: 'center'},
+                    {field: 'perName', title: '权限名称', align: 'center'},
+                    {field: 'parentName', title: '父级权限', align: 'center'},
+                    {field: 'uri', title: '权限路径', align: 'center'},
+                    {field: 'perLevel', title: '权限级别', align: 'center', templet:'#perLevelTpl'},
+                    {field: 'perType', title: '权限类别', align: 'center', templet: '#perTypeTpl'},
+                    {field: 'status', title: '权限状态', align: 'center', templet: '#perStatusTpl'},
+                    {field: 'createTime', title: '创建时间', sort: true, align: 'center', templet: '<p>{{ layui.laytpl.toDateString(d.createdTime) }}</p>'},
+                    {field: 'modifyTime', title: '修改时间', sort: true, align: 'center', templet: '<p>{{ layui.laytpl.toDateString(d.createdTime) }}</p>'},
+                    {title: '操作', align: 'center', toolbar: '#perToolBar'}
+                ]
+            ],
+            page: true
+            ,
+            done: function (res, curr, count) {
+                common.resizeGrid();
+                layer.close(loading);
+            }
+        });
+
+        /**查询*/
+        $("#perSearchList_btn").click(function () {
+            var loading = layer.load(0, {shade: [0.3, '#000']});
+            //监听提交
+            form.on('submit(perSearchFilter)', function (data) {
+                table.reload('perTableFilter', {
+                    where: {
+                        searchTerm: data.field.searchTerm,
+                        searchContent: data.field.searchContent
+                    },
+                    height: 'full-140',
+                    page: true,
+                    done: function (res, curr, count) {
+                        common.resizeGrid();
+                        layer.close(loading);
+                    }
+                });
+            });
+        });
+
+        /**新增菜单*/
+        $(".resAdd_btn").click(function () {
+            var url = "/admin/permission/toAddPage";
+            common.cmsLayOpen('新增权限', url, '750px', '470px');
+        });
+
+        /**监听工具条*/
+        table.on('tool(perTableFilter)', function (obj) {
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值
+            var permissionId = data.permissionId;
+            if(layEvent === 'per_detail') {
+                var url = "/admin/permission/toDetailPage?permissionId=" + permissionId;
+                common.cmsLayOpen('查看权限', url, '750px', '470px');
+            } else if (layEvent === 'per_edit') {
+                var url = "/admin/permission/toEditPage?permissionId=" + permissionId;
+                common.cmsLayOpen('修改权限', url, '750px', '470px');
+            } else if (layEvent === 'per_del') {
+                layer.confirm('确认删除吗？', function(index){
+                    delPermission(permissionId, obj);
+                    //obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                });
+            }
+        });
+
+        function delPermission(permissionId,obj) {
+            var delLoading = top.layer.msg('数据删除中，请稍候', {icon: 16, time: false, shade: 0.8});
+            $.ajax({
+                url: '/admin/permission/delete',
+                type: 'post',
+                dataType: 'json',
+                async: false,
+                data: {perId: permissionId},
+                success: function (data) {
+                    if (data.returnCode == "SUCCESS") {
+                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                        top.layer.close(delLoading);
+                        common.cmsLaySuccessMsg("删除成功")
+                    } else {
+                        top.layer.close(delLoading);
+                        common.cmsLayErrorMsg(data.returnMessage);
+                    }
+                }
+                ,error:function(data){
+                    top.layer.close(delLoading);
+                    common.cmsLayErrorMsg(data.returnExpectionMsg);
+                }
+            });
+        }
+
+        //时间戳的处理
+        layui.laytpl.toDateString = function(d, format){
+            var date = new Date(d || new Date())
+                ,ymd = [
+                this.digit(date.getFullYear(), 4)
+                ,this.digit(date.getMonth() + 1)
+                ,this.digit(date.getDate())
+            ]
+                ,hms = [
+                this.digit(date.getHours())
+                ,this.digit(date.getMinutes())
+                ,this.digit(date.getSeconds())
+            ];
+
+            format = format || 'yyyy-MM-dd HH:mm:ss';
+
+            return format.replace(/yyyy/g, ymd[0])
+                .replace(/MM/g, ymd[1])
+                .replace(/dd/g, ymd[2])
+                .replace(/HH/g, hms[0])
+                .replace(/mm/g, hms[1])
+                .replace(/ss/g, hms[2]);
+        };
+
+        //数字前置补零
+        layui.laytpl.digit = function(num, length, end){
+            var str = '';
+            num = String(num);
+            length = length || 2;
+            for(var i = num.length; i < length; i++){
+                str += '0';
+            }
+            return num < Math.pow(10, length) ? str + (num|0) : num;
+        };
+
+    });
+
+</script>
+
+<!-- 权限状态tpl-->
+<!-- 0：隐藏；1：显示 -->
+<script type="text/html" id="perStatusTpl">
+    {{# if(d.status == 0){ }}
+    <span class="label label-danger">0-无效</span>
+    {{# } else if(d.status == 1){ }}
+    <span class="label label-success">1-有效</span>
+    {{# } else { }}
+    {{d.resStatus}}
+    {{# }  }}
+</script>
+
+<!-- 权限类型tpl-->
+<!-- 0：目录；1：菜单；2：按钮；3：API -->
+<script type="text/html" id="perTypeTpl">
+    {{# if(d.perType == 0){ }}
+    <span class="label label-info ">0-目录</span>
+    {{# } else if(d.perType == 1){ }}
+    <span class="label label-warning ">1-菜单</span>
+    {{# } else if(d.perType == 2){ }}
+    <span class="label label-warning ">2-按钮</span>
+    {{# } else if(d.perType == 3){ }}
+    <span class="label label-warning ">3-API</span>
+    {{# } else { }}
+    {{d.perType}}
+    {{# }  }}
+</script>
+
+<!-- 权限级别tpl-->
+<script type="text/html" id="perLevelTpl">
+
+    {{# if(d.perLevel == 0 && d.perType == 0){ }}
+    <span>目录</span>
+    {{# } else if(d.perLevel == 1 && d.perType == 1){ }}
+    <span>1级菜单</span>
+    {{# } else if(d.perLevel == 2 && d.perType == 1){ }}
+    <span>2级菜单</span>
+    {{# } else if(d.perLevel == 0 && d.perType == 2){ }}
+    <span>按钮</span>
+    {{# } else if(d.perLevel == 0 && d.perType == 3){ }}
+    <span>API</span>
+    {{# } else { }}
+    {{d.perLevel}}
+    {{# }  }}
+</script>
+
+<!--工具条 -->
+<script type="text/html" id="perToolBar">
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="per_detail">
+            <i class="layui-icon larry-icon larry-gongzuoneirong"></i>
+        </a>
+        <a class="layui-btn layui-btn-xs" lay-event="per_edit">
+            <i class="layui-icon larry-icon larry-bianji3"></i>
+        </a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="per_del">
+            <i class="layui-icon larry-icon larry-ttpodicon"></i>
+        </a>
+    </div>
+</script>
+</body>
+</html>

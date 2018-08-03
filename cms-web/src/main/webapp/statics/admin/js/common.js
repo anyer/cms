@@ -8,7 +8,7 @@ layui.define(['layer'], function (exports) {
             top.layer.msg(text, {icon: 5});
         },
         /**成功 msg提示 */
-        cmsLaySucMsg:function (text) {
+        cmsLaySuccessMsg:function (text) {
             top.layer.msg(text, {icon: 6});
         },
         /**ajax Confirm 对话框*/
@@ -28,18 +28,16 @@ layui.define(['layer'], function (exports) {
                     data : param,
                     success : function(data) {
                         if(data.returnCode == "SUCCESS"){
-                            top.layer.msg(data.returnMessage, {icon: 6});
+                            top.common.cmsLaySuccessMsg(data.returnMessage);
                             location.reload();
                         }else{
-                            top.layer.msg(data.returnMessage,{icon: 5});
+                            top.common.cmsLayErrorMsg(data.returnMessage);
                         }
                     },error:function(data){
-
+                        top.common.cmsLayErrorMsg(data.returnExpectionMsg);
                     }
                 });
-            }, function () {
-
-            })
+            });
         },
         /**弹出层*/
         cmsLayOpen:function (title,url,width,height) {

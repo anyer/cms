@@ -33,7 +33,6 @@
             <artifactId>cms-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
         <!-- mysql数据库连接jar包 -->
         <dependency>
             <groupId>mysql</groupId>
@@ -66,6 +65,17 @@
             <artifactId>druid</artifactId>
             <version>${druid.version}</version>
         </dependency>
+        <!-- 数据库版本管理 -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
+        <!-- 快速开发插件lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
     </dependencies>
 
@@ -79,7 +89,7 @@
                     <verbose>true</verbose>
                     <overwrite>true</overwrite>
                     <!--mybatis generator配置文件-->
-                    <configurationFile>src/main/resources/db-init/generatorConfig.xml</configurationFile>
+                    <configurationFile>src/main/resources/db/generatorConfig.xml</configurationFile>
                 </configuration>
 
                 <dependencies>
@@ -91,6 +101,41 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>4.0.3</version>
+                <configuration>
+                    <url>jdbc:mysql://127.0.0.1:3306/cms?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;allowMultiQueries=true&amp;useSSL=true</url>
+                    <driver>com.mysql.jdbc.Driver</driver>
+                    <user>root</user>
+                    <password>admin</password>
+                    <locations>
+                        <location>classpath:cms-web/src/main/resources/db/migration</location>
+                        <location>com.codersoft.cms.dao.flyway.migration</location>
+                    </locations>
+                    <schemas>
+                        <schema>cms</schema>
+                    </schemas>
+                </configuration>
+            </plugin>
+
+            <!--<plugin>-->
+                <!--<groupId>com.googlecode.flyway</groupId>-->
+                <!--<artifactId>flyway-maven-plugin</artifactId>-->
+                <!--<version>2.1.1</version>-->
+                <!--<configuration>-->
+                    <!--<user>root</user>-->
+                    <!--<password>admin</password>-->
+                    <!--<driver>com.mysql.jdbc.Driver</driver>-->
+                    <!--<url>jdbc:mysql://localhost:3306/cms</url>-->
+                    <!--<locations>-->
+                        <!--<location>db/migration</location>-->
+                        <!--<location>com.codersoft.cms.dao.flyway.migration</location>-->
+                    <!--</locations>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 

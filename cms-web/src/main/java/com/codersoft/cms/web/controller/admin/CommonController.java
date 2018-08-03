@@ -39,4 +39,13 @@ public class CommonController {
         session.setAttribute("captcha", captchaUtils.getCode());
         captchaUtils.write(response.getOutputStream());
     }
+
+    /**
+     * 图标选择界面
+     * @return
+     */
+    @RequestMapping(value="/icon")
+    public String toIconList() {
+        return "admin/common/icon";
+    }
 }

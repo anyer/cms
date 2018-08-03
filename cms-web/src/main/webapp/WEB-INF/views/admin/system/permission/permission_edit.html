@@ -1,0 +1,323 @@
+<!DOCTYPE>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>后台管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="后台管理系统">
+    <meta name="description" content="致力于提供通用版本后台管理解决方案">
+    <link rel="shortcut icon" href="../../../../../statics/admin/images/favicon.ico"
+          data-th-href="${'/statics/admin/images/favicon.ico'}">
+
+    <link rel="stylesheet" href="../../../../../statics/admin/plug/layui_v2.3.0/css/layui.css"
+          data-th-href="@{/statics/admin/plug/layui_v2.3.0/css/layui.css}">
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_9h680jcse4620529.css">
+</head>
+<body class="childrenBody" style="font-size: 12px;margin: 10px 10px 0;">
+
+<form class="layui-form layui-form-pane">
+
+    <input id="pageFlag" hidden="hidden" data-th-value="${pageFlag}">
+    <input id="permissionId" name="permissionId" hidden="hidden" data-th-value="${permission.getPermissionId()}">
+    <input id="modifyBy" name="modifyBy" hidden="hidden" data-th-value="${session.sysUser.getUserName()}">
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">权限名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="perName" name="perName" class="layui-input" maxlength="20"
+                       lay-verify="required|perName" data-th-value="${permission.getPerName()}">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">权限类型</label>
+            <div class="layui-input-inline">
+                <select id="perType" name="perType" lay-filter="perTypeFilter" lay-verify="required">
+                    <option value="0">0-目录</option>
+                    <option value="1">1-菜单</option>
+                    <option value="2">2-按钮</option>
+                    <option value="3">3-API</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">权限级别</label>
+            <div class="layui-input-inline" >
+                <select id="perLevel" name="perLevel" lay-filter="perLevelFilter" lay-verify="required" data-th-switch="${permission.getPerType()}">
+                    <div data-th-case="0">
+                        <option value="0" selected>目录</option>
+                    </div>
+                    <div data-th-case="1">
+                        <div data-th-switch="${permission.getPerLevel()}">
+                            <div data-th-case="1">
+                                <option value="1" selected>一级菜单</option>
+                                <option value="2">二级菜单</option>
+                            </div>
+                            <div data-th-case="2">
+                                <option value="1">一级菜单</option>
+                                <option value="2" selected>二级菜单</option>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-th-case="2">
+                        <option value="0" selected>按钮</option>
+                    </div>
+                    <div data-th-case="0">
+                        <option value="3" selected>API</option>
+                    </div>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">父级权限</label>
+            <div class="layui-input-inline">
+                <select id="parentId" name="parentId" lay-filter="parentIdFilter" lay-verify="parentId">
+                    <option data-th-value="${permission.getParentId()}" data-th-text="${permission.getParentName()}" selected ></option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">权限地址</label>
+            <div class="layui-input-inline">
+                <input type="text" id="uri" name="uri" class="layui-input" maxlength="50"
+                       lay-verify="uri" lay-filter="uriFilter" data-th-value="${permission.getUri()}">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">权限图标</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="iconName" name="iconName" data-th-value="${permission.getIconName()}" lay-verify="required"
+                       disabled>
+            </div>
+            <div class="layui-word-aux" style="float: left;display: block;" data-th-if="${pageFlag} == 'edit'">
+                <a id="select_icon" class="layui-btn layui-btn-mini" data-id="" title="选择图标"><i
+                        class="layui-icon larry-icon larry-tupianguanli"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">权限状态</label>
+            <div id="status" class="layui-input-inline" style="border: 1px solid #e6e6e6;background-color: #fff;height: 36px;" data-th-switch="${permission.getStatus()}">
+                <div data-th-case="1">
+                    <input class="status" type="radio" name="status" value="1" title="有效" checked>
+                    <input class="status" type="radio" name="status" value="0" title="无效" >
+                </div>
+                <div data-th-case="0">
+                    <input class="status" type="radio" name="status" value="1" title="有效">
+                    <input class="status" type="radio" name="status" value="0" title="无效" checked>
+                </div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">权限编码</label>
+            <div class="layui-input-inline">
+                <input type="text" id="perCode" name="perCode" class="layui-input" maxlength="20"
+                       lay-verify="required" disabled data-th-value="${permission.getPerCode()}">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item" data-th-if="${pageFlag} == 'detail'">
+        <div class="layui-inline">
+            <label class="layui-form-label">创建人</label>
+            <div class="layui-input-inline">
+                <input type="text" id="createBy" class="layui-input"
+                       disabled data-th-value="${permission.getCreateBy()}">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">创建时间</label>
+            <div class="layui-input-inline">
+                <input type="text" id="createTime" class="layui-input"
+                       disabled data-th-value="${#dates.format(permission.getCreateTime(),'yyyy-MM-dd HH:mm:ss')}">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item" data-th-if="${pageFlag} == 'detail'">
+        <div class="layui-inline">
+            <label class="layui-form-label">修改人</label>
+            <div class="layui-input-inline">
+                <input type="text" id="modifyBy2" class="layui-input"
+                       disabled data-th-value="${permission.getModifyBy()}">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">修改时间</label>
+            <div class="layui-input-inline">
+                <input type="text" id="modifyTime" class="layui-input"
+                       disabled data-th-value="${#dates.format(permission.getModifyTime(),'yyyy-MM-dd HH:mm:ss')}">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+                <textarea id="description" name="description" class="layui-textarea" maxlength="50"
+                          style="resize:none;min-height:40px;" data-th-value="${permission.getDescription()}"></textarea>
+        </div>
+    </div>
+    </div>
+    <div class="layui-form-item" style="text-align: center;" data-th-if="${pageFlag} == 'edit'">
+        <button class="layui-btn" lay-submit="" lay-filter="updatePermission">更新</button>
+        <button type="layui-btn" id="cancle" class="layui-btn layui-btn-primary">取消</button>
+    </div>
+</form>
+
+<script type="text/javascript" src="../../../../../statics/admin/plug/layui_v2.3.0/layui.js"
+        data-th-src="@{/statics/admin/plug/layui_v2.3.0/layui.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: "/statics/admin/js/"
+    }).use(['form', 'layer', 'jquery', 'common'], function () {
+        var $ = layui.$,
+            form = layui.form,
+            common = layui.common,
+            layer = parent.layer === undefined ? layui.layer : parent.layer;
+
+        init();
+
+        //初始化
+        function init() {
+
+            $("#perType").val([[${permission.getPerType()}]]);
+            $("#perType").attr("disabled", "disabled");
+
+            var pageFlag = $("#pageFlag").val();
+            if(pageFlag == "detail") {
+                $("#perName").attr("disabled", "disabled");
+                $("#perLevel").attr("disabled", "disabled");
+                $("#parentId").attr("disabled", "disabled");
+                $("#status").attr("disabled", "disabled");
+                $("#uri").attr("disabled", "disabled");
+                $("#select_icon").attr("disabled", "disabled");
+                $("#description").attr("disabled", "disabled");
+            }
+
+            //初始化表单
+            form.render('select');
+        }
+
+        //加载父级权限
+        function loadParentPermission() {
+            var perLevel = $("#perLevel").val();
+            if(perLevel != null && perLevel != NaN) {
+                perLevel = perLevel - 1;
+            }
+            //加载父级权限
+            $.ajax({
+                url: '/admin/permission/parentList',
+                type: 'post',
+                dataType: 'json',
+                async: false,
+                data: {perLevel: perLevel},
+                success: function (data) {
+                    if (data.returnCode == "SUCCESS") {
+                        $('#parentId').empty();
+                        $(data.returnData).each(function (index, item) {
+                            $("#parentId").append(
+                                '<option value="' + item.parentId + '">' + item.perName + '</option>'
+                            );
+                        });
+                        //刷新父类权限id下拉框
+                        form.render('select');
+                    } else {
+                        common.cmsLayErrorMsg(data.returnMessage);
+                    }
+                }
+                ,error:function(data){
+                    common.cmsLayErrorMsg(data.returnExpectionMsg);
+                }
+            });
+        }
+
+        /**监听菜单级别选择*/
+        form.on('select(perLevelFilter)', function (data) {
+
+            var perType = $("#perType").val();
+
+            $("#uri").removeAttr("disabled", "disabled");
+            //菜单类型级别处理
+            if (data.value == 1 || data.value == 2) {
+                loadParentPermission()
+            } else if(perType == 0 && data.value == 0) {
+                $("#uri").attr("disabled", "disabled");
+            } else {
+                return;
+            }
+        });
+
+        /**选择图标*/
+        $("#select_icon").click(function () {
+            var url = "/common/icon";
+            common.cmsLayOpen('选择图标', url, '485px', '370px');
+        });
+
+        /**表单验证*/
+        form.verify({
+            perName: function (value, item) {
+                //验证权限名称
+                if (!new RegExp("^[0-9a-zA-Z\u4e00-\u9fa5]+$").test(value)) {
+                    return '权限名称只能为中文数字或者字母';
+                }
+            },
+            uri: function (value, item) {
+                if (value == '') {
+                    return '权限路径不能为空';
+                }
+                //验证权限路径
+                if (value != '' && !new RegExp("^[a-zA-Z_/.#]+$").test(value)) {
+                    return '权限路径为英文下划线斜杠和点，默认为#';
+                }
+            }
+        });
+
+        /**更新权限信息*/
+        form.on("submit(updatePermission)", function (data) {
+            var updateLoading = top.layer.msg('更新权限信息，数据提交中，请稍候', {icon: 16, time: false, shade: 0.8});
+
+            var jsonData = JSON.stringify(data.field);
+
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+
+            $.ajax({
+                url: '/admin/permission/update',
+                type: 'post',
+                async: false,
+                dataType: 'json',
+                contentType: 'application/json',
+                data: jsonData,
+                success: function (data) {
+                    if (data.returnCode == "SUCCESS") {
+                        location.reload();
+                        top.layer.close(updateLoading);
+                        common.cmsLaySuccessMsg("保存成功")
+                        parent.layer.close(index); //再执行关闭
+                        parent.location.reload();
+                    } else {
+                        top.layer.close(updateLoading);
+                        common.cmsLayErrorMsg(data.returnMessage);
+                    }
+                }, error: function (data) {
+                    common.cmsLayErrorMsg(data.returnMessage);
+                    top.layer.close(updateLoading);
+                    top.layer.close(index);
+                }
+            });
+            return false;
+        });
+
+        /**取消*/
+        $("#cancle").click(function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+    });
+</script>
+</body>
+</html>

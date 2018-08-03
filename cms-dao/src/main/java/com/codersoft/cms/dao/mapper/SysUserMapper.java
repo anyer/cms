@@ -30,9 +30,16 @@ public interface SysUserMapper {
 
 
     /**
-     * 查找用户名和密码
+     * 查找对应用户名的用户信息
      * @param username 登录用户名
      * @return
      */
-    SysUser findByUsername(String username);
+    SysUser findUserByUsername(String username);
+
+    /**
+     *查找对应邮箱的用户信息
+     * @param email
+     * @return
+     */
+    SysUser findUserByEmail(String email);
 }

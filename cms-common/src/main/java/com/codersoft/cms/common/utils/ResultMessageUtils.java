@@ -26,6 +26,20 @@ public class ResultMessageUtils {
     }
 
     /**
+     * 返回结果异常信息
+     * @param messageCode
+     * @param returnExpectionMsg
+     * @return
+     */
+    public static ResultMessage returnExpectionResultMessage(MessageCode messageCode, String returnExpectionMsg) {
+        ResultMessage resultMessage = new ResultMessage();
+        resultMessage.setReturnCode(messageCode.getCode());
+        resultMessage.setReturnExpectionMsg(messageCode.getMsg() + ":" + returnExpectionMsg);
+        resultMessage.setReturnMessage(resultMessage.getReturnExpectionMsg());
+        return resultMessage;
+    }
+
+    /**
      * 返回结果信息
      * @param messageCode
      * @return

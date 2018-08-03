@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-4.1.xsd
 		http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
-    
+
     <description>Spring MVC Configuration</description>
+
+    <!-- 加载配置属性文件 -->
+    <context:property-placeholder
+            ignore-unresolvable="true"
+            location="classpath:property/app.properties"/>
 
     <!-- 开启SpringMVC注解 -->
     <mvc:annotation-driven>
@@ -36,54 +41,57 @@
     <!--<mvc:resources mapping="/statics/css/**" location="/statics/css/" />-->
     <!--<mvc:resources mapping="/statics/plug/**" location="/statics/plug/" />-->
 
-	<!-- 配置视图解析器 -->
-	<!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="internalResourceViewResolver">-->
-        <!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
-		<!--&lt;!&ndash; 前缀 &ndash;&gt;-->
-		<!--<property name="prefix" value="/WEB-INF/views/" />-->
-        <!--<property name="order" value="2"></property>-->
-		<!--&lt;!&ndash; 后缀 &ndash;&gt;-->
-		<!--<property name="suffix" value=".jsp" />-->
-	<!--</bean>-->
+    <!-- 配置视图解析器 -->
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="internalResourceViewResolver">-->
+    <!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
+    <!--&lt;!&ndash; 前缀 &ndash;&gt;-->
+    <!--<property name="prefix" value="/WEB-INF/views/" />-->
+    <!--<property name="order" value="2"></property>-->
+    <!--&lt;!&ndash; 后缀 &ndash;&gt;-->
+    <!--<property name="suffix" value=".jsp" />-->
+    <!--</bean>-->
 
     <!--<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">-->
-        <!--<mvc:message-converters>-->
-            <!--<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
-                <!--<property name="objectMapper" value="objectMapper"></property>-->
-            <!--</bean>-->
-        <!--</mvc:message-converters>-->
+    <!--<mvc:message-converters>-->
+    <!--<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
+    <!--<property name="objectMapper" value="objectMapper"></property>-->
+    <!--</bean>-->
+    <!--</mvc:message-converters>-->
     <!--</mvc:annotation-driven>-->
     <!--<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean" >-->
-        <!--<property name="mediaTypes">-->
-            <!--<value>-->
-                <!--json=application/json-->
-                <!--xml=application/xml-->
-            <!--</value>-->
-        <!--</property>-->
+    <!--<property name="mediaTypes">-->
+    <!--<value>-->
+    <!--json=application/json-->
+    <!--xml=application/xml-->
+    <!--</value>-->
+    <!--</property>-->
     <!--</bean>-->
     <!--<bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean"></bean>-->
 
-    <!-- thymeleaf模板配置 -->
+    <!-- Thymeleaf模板配置 -->
     <bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
-        <property name="prefix" value="/WEB-INF/views/" />
-        <property name="suffix" value=".html" />
-        <property name="templateMode" value="HTML5" />
-        <property name="cacheable" value="false" />
-        <property name="characterEncoding" value="UTF-8"/>
-        <property name="order" value="3"></property>
+        <property name="prefix" value="${thymeleaf.resolver.prefix}"/>
+        <property name="suffix" value="${thymeleaf.resolver.suffix}"/>
+        <property name="templateMode" value="${thymeleaf.resolver.templateMode}"/>
+        <property name="cacheable" value="${thymeleaf.resolver.cacheable}"/>
+        <property name="characterEncoding" value="${thymeleaf.resolver.characterEncoding}"/>
+        <property name="order" value="${thymeleaf.resolver.order}"></property>
     </bean>
 
     <bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
-        <property name="templateResolver" ref="templateResolver" />
+        <property name="templateResolver" ref="templateResolver"/>
+        <property name="enableSpringELCompiler" value="${template.engine.enableSpringELCompiler}"/>
     </bean>
 
     <bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
-        <property name="templateEngine" ref="templateEngine" />
-        <property name="characterEncoding" value="UTF-8" />
+        <property name="templateEngine" ref="templateEngine"/>
+        <property name="characterEncoding" value="${thymeleaf.resolver.characterEncoding}"/>
+        <!--<property name="viewNames" value="${thymeleaf.resolver.viewNames}" />-->
     </bean>
 
     <!-- 使用Annotation自动注册Bean,只扫描@Controller -->
-    <context:component-scan base-package="com.codersoft.cms.web" use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
+    <context:component-scan base-package="com.codersoft.cms.web"
+                            use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <!--DispatcherServlet子容器必须排除扫描注入service,否则service没有事务加强处理 -->
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>

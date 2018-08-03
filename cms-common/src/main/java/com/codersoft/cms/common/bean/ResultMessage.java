@@ -23,6 +23,7 @@ public class ResultMessage implements Serializable {
     private String returnMessage;
     //返回数据
     private Object returnData;
-
+    //返回异常信息
+    private String returnExpectionMsg;
 
 }
