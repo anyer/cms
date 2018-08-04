@@ -1,4 +1,4 @@
-package com.codersoft.cms.dao.mapper;
+package com.codersoft.cms.dao.mapper.admin.system;
 
 import com.codersoft.cms.dao.dto.DirectoryPermissionDto;
 import com.codersoft.cms.dao.entity.SysPermission;
@@ -6,49 +6,27 @@ import com.codersoft.cms.dao.entity.SysPermissionExample;
 
 import java.util.List;
 
+import com.codersoft.cms.dao.mapper.common.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
-public interface SysPermissionMapper {
+public interface SysPermissionMapper extends BaseMapper<SysPermission, Long> {
 
     long countByExample(SysPermissionExample example);
 
     int deleteByExample(SysPermissionExample example);
 
-    int deleteByPrimaryKey(Long permissionId);
-
-    int insert(SysPermission record);
-
-    int insertSelective(SysPermission record);
-
     List<SysPermission> selectByExample(SysPermissionExample example);
-
-    SysPermission selectByPrimaryKey(Long permissionId);
-
-    SysPermission selectPermissionByPrimaryKey(Long permissionId);
 
     int updateByExampleSelective(@Param("record") SysPermission record, @Param("example") SysPermissionExample example);
 
     int updateByExample(@Param("record") SysPermission record, @Param("example") SysPermissionExample example);
 
-    int updateByPrimaryKeySelective(SysPermission record);
-
-    int updateByPrimaryKey(SysPermission record);
-
     /**
-     * 获取全部权限数量统计
-     *
-     * @param sysPermission
+     * 通过ID查询对应权限（含父权限名称）
+     * @param permissionId
      * @return
      */
-    Long selectPermissionCount(SysPermission sysPermission);
-
-    /**
-     * 获取分页的权限集合
-     *
-     * @param sysPermission
-     * @return
-     */
-    List<SysPermission> selectPermissionPageList(SysPermission sysPermission);
+    SysPermission selectPermissionAndParentNameByPrimaryKey(Long permissionId);
 
     /**
      * 获取目录类型权限集合

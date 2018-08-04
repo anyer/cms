@@ -29,6 +29,15 @@ public class PageDto {
      */
     private long totalSize = 0;
 
+    /**
+     * 查询项
+     */
+    private String searchTerm;
+    /**
+     * 查询内容
+     */
+    private String searchContent;
+
     public int getPage() {
         return page;
     }
@@ -65,5 +74,21 @@ public class PageDto {
             count += 1L;
         }
         return count;
+    }
+
+    public String getSearchTerm() {
+        return searchTerm;
+    }
+
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm == null ? null : searchTerm.trim();
+    }
+
+    public String getSearchContent() {
+        return searchContent;
+    }
+
+    public void setSearchContent(String searchContent) {
+        this.searchContent = searchContent== null ? null : searchContent.trim();
     }
 }

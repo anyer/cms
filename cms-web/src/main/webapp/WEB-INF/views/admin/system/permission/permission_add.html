@@ -265,14 +265,13 @@
                 contentType: 'application/json',
                 data: jsonData,
                 success: function (data) {
+                    top.layer.close(addLoading);
                     if (data.returnCode == "SUCCESS") {
                         location.reload();
-                        top.layer.close(addLoading);
                         common.cmsLaySuccessMsg("保存成功")
                         parent.layer.close(index); //再执行关闭
                         parent.location.reload();
                     } else {
-                        top.layer.close(addLoading);
                         common.cmsLayErrorMsg(data.returnMessage);
                     }
                 }, error: function (data) {

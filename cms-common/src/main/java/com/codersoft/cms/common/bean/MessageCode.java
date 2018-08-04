@@ -24,6 +24,7 @@ public enum MessageCode {
      */
     LOGIN_NAME_IS_NULL("LOGIN_NAME_IS_NULL", "用户名不能为空"),
     LOGIN_PASSWORD_IS_NULL("LOGIN_PASSWORD_IS_NULL", "密码不能为空"),
+    UPDATE_DATE_FAIL("UPDATE_DATE_FAIL", "更新最后登陆时间失败"),
     LOGIN_FAIL("LOGIN_FAIL", "用户名或密码不匹配"),
     LOGIN_ERROR("LOGIN_ERROR", "系统登录异常"),
     CAPTCHA_IS_NULL("CAPTCHA_IS_NULL", "验证码不能为空"),
@@ -46,10 +47,16 @@ public enum MessageCode {
     PER_DELETE_FAIL("PER_DELETE_FAIL", "权限信息删除失败"),
     PER_UPDATE_FAIL("PER_UPDATE_FAIL", "权限信息更新失败"),
     PER_DATA_LOAD_FAIL("PER_DATA_LOAD_FAIL", "权限数据加载失败"),
-    ROLE_SAVE_FAIL("ROLE_SAVE_ERROR", "角色信息保存失败"),
+
     USER_SAVE_FAIL("USER_SAVE_ERROR", "用户信息保存失败"),
+    USER_DELETE_FAIL("USER_DELETE_FAIL", "用户信息删除失败"),
+    USER_UPDATE_FAIL("USER_UPDATE_FAIL", "用户信息更新失败"),
+    USER_DATA_LOAD_FAIL("USER_DATA_LOAD_FAIL", "用户数据加载失败"),
     USER_ROLE_SAVE_FAIL("USER_ROLE_SAVE_ERROR", "用户分配角色信息失败"),
-    USER_DISABLE_FAIL("USER_FAIL_ERROR", "失效用户失败,程序异常"),
+    USER_DISABLE_FAIL("USER_FAIL_ERROR", "设置用户失效失败,程序异常"),
+
+
+    ROLE_SAVE_FAIL("ROLE_SAVE_ERROR", "角色信息保存失败"),
     ROLE_FAILK_ERROR("ROLE_FAILK_ERROR", "失效角色失败,程序异常"),
     RES_FAILK_ERROR("RES_FAILK_ERROR", "失效资源失败,程序异常"),
     ROLE_RES_SAVE_ERROR("ROLE_RES_SAVE_ERROR", "角色分配菜单失败"),

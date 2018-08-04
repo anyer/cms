@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 /**
  * @program: LoginController
@@ -23,7 +24,6 @@ import javax.servlet.http.HttpSession;
 //@SessionAttributes("sysUser")
 public class AdminLoginController {
 
-    private final static byte DISABLE = 0x1;
     @Autowired
     private SysUserService sysUserService;
 
@@ -37,17 +37,15 @@ public class AdminLoginController {
     }
 
     /**
-     * 登陆验证
+     * 登陆验证(用户名验证）
      *
      * @param sysUser
      * @param httpSession
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
-    public ResultMessage checkLogin(@RequestBody SysUser sysUser, HttpSession httpSession){
-
-        //Todo 邮箱名登陆
+    @RequestMapping(value = "/userNameLogin", method = RequestMethod.POST)
+    public ResultMessage checkLoginByUserName(@RequestBody SysUser sysUser, HttpSession httpSession){
 
         //用户名登陆
         //用户名不为空
@@ -75,15 +73,20 @@ public class AdminLoginController {
             //若有user则添加到model里并且跳转到成功页面
             if(user != null){
                 //判断账号是否未激活，未激活重新发送激活邮件
-                if(user.getStatus() == 0) {
+                if(user.getStatus() == 1) {
                     //Todo 未激活邮箱账户，发送激活邮件
                 }
                 //判断账号是否停用
-                if(user.getStatus() == DISABLE) {
+                if(user.getStatus() == 2) {
                     return ResultMessageUtils.returnResultMessage(MessageCode.ACCOUNT_DISABLE);
                 }
                 //验证成功，用户名存放session
                 httpSession.setAttribute("sysUser", user);
+                user.setLastLoginTime(new Date());
+                int updateRes = sysUserService.updateByIdSelective(user);
+                if(updateRes == 0) {
+                    return ResultMessageUtils.returnResultMessage(MessageCode.UPDATE_DATE_FAIL);
+                }
                 return ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS);
             }
             return ResultMessageUtils.returnResultMessage(MessageCode.LOGIN_FAIL);

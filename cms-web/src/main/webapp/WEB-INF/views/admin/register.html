@@ -166,7 +166,6 @@
                 type: 'post',
                 dataType: 'json',
                 data: {email: email},
-                //验证用户名是否可用
                 success: function (data) {
                     if (data.returnCode == "SUCCESS") {
                         $('#eri').removeAttr('hidden');

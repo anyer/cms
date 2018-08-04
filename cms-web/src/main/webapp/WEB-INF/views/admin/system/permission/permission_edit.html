@@ -44,8 +44,9 @@
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">权限级别</label>
-            <div class="layui-input-inline" >
-                <select id="perLevel" name="perLevel" lay-filter="perLevelFilter" lay-verify="required" data-th-switch="${permission.getPerType()}">
+            <div class="layui-input-inline">
+                <select id="perLevel" name="perLevel" lay-filter="perLevelFilter" lay-verify="required"
+                        data-th-switch="${permission.getPerType()}">
                     <div data-th-case="0">
                         <option value="0" selected>目录</option>
                     </div>
@@ -74,7 +75,8 @@
             <label class="layui-form-label">父级权限</label>
             <div class="layui-input-inline">
                 <select id="parentId" name="parentId" lay-filter="parentIdFilter" lay-verify="parentId">
-                    <option data-th-value="${permission.getParentId()}" data-th-text="${permission.getParentName()}" selected ></option>
+                    <option data-th-value="${permission.getParentId()}" data-th-text="${permission.getParentName()}"
+                            selected></option>
                 </select>
             </div>
         </div>
@@ -90,7 +92,8 @@
         <div class="layui-inline">
             <label class="layui-form-label">权限图标</label>
             <div class="layui-input-inline">
-                <input type="text" class="layui-input" id="iconName" name="iconName" data-th-value="${permission.getIconName()}" lay-verify="required"
+                <input type="text" class="layui-input" id="iconName" name="iconName"
+                       data-th-value="${permission.getIconName()}" lay-verify="required"
                        disabled>
             </div>
             <div class="layui-word-aux" style="float: left;display: block;" data-th-if="${pageFlag} == 'edit'">
@@ -102,10 +105,12 @@
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">权限状态</label>
-            <div id="status" class="layui-input-inline" style="border: 1px solid #e6e6e6;background-color: #fff;height: 36px;" data-th-switch="${permission.getStatus()}">
+            <div id="status" class="layui-input-inline"
+                 style="border: 1px solid #e6e6e6;background-color: #fff;height: 36px;"
+                 data-th-switch="${permission.getStatus()}">
                 <div data-th-case="1">
                     <input class="status" type="radio" name="status" value="1" title="有效" checked>
-                    <input class="status" type="radio" name="status" value="0" title="无效" >
+                    <input class="status" type="radio" name="status" value="0" title="无效">
                 </div>
                 <div data-th-case="0">
                     <input class="status" type="radio" name="status" value="1" title="有效">
@@ -159,7 +164,7 @@
         <label class="layui-form-label">备注</label>
         <div class="layui-input-block">
                 <textarea id="description" name="description" class="layui-textarea" maxlength="50"
-                          style="resize:none;min-height:40px;" data-th-value="${permission.getDescription()}"></textarea>
+                          style="resize:none;min-height:40px;" data-th-text="${permission.getDescription()}"></textarea>
         </div>
     </div>
     </div>
@@ -189,14 +194,14 @@
             $("#perType").attr("disabled", "disabled");
 
             var pageFlag = $("#pageFlag").val();
-            if(pageFlag == "detail") {
+            if (pageFlag == "detail") {
                 $("#perName").attr("disabled", "disabled");
                 $("#perLevel").attr("disabled", "disabled");
                 $("#parentId").attr("disabled", "disabled");
                 $("#status").attr("disabled", "disabled");
                 $("#uri").attr("disabled", "disabled");
                 $("#select_icon").attr("disabled", "disabled");
-                $("#description").attr("disabled", "disabled");
+                // $("#description").attr("disabled", "disabled");
             }
 
             //初始化表单
@@ -206,7 +211,7 @@
         //加载父级权限
         function loadParentPermission() {
             var perLevel = $("#perLevel").val();
-            if(perLevel != null && perLevel != NaN) {
+            if (perLevel != null && perLevel != NaN) {
                 perLevel = perLevel - 1;
             }
             //加载父级权限
@@ -221,7 +226,7 @@
                         $('#parentId').empty();
                         $(data.returnData).each(function (index, item) {
                             $("#parentId").append(
-                                '<option value="' + item.parentId + '">' + item.perName + '</option>'
+                                '<option value="' + item.permissionId + '">' + item.perName + '</option>'
                             );
                         });
                         //刷新父类权限id下拉框
@@ -230,7 +235,7 @@
                         common.cmsLayErrorMsg(data.returnMessage);
                     }
                 }
-                ,error:function(data){
+                , error: function (data) {
                     common.cmsLayErrorMsg(data.returnExpectionMsg);
                 }
             });
@@ -245,7 +250,7 @@
             //菜单类型级别处理
             if (data.value == 1 || data.value == 2) {
                 loadParentPermission()
-            } else if(perType == 0 && data.value == 0) {
+            } else if (perType == 0 && data.value == 0) {
                 $("#uri").attr("disabled", "disabled");
             } else {
                 return;
@@ -293,19 +298,18 @@
                 contentType: 'application/json',
                 data: jsonData,
                 success: function (data) {
+                    top.layer.close(updateLoading);
                     if (data.returnCode == "SUCCESS") {
                         location.reload();
-                        top.layer.close(updateLoading);
                         common.cmsLaySuccessMsg("保存成功")
                         parent.layer.close(index); //再执行关闭
                         parent.location.reload();
                     } else {
-                        top.layer.close(updateLoading);
                         common.cmsLayErrorMsg(data.returnMessage);
                     }
                 }, error: function (data) {
-                    common.cmsLayErrorMsg(data.returnMessage);
                     top.layer.close(updateLoading);
+                    common.cmsLayErrorMsg(data.returnMessage);
                     top.layer.close(index);
                 }
             });

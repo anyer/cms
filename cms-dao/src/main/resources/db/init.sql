@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-07-12 22:53:58
+Date: 2018-08-03 16:04:10
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -27,10 +27,10 @@ CREATE TABLE `t_sys_data` (
   `dataSort` int(11) unsigned DEFAULT NULL COMMENT '基础数据排序',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `is_delete` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
-  `create_by` varchar(100) NOT NULL COMMENT '创建于',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
   `modify_by` varchar(100) NOT NULL COMMENT '更新于',
-  `modify_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`data_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='基础数据表';
 
@@ -43,11 +43,11 @@ CREATE TABLE `t_sys_data_category` (
   `cate_code` varchar(255) DEFAULT NULL COMMENT '类别Code',
   `cate_name` varchar(255) DEFAULT NULL COMMENT '类别名称',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
-  `is_delete` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
-  `create_by` varchar(100) NOT NULL COMMENT '创建于',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  `modify_by` varchar(100) NOT NULL COMMENT '更新于',
-  `modify_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
+  `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
+  `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`cate_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='基础数据类别表';
 
@@ -107,7 +107,7 @@ CREATE TABLE `t_sys_permission` (
   `uri` varchar(255) NOT NULL DEFAULT '#' COMMENT '地址',
   `icon_name` varchar(100) DEFAULT NULL COMMENT '图标名称',
   `per_type` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '类型（0：目录；1：菜单；2：按钮；3：API）',
-  `order_num` int(11) unsigned NOT NULL COMMENT '优先级',
+  `per_level` tinyint(2) unsigned NOT NULL COMMENT '权限级别',
   `status` tinyint(2) unsigned DEFAULT '1' COMMENT '显示隐藏（0：隐藏；1：显示）',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
@@ -116,7 +116,7 @@ CREATE TABLE `t_sys_permission` (
   `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
   `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`permission_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COMMENT='权限表';
 
 -- ----------------------------
 -- Table structure for t_sys_role
@@ -164,15 +164,15 @@ CREATE TABLE `t_sys_user` (
   `salt` varchar(255) DEFAULT NULL COMMENT '加密盐值',
   `phone_number` varchar(50) DEFAULT NULL COMMENT '手机号',
   `email` varchar(100) NOT NULL COMMENT '邮箱',
-  `status` tinyint(2) unsigned DEFAULT NULL COMMENT '状态',
-  `is_delete` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
-  `last_login_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后登录时间',
-  `create_by` varchar(100) NOT NULL COMMENT '创建于',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  `modify_by` varchar(100) NOT NULL COMMENT '更新于',
-  `modify_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `status` tinyint(2) unsigned DEFAULT '0' COMMENT '状态（0：未激活；1：停用；99：正常）',
+  `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
+  `last_login_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '最后登录时间',
+  `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
+  `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 -- ----------------------------
 -- Table structure for t_sys_user_role

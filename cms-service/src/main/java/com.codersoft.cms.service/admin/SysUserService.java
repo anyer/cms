@@ -1,6 +1,9 @@
 package com.codersoft.cms.service.admin;
 
 import com.codersoft.cms.dao.entity.SysUser;
+import com.codersoft.cms.service.common.BaseService;
+
+import java.util.Map;
 
 /**
  * @program: SysUserService
@@ -8,7 +11,7 @@ import com.codersoft.cms.dao.entity.SysUser;
  * @create: 2018-07-07 17:12
  * @description: 用户业务处理接口
  **/
-public interface SysUserService {
+public interface SysUserService extends BaseService<SysUser, Long> {
 
     /**
      * 登录验证
@@ -38,4 +41,12 @@ public interface SysUserService {
      * @return
      */
     int register(SysUser sysUser);
+
+    /**
+     * 获取分页的用户集合
+     *
+     * @param sysUser
+     * @return
+     */
+    Map<String, Object> selectUserPageList(SysUser sysUser);
 }

@@ -1,33 +1,23 @@
-package com.codersoft.cms.dao.mapper;
+package com.codersoft.cms.dao.mapper.admin.system;
 
 import com.codersoft.cms.dao.entity.SysUser;
 import com.codersoft.cms.dao.entity.SysUserExample;
 import java.util.List;
+
+import com.codersoft.cms.dao.mapper.common.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
-public interface SysUserMapper {
+public interface SysUserMapper extends BaseMapper<SysUser, Long> {
+
     long countByExample(SysUserExample example);
 
     int deleteByExample(SysUserExample example);
 
-    int deleteByPrimaryKey(Long userId);
-
-    int insert(SysUser record);
-
-    int insertSelective(SysUser record);
-
     List<SysUser> selectByExample(SysUserExample example);
-
-    SysUser selectByPrimaryKey(Long userId);
 
     int updateByExampleSelective(@Param("record") SysUser record, @Param("example") SysUserExample example);
 
     int updateByExample(@Param("record") SysUser record, @Param("example") SysUserExample example);
-
-    int updateByPrimaryKeySelective(SysUser record);
-
-    int updateByPrimaryKey(SysUser record);
-
 
     /**
      * 查找对应用户名的用户信息

@@ -1,30 +1,22 @@
-package com.codersoft.cms.dao.mapper;
+package com.codersoft.cms.dao.mapper.admin.system;
 
 import com.codersoft.cms.dao.entity.SysRole;
 import com.codersoft.cms.dao.entity.SysRoleExample;
 import java.util.List;
+
+import com.codersoft.cms.dao.mapper.common.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
-public interface SysRoleMapper {
+public interface SysRoleMapper extends BaseMapper<SysRole, Long> {
+
     long countByExample(SysRoleExample example);
 
     int deleteByExample(SysRoleExample example);
 
-    int deleteByPrimaryKey(Long roleId);
-
-    int insert(SysRole record);
-
-    int insertSelective(SysRole record);
-
     List<SysRole> selectByExample(SysRoleExample example);
-
-    SysRole selectByPrimaryKey(Long roleId);
 
     int updateByExampleSelective(@Param("record") SysRole record, @Param("example") SysRoleExample example);
 
     int updateByExample(@Param("record") SysRole record, @Param("example") SysRoleExample example);
 
-    int updateByPrimaryKeySelective(SysRole record);
-
-    int updateByPrimaryKey(SysRole record);
 }

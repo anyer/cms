@@ -1,0 +1,242 @@
+<!DOCTYPE>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>后台管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="后台管理系统">
+    <meta name="description" content="致力于提供通用版本后台管理解决方案">
+    <link rel="shortcut icon" href="../../../../../statics/admin/images/favicon.ico"
+          data-th-href="${'/statics/admin/images/favicon.ico'}">
+
+    <link rel="stylesheet" href="../../../../../statics/admin/plug/layui_v2.3.0/css/layui.css"
+          data-th-href="@{/statics/admin/plug/layui_v2.3.0/css/layui.css}">
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_9h680jcse4620529.css">
+</head>
+<body class="childrenBody" style="font-size: 12px;margin: 10px 10px 0;">
+
+<blockquote class="layui-elem-quote layui-quote-nm" style="border-radius:0.25em;color: #31708f;background-color: #d9edf7;border-width:1px; padding:6px;
+        border-color:#bce8f1;">
+    温馨提示:1.账号名称由字母、数字及下划线组成，且以字母开头，至少3位; 2.密码由数字、大小写字母、下划线混合组成，至少6位; 3.账号生成后请及时激活邮箱账号;
+</blockquote>
+
+<form class="layui-form layui-form-pane">
+
+    <input id="createBy" name="createBy" hidden="hidden" data-th-value="${session.sysUser.getUserName()}">
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">账号名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="userName" name="userName" class="layui-input" maxlength="52"
+                       lay-verify="required" placeholder="请输入账号名称">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">账号密码</label>
+            <div class="layui-input-inline">
+                <input type="password" id="password" name="password" class="layui-input" maxlength="32"
+                       lay-verify="required" placeholder="请填写密码">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">邮箱地址</label>
+            <div class="layui-input-inline">
+                <input type="email" id="email" name="email" class="layui-input" maxlength="70"
+                       lay-verify="required|email" placeholder="请输入邮箱地址">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">手机号码</label>
+            <div class="layui-input-inline">
+                <input type="tel" name="phoneNumber" lay-verify="phone" autocomplete="off" class="layui-input"
+                       placeholder="请输入手机号码">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">账号类型</label>
+            <div class="layui-input-inline">
+                <select id="status" name="status" lay-verify="required" disabled>
+                    <option value="">请选择</option>
+                    <option value="0">0-正常</option>
+                    <option value="1" selected>1-未激活</option>
+                    <option value="2">2-停用</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">账号头像</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="headerImg" name="headerImg"
+                       placeholder="face.jpg" disabled>
+            </div>
+            <div class="layui-word-aux" style="float: left;display: block;">
+                <a id="updateImg" class="layui-btn layui-btn-mini" data-id="" title="更换头像"><i
+                        class="layui-icon larry-icon larry-tupianguanli"></i></a>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="layui-form-item" style="text-align: center;">
+        <button class="layui-btn" lay-submit="" lay-filter="addData">保存</button>
+        <button type="layui-btn" id="cancle" class="layui-btn layui-btn-primary">取消</button>
+    </div>
+</form>
+
+<script type="text/javascript" src="../../../../../statics/admin/plug/layui_v2.3.0/layui.js"
+        data-th-src="@{/statics/admin/plug/layui_v2.3.0/layui.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: "/statics/admin/js/"
+    }).use(['form', 'layer', 'jquery', 'common'], function () {
+        var $ = layui.$,
+            form = layui.form,
+            common = layui.common,
+            layer = parent.layer === undefined ? layui.layer : parent.layer;
+
+        //验证账号名称
+        $('#userName').blur(function () {
+            //密码验证规则:3-50位，以字母开头，数字、字母、下划线至少两者混合
+            var pattern = /^[a-zA-Z][a-zA-Z0-9_]{2,49}$/;
+            var userName = $(this).val();
+
+            if (userName == null || userName.length == 0) {
+                return false;
+            }
+            if (userName.length < 3) {
+                layer.msg('用户名太短');
+                this.focus();
+                return false;
+            }
+            if (userName.length > 50) {
+                layer.msg('用户名太长');
+                this.focus();
+                return false;
+            }
+            if (!(pattern.test(userName))) {
+                layer.msg('用户名由字母、数字及下划线组成，且以字母开头')
+                this.focus();
+                return false;
+            }
+            var checkUserNameLoading = top.layer.msg('账号名称验证中，请稍候', {icon: 16, time: false, shade: 0.8});
+            //判断用户名是否存在
+            $.ajax({
+                url: '/admin/checkUserNameIsExist',
+                type: 'post',
+                dataType: 'json',
+                data: {userName: userName},
+                //验证用户名是否可用
+                success: function (data) {
+                    top.layer.close(checkUserNameLoading);
+                    if (data.returnCode != "SUCCESS") {
+                        layer.msg(data.returnMessage)
+                    }
+                }, error: function (data) {
+                    top.layer.close(checkUserNameLoading);
+                    layer.msg(data.returnMessage);
+                }
+            })
+        });
+
+        // 为密码添加正则验证
+        $('#password').blur(function () {
+            //密码验证规则： 6到20位，数字、大小写字母及下划线混合
+            var reg = /^(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[_])[0-9A-Za-z_)]{5,19}$/;
+            var pwd = $('#password').val();
+            if (pwd == null || pwd.length == 0) {
+                return false;
+            }
+            if (pwd.length < 6 || pwd.length > 20) {
+                this.focus();
+                layer.msg('请填写6到20位密码')
+            } else if (!(pwd.match(reg))) {
+                this.focus();
+                layer.msg('密码由数字、大小写字母、下划线混合组成');
+            } else {
+                return false;
+            }
+        });
+
+        // 为邮箱添加正则验证
+        $('#email').blur(function () {
+            var pattern = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
+            var email = $('#email').val();
+            if (email == null || email.length == 0) {
+                return false;
+            }
+            if (!(pattern.test(email))) {
+                this.focus();
+                layer.msg('请检查邮箱格式是否正确');
+                return false;
+            }
+
+            var checkEmailLoading = top.layer.msg('邮箱账号验证中，请稍候', {icon: 16, time: false, shade: 0.8});
+            //判断邮箱是否存在
+            $.ajax({
+                url: '/admin/emailIsExist',
+                type: 'post',
+                dataType: 'json',
+                data: {email: email},
+                success: function (data) {
+                    top.layer.close(checkEmailLoading);
+                    if (data.returnCode != "SUCCESS") {
+                        layer.msg(data.returnMessage);
+                    }
+                }, error: function (data) {
+                    top.layer.close(checkEmailLoading);
+                    layer.msg(data.returnMessage);
+                }
+            })
+        });
+
+        /**更换头像*/
+        $("#updateImg").click(function () {
+            var url = "/common/toImgUpload";
+            common.cmsLayOpen('图片上传', url, '485px', '370px');
+        });
+
+        /**保存用户信息*/
+        form.on("submit(addData)", function (data) {
+            var addLoading = top.layer.msg('数据提交中，请稍候', {icon: 16, time: false, shade: 0.8});
+            var jsonData = JSON.stringify(data.field);
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+
+            $.ajax({
+                url: '/admin/user/add',
+                type: 'post',
+                async: false,
+                dataType: 'json',
+                contentType: 'application/json',
+                data: jsonData,
+                success: function (data) {
+                    top.layer.close(addLoading);
+                    if (data.returnCode == "SUCCESS") {
+                        location.reload();
+                        common.cmsLaySuccessMsg("保存成功")
+                        parent.layer.close(index); //再执行关闭
+                        parent.location.reload();
+                    } else {
+                        common.cmsLayErrorMsg(data.returnMessage);
+                    }
+                }, error: function (data) {
+                    top.layer.close(addLoading);
+                    common.cmsLayErrorMsg(data.returnMessage);
+                    top.layer.close(index);
+                }
+            });
+            return false;
+        });
+
+        /**取消*/
+        $("#cancle").click(function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+    });
+</script>
+</body>
+</html>

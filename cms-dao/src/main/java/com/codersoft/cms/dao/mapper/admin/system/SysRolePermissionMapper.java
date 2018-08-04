@@ -1,4 +1,4 @@
-package com.codersoft.cms.dao.mapper;
+package com.codersoft.cms.dao.mapper.admin.system;
 
 import com.codersoft.cms.dao.entity.SysRolePermission;
 import com.codersoft.cms.dao.entity.SysRolePermissionExample;

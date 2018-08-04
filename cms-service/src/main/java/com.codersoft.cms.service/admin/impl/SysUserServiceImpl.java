@@ -1,11 +1,17 @@
 package com.codersoft.cms.service.admin.impl;
 
+import com.codersoft.cms.common.bean.MessageCode;
 import com.codersoft.cms.common.utils.MD5SaltUtils;
 import com.codersoft.cms.dao.entity.SysUser;
-import com.codersoft.cms.dao.mapper.SysUserMapper;
+import com.codersoft.cms.dao.mapper.admin.system.SysUserMapper;
 import com.codersoft.cms.service.admin.SysUserService;
+import com.codersoft.cms.service.common.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @program: SysUserServiceImpl
@@ -14,7 +20,7 @@ import org.springframework.stereotype.Service;
  * @description: 用户业务处理实现类
  **/
 @Service
-public class SysUserServiceImpl implements SysUserService {
+public class SysUserServiceImpl extends BaseServiceImpl<SysUser, Long> implements SysUserService {
 
     @Autowired
     private SysUserMapper sysUserMapper;
@@ -55,8 +61,42 @@ public class SysUserServiceImpl implements SysUserService {
         sysUser.setSalt(salt);
         sysUser.setPassword(password);
         sysUser.setCreateBy(sysUser.getUserName());
-        sysUser.setModifyBy(sysUser.getUserName());
+//        sysUser.setModifyBy(sysUser.getUserName());
 
         return sysUserMapper.insertSelective(sysUser);
+    }
+
+
+    /**
+     * 获取分页的用户集合
+     *
+     * @param sysUser
+     * @return
+     */
+    @Override
+    public Map<String, Object> selectUserPageList(SysUser sysUser) {
+
+        List<SysUser> sysUserList = null;
+        int count = 0;
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        try {
+            if(sysUserList != null) {
+                count = sysUserList.size();
+            }
+//            sysUserList = sysUserMapper.selectUserPageList(sysUser);
+
+            map.put("code", 0);
+            map.put("msg", MessageCode.SUCCESS.getMsg());
+            map.put("count", count);
+            map.put("data", sysUserList);
+            return map;
+        } catch (Exception ex) {
+            map.put("msg", MessageCode.EXCEPTION.getMsg() + " : " + ex.getMessage());
+            map.put("code", MessageCode.EXCEPTION.getCode());
+            map.put("data", null);
+            map.put("count", count);
+            return map;
+        }
     }
 }

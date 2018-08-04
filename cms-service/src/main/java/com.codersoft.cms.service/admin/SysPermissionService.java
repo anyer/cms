@@ -1,11 +1,10 @@
 package com.codersoft.cms.service.admin;
 
-import com.codersoft.cms.common.bean.ResultPages;
 import com.codersoft.cms.dao.dto.DirectoryPermissionDto;
 import com.codersoft.cms.dao.entity.SysPermission;
+import com.codersoft.cms.service.common.BaseService;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @program: SysPermissionService
@@ -13,7 +12,7 @@ import java.util.Map;
  * @create: 2018-07-12 15:16
  * @description: 权限相关业务操作接口
  **/
-public interface SysPermissionService {
+public interface SysPermissionService extends BaseService<SysPermission, Long> {
 
     /**
      * 获取目录类型权限集合
@@ -31,22 +30,6 @@ public interface SysPermissionService {
     List<DirectoryPermissionDto> selectMenuPermissionListByParentId(Long parentId);
 
     /**
-     * 获取分页的权限集合
-     *
-     * @param sysPermission
-     * @return
-     */
-    Map<String, Object> selectPermissionPageList(SysPermission sysPermission);
-
-    /**
-     * 添加权限信息
-     *
-     * @param sysPermission
-     * @return
-     */
-    int addSysPermission(SysPermission sysPermission);
-
-    /**
      * 获取对应ID的权限信息
      *
      * @param permissionId 权限ID
@@ -62,19 +45,4 @@ public interface SysPermissionService {
      */
     List<SysPermission> selectParentPermissionListByPerLevel(Integer perLevel);
 
-    /**
-     * 更新权限信息
-     *
-     * @param sysPermission
-     * @return
-     */
-    int updatePermission(SysPermission sysPermission);
-
-    /**
-     * 删除权限信息
-     *
-     * @param permissionId 权限ID
-     * @return
-     */
-    int deletePermission(Long permissionId);
 }

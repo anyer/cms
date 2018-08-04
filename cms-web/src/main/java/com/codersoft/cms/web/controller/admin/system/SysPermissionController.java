@@ -10,6 +10,7 @@ import com.codersoft.cms.service.admin.SysPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -50,7 +51,7 @@ public class SysPermissionController {
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getPermissionList(SysPermission sysPermission) {
-        return sysPermissionService.selectPermissionPageList(sysPermission);
+        return sysPermissionService.selectPageList(sysPermission);
     }
 
     /**
@@ -96,7 +97,10 @@ public class SysPermissionController {
     public ResultMessage addPermission(@RequestBody SysPermission sysPermission) {
         int addRes = 0;
         try {
-            addRes = sysPermissionService.addSysPermission(sysPermission);
+            if(StringUtils.isEmpty(sysPermission.getUri())) {
+                sysPermission.setUri("#");
+            }
+            addRes = sysPermissionService.addSelective(sysPermission);
             if(addRes == 0) {
                 return ResultMessageUtils.returnResultMessage(MessageCode.PER_SAVE_FAIL);
             }
@@ -164,7 +168,8 @@ public class SysPermissionController {
 
         int updateRes = 0;
         try {
-            updateRes = sysPermissionService.updatePermission(sysPermission);
+            sysPermission.setModifyTime(new Date());
+            updateRes = sysPermissionService.updateByIdSelective(sysPermission);
             if(updateRes == 0) {
                 return ResultMessageUtils.returnResultMessage(MessageCode.PER_UPDATE_FAIL);
             }
@@ -183,7 +188,7 @@ public class SysPermissionController {
 
         int deleteRes = 0;
         try {
-            deleteRes = sysPermissionService.deletePermission(permissionId);
+            deleteRes = sysPermissionService.deleteById(permissionId);
             if(deleteRes == 0) {
                 return ResultMessageUtils.returnResultMessage(MessageCode.PER_DELETE_FAIL);
             }

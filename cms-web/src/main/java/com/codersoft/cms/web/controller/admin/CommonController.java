@@ -48,4 +48,13 @@ public class CommonController {
     public String toIconList() {
         return "admin/common/icon";
     }
+
+    /**
+     * 图片上传界面
+     * @return
+     */
+    @RequestMapping(value="/toImgUpload")
+    public String toImageUploadPage() {
+        return "admin/common/upload";
+    }
 }

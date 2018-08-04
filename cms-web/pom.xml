@@ -165,11 +165,5 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- 数据库版本管理 -->
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
     </dependencies>
 </project>
