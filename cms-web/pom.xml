@@ -140,6 +140,11 @@
         </dependency>
         <!-- log end -->
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+        </dependency>
+
         <!-- shiro begin-->
         <dependency>
             <groupId>org.apache.shiro</groupId>
