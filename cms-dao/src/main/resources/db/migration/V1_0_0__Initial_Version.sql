@@ -10,10 +10,34 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-07-18 11:00:44
+Date: 2018-08-06 18:47:10
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for schema_version
+-- ----------------------------
+DROP TABLE IF EXISTS `schema_version`;
+CREATE TABLE `schema_version` (
+  `installed_rank` int(11) NOT NULL,
+  `version` varchar(50) DEFAULT NULL,
+  `description` varchar(200) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `script` varchar(1000) NOT NULL,
+  `checksum` int(11) DEFAULT NULL,
+  `installed_by` varchar(100) NOT NULL,
+  `installed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `execution_time` int(11) NOT NULL,
+  `success` tinyint(1) NOT NULL,
+  PRIMARY KEY (`installed_rank`),
+  KEY `schema_version_s_idx` (`success`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of schema_version
+-- ----------------------------
+INSERT INTO `schema_version` VALUES ('1', '1', '<< Flyway Baseline >>', 'BASELINE', '<< Flyway Baseline >>', null, 'root', '2018-07-18 16:20:37', '0', '1');
 
 -- ----------------------------
 -- Table structure for t_sys_data
@@ -24,12 +48,12 @@ CREATE TABLE `t_sys_data` (
   `cate_id` int(10) unsigned NOT NULL COMMENT '基础数据类别ID',
   `data_code` varchar(255) DEFAULT NULL COMMENT '基础数据Code',
   `data_name` varchar(255) DEFAULT NULL COMMENT '基础数据名称',
-  `dataSort` int(11) unsigned DEFAULT NULL COMMENT '基础数据排序',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：隐藏；1：显示）',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
-  `is_delete` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
+  `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
   `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  `modify_by` varchar(100) NOT NULL COMMENT '更新于',
+  `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
   `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`data_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='基础数据表';
@@ -46,6 +70,7 @@ CREATE TABLE `t_sys_data_category` (
   `cate_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '基础数据类别ID',
   `cate_code` varchar(255) DEFAULT NULL COMMENT '类别Code',
   `cate_name` varchar(255) DEFAULT NULL COMMENT '类别名称',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：隐藏；1：显示）',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
   `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
@@ -76,7 +101,7 @@ CREATE TABLE `t_sys_log` (
   `method_return` varchar(255) DEFAULT NULL COMMENT '方法返回',
   `deal_time` bigint(11) unsigned DEFAULT NULL COMMENT '处理时间（ms）',
   `exception_info` varchar(255) DEFAULT NULL COMMENT '异常信息',
-  `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否有效（0：无效；1：有效）',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '是否有效（0：无效；1：有效）',
   `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
   `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
@@ -95,21 +120,23 @@ CREATE TABLE `t_sys_log` (
 DROP TABLE IF EXISTS `t_sys_organization`;
 CREATE TABLE `t_sys_organization` (
   `org_id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '组织ID',
-  `parent_id` bigint(11) unsigned NOT NULL COMMENT '父ID',
+  `parent_id` bigint(11) unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
   `org_code` varchar(255) NOT NULL COMMENT '组织编码',
   `org_name` varchar(255) NOT NULL COMMENT '组织名称',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：隐藏；1：显示）',
   `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
   `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
   `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
   `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`org_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='组织信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='组织信息表';
 
 -- ----------------------------
 -- Records of t_sys_organization
 -- ----------------------------
+INSERT INTO `t_sys_organization` VALUES ('1', '0', 'ORG-sfomnjiuujd', '123', '', '1', '0', 'admin', '2018-08-06 18:26:40', 'admin', '2018-08-06 18:28:38');
 
 -- ----------------------------
 -- Table structure for t_sys_permission
@@ -123,8 +150,8 @@ CREATE TABLE `t_sys_permission` (
   `uri` varchar(255) NOT NULL DEFAULT '#' COMMENT '地址',
   `icon_name` varchar(100) DEFAULT NULL COMMENT '图标名称',
   `per_type` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '类型（0：目录；1：菜单；2：按钮；3：API）',
-  `order_num` int(11) unsigned NOT NULL COMMENT '优先级',
-  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '显示隐藏（0：隐藏；1：显示）',
+  `per_level` tinyint(2) unsigned NOT NULL COMMENT '权限级别',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：隐藏；1：显示）',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
   `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
@@ -132,24 +159,26 @@ CREATE TABLE `t_sys_permission` (
   `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
   `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`permission_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='权限表';
 
 -- ----------------------------
 -- Records of t_sys_permission
 -- ----------------------------
-INSERT INTO `t_sys_permission` VALUES ('1', '0', 'XTGL000', '系统管理', '#', null, '0', '1', '1', null, '0', 'admin', '2018-07-12 11:51:47', 'admin', '2018-07-12 11:51:47');
-INSERT INTO `t_sys_permission` VALUES ('2', '1', 'XTGL100', '基础管理', '#', null, '1', '1', '1', null, '0', 'admin', '2018-07-12 12:31:33', 'admin', '2018-07-12 12:31:33');
-INSERT INTO `t_sys_permission` VALUES ('3', '2', 'XTGL101', '用户管理', '#', 'larry-10103', '1', '1', '1', '', '0', 'admin', '2018-07-12 12:31:33', 'admin', '2018-07-12 12:31:33');
-INSERT INTO `t_sys_permission` VALUES ('4', '2', 'XTGL102', '角色管理', '#', 'larry-jiaoseguanli1', '1', '2', '1', '', '0', 'admin', '2018-07-12 12:32:39', 'admin', '2018-07-12 12:32:39');
-INSERT INTO `t_sys_permission` VALUES ('5', '2', 'XTGL103', '菜单管理', '#', 'larry-caidanguanli', '1', '3', '1', '', '0', 'admin', '2018-07-12 12:36:13', 'admin', '2018-07-12 12:36:13');
-INSERT INTO `t_sys_permission` VALUES ('6', '1', 'XTGL200', '数据管理', '#', null, '1', '1', '1', null, '0', 'admin', '2018-07-12 15:44:13', 'admin', '2018-07-12 15:44:13');
-INSERT INTO `t_sys_permission` VALUES ('8', '6', 'XTGL201', '数据类别管理', '#', 'larry-shujuleibieguanli', '1', '1', '1', null, '0', 'admin', '2018-07-12 15:45:49', 'admin', '2018-07-12 15:45:49');
-INSERT INTO `t_sys_permission` VALUES ('9', '6', 'XTGL202', '基础数据管理', '#', 'larry-jichushujuguanli', '1', '2', '1', null, '0', 'admin', '2018-07-12 15:46:37', 'admin', '2018-07-12 15:46:37');
-INSERT INTO `t_sys_permission` VALUES ('10', '6', 'XTGL203', '接口管理', '#', 'larry-jiekouguanli', '1', '3', '1', null, '0', 'admin', '2018-07-12 15:48:11', 'admin', '2018-07-12 15:48:11');
-INSERT INTO `t_sys_permission` VALUES ('11', '1', 'XTGL300', '系统配置', '#', null, '1', '1', '1', null, '0', 'admin', '2018-07-17 13:45:26', 'admin', '2018-07-17 13:45:26');
-INSERT INTO `t_sys_permission` VALUES ('12', '11', 'XTGL301', '后台参数', '#', null, '1', '1', '1', null, '0', 'admin', '2018-07-17 13:46:15', 'admin', '2018-07-17 13:46:15');
-INSERT INTO `t_sys_permission` VALUES ('13', '11', 'XTGL302', '邮箱配置', '#', null, '1', '2', '1', null, '0', 'admin', '2018-07-17 13:46:57', 'admin', '2018-07-17 13:46:57');
-INSERT INTO `t_sys_permission` VALUES ('14', '11', 'XTGL303', '任务配置', '#', null, '1', '3', '1', null, '0', 'admin', '2018-07-17 13:48:01', 'admin', '2018-07-17 13:48:01');
+INSERT INTO `t_sys_permission` VALUES ('1', '0', 'DIC-z4bg079wt7n', '系统管理', '#', 'larry-diannao3', '0', '0', '1', '', '0', 'admin', '2018-07-12 11:51:47', 'admin', '2018-08-03 13:19:50');
+INSERT INTO `t_sys_permission` VALUES ('2', '1', 'MEN-gdm899auq7k', '用户管理', '#', 'larry-10103', '1', '1', '1', '', '0', 'admin', '2018-07-12 12:31:33', 'admin', '2018-08-03 22:23:29');
+INSERT INTO `t_sys_permission` VALUES ('3', '2', 'MEN-7kel4wn55u3', '用户管理', '/admin/user/toListPage', 'larry-gerenxinxi4', '1', '2', '1', '', '0', 'admin', '2018-07-12 12:31:33', 'admin', '2018-08-03 22:47:53');
+INSERT INTO `t_sys_permission` VALUES ('4', '2', 'MEN-vpwjcj0dor7', '角色管理', '/admin/role/toListPage', 'larry-jiaoseguanli1', '1', '2', '1', '', '0', 'admin', '2018-07-12 12:32:39', 'admin', '2018-07-12 12:32:39');
+INSERT INTO `t_sys_permission` VALUES ('5', '2', 'MEN-snqfsdoa6vi', '权限管理', '/admin/permission/toListPage', 'larry-caidanguanli', '1', '2', '1', '', '0', 'admin', '2018-07-12 12:36:13', 'admin', '2018-07-12 12:36:13');
+INSERT INTO `t_sys_permission` VALUES ('6', '1', 'MEN-v9jq453nec', '数据管理', '#', 'larry-caidanguanli', '1', '1', '1', '', '0', 'admin', '2018-07-12 15:44:13', 'admin', '2018-08-03 13:24:09');
+INSERT INTO `t_sys_permission` VALUES ('8', '6', 'MEN-u180au99l7n', '数据类别', '#', 'larry-kechengguanli', '1', '2', '1', '', '0', 'admin', '2018-07-12 15:45:49', 'admin', '2018-08-03 13:23:16');
+INSERT INTO `t_sys_permission` VALUES ('9', '6', 'MEN-7ketcr3et9o', '基础数据', '#', 'larry-caidanguanli1', '1', '2', '1', '', '0', 'admin', '2018-07-12 15:46:37', 'admin', '2018-08-03 13:23:54');
+INSERT INTO `t_sys_permission` VALUES ('10', '6', 'MEN-cvt6k7jvjli', '接口管理', '#', 'larry-jiekouguanli', '1', '2', '1', null, '0', 'admin', '2018-07-12 15:48:11', 'admin', '2018-07-12 15:48:11');
+INSERT INTO `t_sys_permission` VALUES ('11', '1', 'MEN-wt5uo2neta', '系统配置', '#', 'larry-zhandianguanli', '1', '1', '1', '', '0', 'admin', '2018-07-17 13:45:26', 'admin', '2018-08-03 13:24:41');
+INSERT INTO `t_sys_permission` VALUES ('12', '11', 'MEN-w32k18kki1', '后台参数', '#', 'larry-circularxiangxi', '1', '2', '1', '', '0', 'admin', '2018-07-17 13:46:15', 'admin', '2018-08-03 13:25:50');
+INSERT INTO `t_sys_permission` VALUES ('13', '11', 'MEN-cev1sq2rd0q', '邮箱配置', '#', 'larry-duanxin1', '1', '2', '1', '', '0', 'admin', '2018-07-17 13:46:57', 'admin', '2018-08-03 13:26:38');
+INSERT INTO `t_sys_permission` VALUES ('14', '11', 'MEN-51xql966mh9', '任务配置', '#', 'larry-rizhi1', '1', '2', '1', '', '0', 'admin', '2018-07-17 13:48:01', 'admin', '2018-08-03 13:28:04');
+INSERT INTO `t_sys_permission` VALUES ('23', '0', 'DIC-w1co3w298lr', '测试目录', '#', 'larry-shuaxin4', '0', '0', '0', '测试目录。。。。。', '0', 'admin', '2018-08-03 22:26:18', 'admin', '2018-08-04 09:06:29');
+INSERT INTO `t_sys_permission` VALUES ('24', '2', 'MEN-akigounnao5', '组织管理', '/admin/organization/toListPage', 'larry-10103', '1', '2', '1', '', '0', 'admin', '2018-08-03 22:47:22', 'admin', '2018-08-03 22:50:46');
 
 -- ----------------------------
 -- Table structure for t_sys_role
@@ -159,18 +188,22 @@ CREATE TABLE `t_sys_role` (
   `role_id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '角色ID',
   `role_code` varchar(255) NOT NULL COMMENT '角色编码',
   `role_name` varchar(100) NOT NULL COMMENT '角色名',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：隐藏；1：显示）',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
-  `is_delete` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
-  `create_by` varchar(100) NOT NULL COMMENT '创建于',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  `modify_by` varchar(100) NOT NULL COMMENT '更新于',
-  `modify_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
+  `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
+  `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='角色表';
 
 -- ----------------------------
 -- Records of t_sys_role
 -- ----------------------------
+INSERT INTO `t_sys_role` VALUES ('1', 'ROLE-lsvsvovmwur', '超级管理员', '1', '超级管理员，最高权限角色', '0', 'admin', '2018-08-06 10:27:03', null, '2018-08-06 10:27:03');
+INSERT INTO `t_sys_role` VALUES ('3', 'ROLE-bax5socaoao', '管理员', '1', '管理员权限角色', '0', 'admin', '2018-08-06 14:41:57', null, '2018-08-06 14:41:57');
+INSERT INTO `t_sys_role` VALUES ('5', 'ROLE-4qy709sz83a', '测试', '0', '测试', '0', 'admin', '2018-08-06 17:52:56', 'admin', '2018-08-06 17:53:07');
 
 -- ----------------------------
 -- Table structure for t_sys_role_permission
@@ -205,7 +238,8 @@ CREATE TABLE `t_sys_user` (
   `salt` varchar(255) DEFAULT NULL COMMENT '加密盐值',
   `phone_number` varchar(50) DEFAULT NULL COMMENT '手机号',
   `email` varchar(100) NOT NULL COMMENT '邮箱',
-  `status` tinyint(2) unsigned DEFAULT '0' COMMENT '状态（0：未激活；1：停用；99：正常）',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：正常；1：未激活；2：停用）',
+  `header_img` varchar(255) DEFAULT 'face.jpg' COMMENT '头像图片',
   `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
   `last_login_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '最后登录时间',
   `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
@@ -213,13 +247,13 @@ CREATE TABLE `t_sys_user` (
   `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
   `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 -- ----------------------------
 -- Records of t_sys_user
 -- ----------------------------
-INSERT INTO `t_sys_user` VALUES ('1', 'admin', '22e6f0eab77b777be302d5e9be517de1', '1799688a806532a2623fbd0efc191c20', null, 'maple_6392@163.com', '99', '0', '2018-07-07 18:00:47', 'system', '2018-07-07 18:00:47', 'system', '2018-07-07 18:00:47');
-INSERT INTO `t_sys_user` VALUES ('11', 'Test', '30d9ae431be83a65a39f37a8db9ee1e1', '28c8b0c419c90aa2cb1286cde575e525', null, 't@13.com', '0', '0', '2018-07-16 19:57:41', 'Test', '2018-07-16 19:57:41', 'Test', '2018-07-16 19:57:41');
+INSERT INTO `t_sys_user` VALUES ('1', 'admin', '22e6f0eab77b777be302d5e9be517de1', '1799688a806532a2623fbd0efc191c20', '13112345678', 'maple_6392@163.com', '0', 'face.jpg', '0', '2018-08-06 18:44:58', 'system', '2018-07-07 18:00:47', 'admin', '2018-08-06 16:31:41');
+INSERT INTO `t_sys_user` VALUES ('11', 'Test', 'bc729751cf2e6e7b2f08f5cf9942366d', 'eb29cfcab2ebd9604050f451aab14e59', '13212345678', 't@13.com', '2', 'face.jpg', '0', '2018-08-06 17:34:24', 'Test', '2018-07-16 19:57:41', 'Test', '2018-08-06 17:34:32');
 
 -- ----------------------------
 -- Table structure for t_sys_user_role

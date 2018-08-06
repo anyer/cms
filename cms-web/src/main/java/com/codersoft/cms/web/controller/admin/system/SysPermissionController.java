@@ -5,19 +5,16 @@ import com.codersoft.cms.common.bean.ResultMessage;
 import com.codersoft.cms.common.utils.ResultMessageUtils;
 import com.codersoft.cms.dao.dto.DirectoryPermissionDto;
 import com.codersoft.cms.dao.entity.SysPermission;
-import com.codersoft.cms.dao.entity.SysUser;
 import com.codersoft.cms.service.admin.SysPermissionService;
+import com.codersoft.cms.web.controller.admin.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import java.beans.Expression;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @program: SysPermissionController
@@ -27,32 +24,21 @@ import java.util.Map;
  **/
 @Controller
 @RequestMapping("/admin/permission")
-public class SysPermissionController {
+public class SysPermissionController extends BaseController<SysPermission, Long> {
+
+    public SysPermissionController() {
+        super.setSessionKey("sysPermission");
+        super.setListPagePath("admin/system/permission/permission_list");
+        super.setAddPagePath("admin/system/permission/permission_add");
+        super.setEditPagePath("admin/system/permission/permission_edit");
+        super.setSuccessMsg(MessageCode.SUCCESS);
+        super.setSaveFailMsg(MessageCode.PER_SAVE_FAIL);
+        super.setUpdateFailMsg(MessageCode.PER_UPDATE_FAIL);
+        super.setDeleteFailMsg(MessageCode.PER_DELETE_FAIL);
+    }
 
     @Autowired
     private SysPermissionService sysPermissionService;
-
-    /**
-     * 跳转到权限界面
-     *
-     * @return
-     */
-    @RequestMapping("/toListPage")
-    public String toPermissionListPage() {
-        return "admin/system/permission/permission_list";
-    }
-
-    /**
-     * 获取权限列表
-     *
-     * @param sysPermission
-     * @return
-     */
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> getPermissionList(SysPermission sysPermission) {
-        return sysPermissionService.selectPageList(sysPermission);
-    }
 
     /**
      * 获取目录列表
@@ -77,70 +63,6 @@ public class SysPermissionController {
     }
 
     /**
-     * 跳转到权限添加界面
-     *
-     * @return
-     */
-    @RequestMapping("/toAddPage")
-    public String toAddPermissionPage() {
-        return "admin/system/permission/permission_add";
-    }
-
-    /**
-     * 添加权限信息
-     *
-     * @param sysPermission 权限
-     * @return
-     */
-    @RequestMapping("/add")
-    @ResponseBody
-    public ResultMessage addPermission(@RequestBody SysPermission sysPermission) {
-        int addRes = 0;
-        try {
-            if(StringUtils.isEmpty(sysPermission.getUri())) {
-                sysPermission.setUri("#");
-            }
-            addRes = sysPermissionService.addSelective(sysPermission);
-            if(addRes == 0) {
-                return ResultMessageUtils.returnResultMessage(MessageCode.PER_SAVE_FAIL);
-            }
-            return ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS);
-        } catch (Exception e) {
-            return ResultMessageUtils.returnExpectionResultMessage(MessageCode.PER_SAVE_FAIL, e.getMessage());
-        }
-    }
-
-    /**
-     * 跳转到权限详情页面
-     *
-     * @return
-     */
-    @RequestMapping("/toDetailPage")
-    public String toDetailPermissionPage(Model model, @RequestParam("permissionId") Long permissionId) {
-
-        SysPermission sysPermission = sysPermissionService.selectSysPermissionById(permissionId);
-        model.addAttribute("permission", sysPermission);
-        model.addAttribute("pageFlag", "detail");
-
-        return "admin/system/permission/permission_edit";
-    }
-
-    /**
-     * 跳转到权限修改页面
-     *
-     * @return
-     */
-    @RequestMapping("/toEditPage")
-    public String toEditPermissionPage(Model model, @RequestParam("permissionId") Long permissionId) {
-
-        SysPermission sysPermission = sysPermissionService.selectSysPermissionById(permissionId);
-        model.addAttribute("permission", sysPermission);
-        model.addAttribute("pageFlag", "edit");
-
-        return "admin/system/permission/permission_edit";
-    }
-
-    /**
      * 加载父级权限列表
      */
     @RequestMapping(value = "/parentList", method = RequestMethod.POST)
@@ -153,48 +75,6 @@ public class SysPermissionController {
             return ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS, sysPermissionList);
         } catch (Exception ex) {
             return ResultMessageUtils.returnExpectionResultMessage(MessageCode.PER_DATA_LOAD_FAIL, ex.getMessage());
-        }
-    }
-
-    /**
-     * 更新权限信息
-     *
-     * @param sysPermission 权限
-     * @return
-     */
-    @RequestMapping("/update")
-    @ResponseBody
-    public ResultMessage updatePermission(@RequestBody SysPermission sysPermission) {
-
-        int updateRes = 0;
-        try {
-            sysPermission.setModifyTime(new Date());
-            updateRes = sysPermissionService.updateByIdSelective(sysPermission);
-            if(updateRes == 0) {
-                return ResultMessageUtils.returnResultMessage(MessageCode.PER_UPDATE_FAIL);
-            }
-            return ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS);
-        } catch (Exception e) {
-            return ResultMessageUtils.returnExpectionResultMessage(MessageCode.PER_UPDATE_FAIL, e.getMessage());
-        }
-    }
-
-    /**
-     * 删除权限信息
-     */
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @ResponseBody
-    public ResultMessage deletePermission(@RequestParam("perId") Long permissionId) {
-
-        int deleteRes = 0;
-        try {
-            deleteRes = sysPermissionService.deleteById(permissionId);
-            if(deleteRes == 0) {
-                return ResultMessageUtils.returnResultMessage(MessageCode.PER_DELETE_FAIL);
-            }
-            return ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS);
-        } catch (Exception e) {
-            return ResultMessageUtils.returnExpectionResultMessage(MessageCode.PER_DELETE_FAIL, e.getMessage());
         }
     }
 }

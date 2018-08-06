@@ -41,13 +41,8 @@ public enum MessageCode {
     REGISTER_ERROR("REGISTER_ERROR", "注册异常"),
 
     /**
-     * 权限相关
+     * 用户相关
      */
-    PER_SAVE_FAIL("PER_SAVE_FAIL", "权限信息保存失败"),
-    PER_DELETE_FAIL("PER_DELETE_FAIL", "权限信息删除失败"),
-    PER_UPDATE_FAIL("PER_UPDATE_FAIL", "权限信息更新失败"),
-    PER_DATA_LOAD_FAIL("PER_DATA_LOAD_FAIL", "权限数据加载失败"),
-
     USER_SAVE_FAIL("USER_SAVE_ERROR", "用户信息保存失败"),
     USER_DELETE_FAIL("USER_DELETE_FAIL", "用户信息删除失败"),
     USER_UPDATE_FAIL("USER_UPDATE_FAIL", "用户信息更新失败"),
@@ -55,12 +50,34 @@ public enum MessageCode {
     USER_ROLE_SAVE_FAIL("USER_ROLE_SAVE_ERROR", "用户分配角色信息失败"),
     USER_DISABLE_FAIL("USER_FAIL_ERROR", "设置用户失效失败,程序异常"),
 
+    /**
+     * 权限相关
+     */
+    PER_SAVE_FAIL("PER_SAVE_FAIL", "权限信息保存失败"),
+    PER_DELETE_FAIL("PER_DELETE_FAIL", "权限信息删除失败"),
+    PER_UPDATE_FAIL("PER_UPDATE_FAIL", "权限信息更新失败"),
+    PER_DATA_LOAD_FAIL("PER_DATA_LOAD_FAIL", "权限数据加载失败"),
 
+    /**
+     * 角色相关
+     */
     ROLE_SAVE_FAIL("ROLE_SAVE_ERROR", "角色信息保存失败"),
+    ROLE_DELETE_FAIL("ROLE_DELETE_FAIL", "角色信息删除失败"),
+    ROLE_UPDATE_FAIL("ROLE_UPDATE_FAIL", "角色信息更新失败"),
+    ROLE_DATA_LOAD_FAIL("ROLE_DATA_LOAD_FAIL", "角色数据加载失败"),
     ROLE_FAILK_ERROR("ROLE_FAILK_ERROR", "失效角色失败,程序异常"),
-    RES_FAILK_ERROR("RES_FAILK_ERROR", "失效资源失败,程序异常"),
     ROLE_RES_SAVE_ERROR("ROLE_RES_SAVE_ERROR", "角色分配菜单失败"),
     ROLE_NAME_EXIST("ROLE_NAME_EXIST", "角色名称已存在，请重新输入"),
+
+    /**
+     * 权限相关
+     */
+    ORG_SAVE_FAIL("ORG_SAVE_FAIL", "组织信息保存失败"),
+    ORG_DELETE_FAIL("ORG_DELETE_FAIL", "组织信息删除失败"),
+    ORG_UPDATE_FAIL("ORG_UPDATE_FAIL", "组织信息更新失败"),
+    ORG_DATA_LOAD_FAIL("ORG_DATA_LOAD_FAIL", "组织数据加载失败"),
+    ORG_NAME_EXIST("ORG_NAME_EXIST", "组织名称已存在，请重新输入"),
+
     ANNOUNCEMENT_SAVE_ERROR("ANNOUNCEMENT_SAVE_ERROR", "公告信息保存失败"),
     ANNOUNCEMENT_DEL_ERROR("ANNOUNCEMENT_DEL_ERROR", "删除公告失败,程序异常"),
     ANNOUNCEMENT_USER_INSERT_ERROR("ANNOUNCEMENT_USER_INSERT_ERROR", "标记为已读失败,程序异常"),

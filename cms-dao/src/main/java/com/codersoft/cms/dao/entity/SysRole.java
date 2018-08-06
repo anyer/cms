@@ -12,6 +12,8 @@ public class SysRole extends PageDto implements Serializable {
 
     private String roleName;
 
+    private Byte status;
+
     private String description;
 
     private Byte isDelete;
@@ -48,6 +50,14 @@ public class SysRole extends PageDto implements Serializable {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName == null ? null : roleName.trim();
+    }
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
     }
 
     public String getDescription() {
@@ -107,6 +117,7 @@ public class SysRole extends PageDto implements Serializable {
         sb.append(", roleId=").append(roleId);
         sb.append(", roleCode=").append(roleCode);
         sb.append(", roleName=").append(roleName);
+        sb.append(", status=").append(status);
         sb.append(", description=").append(description);
         sb.append(", isDelete=").append(isDelete);
         sb.append(", createBy=").append(createBy);

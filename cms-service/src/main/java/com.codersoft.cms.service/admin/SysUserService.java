@@ -15,38 +15,42 @@ public interface SysUserService extends BaseService<SysUser, Long> {
 
     /**
      * 登录验证
-     * @param username  用户名
-     * @param password  密码
+     *
+     * @param username 用户名
+     * @param password 密码
      * @return
      */
     SysUser checkLogin(String username, String password);
 
     /**
      * 验证用户名是否存在
-     * @param userName  用户名
+     *
+     * @param userName 用户名
      * @return
      */
     SysUser checkUserNameIsExist(String userName);
 
     /**
      * 验证邮箱是否存在
-     * @param email     邮箱
+     *
+     * @param email 邮箱
      * @return
      */
     SysUser checkEmailIsExist(String email);
 
     /**
      * 用户注册
+     *
      * @param sysUser
      * @return
      */
     int register(SysUser sysUser);
 
     /**
-     * 获取分页的用户集合
+     * 更新最后登录时间
      *
      * @param sysUser
      * @return
      */
-    Map<String, Object> selectUserPageList(SysUser sysUser);
+    int updateLastLoginTime(SysUser sysUser);
 }

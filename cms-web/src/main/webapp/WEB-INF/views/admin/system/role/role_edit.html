@@ -18,96 +18,56 @@
 <form class="layui-form layui-form-pane">
 
     <input id="pageFlag" hidden="hidden" data-th-value="${pageFlag}">
-    <input id="userId" name="userId" hidden="hidden" data-th-value="${sysUser.getUserId()}">
+    <input id="roleId" name="roleId" hidden="hidden" data-th-value="${sysRole.getRoleId()}">
     <input id="modifyBy" name="modifyBy" hidden="hidden" data-th-value="${session.sysUser.getUserName()}">
 
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">账号名称</label>
+            <label class="layui-form-label">角色名称</label>
             <div class="layui-input-inline">
-                <input type="text" id="userName" name="userName" class="layui-input" maxlength="20"
-                       lay-verify="required|userName" data-th-value="${sysUser.getUserName()}" disabled>
+                <input type="text" id="roleName" name="roleName" class="layui-input" maxlength="20"
+                       lay-verify="required" data-th-value="${sysRole.getRoleName()}" disabled>
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">账号密码</label>
+            <label class="layui-form-label">角色编码</label>
             <div class="layui-input-inline">
-                <input type="password" id="password" name="password" class="layui-input" maxlength="32"
-                       lay-verify="required" data-th-value="${sysUser.getPassword()}" disabled>
-            </div>
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label">邮箱地址</label>
-            <div class="layui-input-inline">
-                <input type="email" id="email" name="email" class="layui-input"
-                       lay-verify="required|email" data-th-value="${sysUser.getEmail()}" disabled>
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label">手机号码</label>
-            <div class="layui-input-inline">
-                <input type="tel" name="phoneNumber" lay-verify="required|phone" class="layui-input"
-                       data-th-value="${sysUser.getPhoneNumber()}" disabled>
+                <input type="text" id="roleCode" name="roleCode" class="layui-input" maxlength="32"
+                       lay-verify="required" data-th-value="${sysRole.getRoleCode()}" disabled>
             </div>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">账号类型</label>
+            <label class="layui-form-label">角色状态</label>
             <div class="layui-input-inline">
-                <select id="status" name="status" lay-verify="required" data-th-switch="${sysUser.getStatus()}" disabled>
+                <select id="status" name="status" lay-verify="required" data-th-switch="${sysRole.getStatus()}" disabled>
                     <div data-th-case="0">
-                        <option value="0" selected>0-正常</option>
-                        <option value="2">2-停用</option>
+                        <option value="0" selected>0-无效</option>
+                        <option value="1">1-有效</option>
                     </div>
                     <div data-th-case="1">
-                        <option value="1" selected>1-未激活</option>
-                        <option value="2">2-停用</option>
-                    </div>
-                    <div data-th-case="2">
-                        <option value="0">0-正常</option>
-                        <option value="2" selected>2-停用</option>
+                        <option value="0">0-无效</option>
+                        <option value="1" selected>1-有效</option>
                     </div>
                 </select>
             </div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label">账号头像</label>
-            <div class="layui-input-inline">
-                <input type="text" class="layui-input" id="headerImg" name="headerImg"
-                       data-th-value="${sysUser.getHeaderImg()}" lay-verify="required"
-                       disabled>
-            </div>
-            <div class="layui-word-aux" style="float: left;display: block;" data-th-if="${pageFlag} == 'edit'">
-                <a id="updateImg" class="layui-btn layui-btn-mini" data-id="" title="选择图标"><i
-                        class="layui-icon larry-icon larry-tupianguanli"></i></a>
-            </div>
-        </div>
     </div>
-    <div class="layui-form-item" data-th-if="${pageFlag} == 'detail'">
-        <div class="layui-inline">
-            <label class="layui-form-label">最后登录时间</label>
-            <div class="layui-input-inline">
-                <input type="text" id="lastLoginTime" class="layui-input"
-                       disabled data-th-value="${#dates.format(sysUser.getLastLoginTime(),'yyyy-MM-dd HH:mm:ss')}">
-            </div>
-        </div>
-    </div>
+
     <div class="layui-form-item" data-th-if="${pageFlag} == 'detail'">
         <div class="layui-inline">
             <label class="layui-form-label">创建人</label>
             <div class="layui-input-inline">
                 <input type="text" id="createBy" class="layui-input"
-                       disabled data-th-value="${sysUser.getCreateBy()}">
+                       disabled data-th-value="${sysRole.getCreateBy()}">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">创建时间</label>
             <div class="layui-input-inline">
                 <input type="text" id="createTime" class="layui-input"
-                       disabled data-th-value="${#dates.format(sysUser.getCreateTime(),'yyyy-MM-dd HH:mm:ss')}">
+                       disabled data-th-value="${#dates.format(sysRole.getCreateTime(),'yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
     </div>
@@ -116,17 +76,26 @@
             <label class="layui-form-label">修改人</label>
             <div class="layui-input-inline">
                 <input type="text" id="modifyBy2" class="layui-input"
-                       disabled data-th-value="${sysUser.getModifyBy()}">
+                       disabled data-th-value="${sysRole.getModifyBy()}">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">修改时间</label>
             <div class="layui-input-inline">
                 <input type="text" id="modifyTime" class="layui-input"
-                       disabled data-th-value="${#dates.format(sysUser.getModifyTime(),'yyyy-MM-dd HH:mm:ss')}">
+                       disabled data-th-value="${#dates.format(sysRole.getModifyTime(),'yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
     </div>
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+                <textarea id="description" name="description" data-th-text="${sysRole.getDescription()}" class="layui-textarea" maxlength="50"
+                          style="resize:none;min-height:40px;" disabled></textarea>
+        </div>
+    </div>
+
     <div class="layui-form-item" style="text-align: center;" data-th-if="${pageFlag} == 'edit'">
         <button class="layui-btn" lay-submit="" lay-filter="updateData">更新</button>
         <button type="layui-btn" id="cancle" class="layui-btn layui-btn-primary">取消</button>
@@ -151,51 +120,61 @@
             var pageFlag = $('#pageFlag').val();
 
             if(pageFlag == "edit") {
-                $('#password').removeAttr("disabled", "disabled");
                 $('#status').removeAttr("disabled", "disabled");
+                $('#roleName').removeAttr("disabled", "disabled");
+                $('#description').removeAttr("disabled", "disabled");
             }
             //初始化表单
             form.render('select');
         }
 
-        $("#password").focus(function(){
-            $(this).attr('type','text');
-        });
+        //验证角色名称
+        $('#roleName').blur(function () {
+            //验证规则:3-50位，以字母开头，数字、字母、下划线至少两者混合
+            var pattern =  /^[(a-zA-Z0-9\u4e00-\u9fa5){1}]{2,16}$/;
+            var roleName = $(this).val();
 
-        // 为密码添加正则验证
-        $('#password').blur(function () {
-            $(this).attr('type','password');
-            //密码验证规则： 6到20位，数字、大小写字母及下划线混合
-            var reg = /^(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[_])[0-9A-Za-z_)]{5,19}$/;
-            var pwd = $('#password').val();
-            if (pwd == null || pwd.length == 0) {
+            if (roleName == null || roleName.length == 0) {
                 return false;
             }
-            if (pwd.length < 6 || pwd.length > 20) {
+            if (roleName.length > 16) {
+                layer.msg('角色名太长');
                 this.focus();
-                layer.msg('请填写6到20位密码')
-            } else if (!(pwd.match(reg))) {
-                this.focus();
-                layer.msg('密码由数字、大小写字母、下划线混合组成');
-            } else {
                 return false;
             }
+            if (!(pattern.test(roleName))) {
+                layer.msg('角色由2-16位中文、字母、数字组成')
+                this.focus();
+                return false;
+            }
+            var checkRoleNameLoading = top.layer.msg('角色验证中，请稍候', {icon: 16, time: false, shade: 0.8});
+            //判断角色名称是否存在
+            $.ajax({
+                url: '/admin/role/checkRoleNameIsExist',
+                type: 'post',
+                dataType: 'json',
+                data: {roleName: roleName},
+                //验证角色名称是否可用
+                success: function (data) {
+                    top.layer.close(checkRoleNameLoading);
+                    if (data.returnCode != "SUCCESS") {
+                        layer.msg(data.returnMessage)
+                    }
+                }, error: function (data) {
+                    top.layer.close(checkRoleNameLoading);
+                    layer.msg(data.returnMessage);
+                }
+            })
         });
 
-        /**更换头像*/
-        $("#updateImg").click(function () {
-            var url = "/common/toImgUpload";
-            common.cmsLayOpen('图片上传', url, '485px', '370px');
-        });
-
-        /**更新用户信息*/
+        /**更新信息*/
         form.on("submit(updateData)", function (data) {
             var updateLoading = top.layer.msg('更新信息，数据提交中，请稍候', {icon: 16, time: false, shade: 0.8});
             var jsonData = JSON.stringify(data.field);
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 
             $.ajax({
-                url: '/admin/user/update',
+                url: '/admin/role/update',
                 type: 'post',
                 async: false,
                 dataType: 'json',

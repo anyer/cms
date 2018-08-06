@@ -36,7 +36,7 @@
             <label class="layui-form-label">账号密码</label>
             <div class="layui-input-inline">
                 <input type="password" id="password" name="password" class="layui-input" maxlength="32"
-                       lay-verify="required" placeholder="请填写密码">
+                       lay-verify="required" placeholder="请输入账号密码">
             </div>
         </div>
     </div>
@@ -100,7 +100,7 @@
 
         //验证账号名称
         $('#userName').blur(function () {
-            //密码验证规则:3-50位，以字母开头，数字、字母、下划线至少两者混合
+            //验证规则:3-50位，以字母开头，数字、字母、下划线至少两者混合
             var pattern = /^[a-zA-Z][a-zA-Z0-9_]{2,49}$/;
             var userName = $(this).val();
 
@@ -142,8 +142,13 @@
             })
         });
 
+        $("#password").focus(function(){
+            $(this).attr('type','text');
+        });
+
         // 为密码添加正则验证
         $('#password').blur(function () {
+            $(this).attr('type','password');
             //密码验证规则： 6到20位，数字、大小写字母及下划线混合
             var reg = /^(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[_])[0-9A-Za-z_)]{5,19}$/;
             var pwd = $('#password').val();

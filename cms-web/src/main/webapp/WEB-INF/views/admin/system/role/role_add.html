@@ -1,0 +1,168 @@
+<!DOCTYPE>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>后台管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="后台管理系统">
+    <meta name="description" content="致力于提供通用版本后台管理解决方案">
+    <link rel="shortcut icon" href="../../../../../statics/admin/images/favicon.ico"
+          data-th-href="${'/statics/admin/images/favicon.ico'}">
+
+    <link rel="stylesheet" href="../../../../../statics/admin/plug/layui_v2.3.0/css/layui.css"
+          data-th-href="@{/statics/admin/plug/layui_v2.3.0/css/layui.css}">
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_9h680jcse4620529.css">
+</head>
+<body class="childrenBody" style="font-size: 12px;margin: 10px 10px 0;">
+
+<!--<blockquote class="layui-elem-quote layui-quote-nm" style="border-radius:0.25em;color: #31708f;background-color: #d9edf7;border-width:1px; padding:6px;-->
+        <!--border-color:#bce8f1;">-->
+    <!--温馨提示:1.账号名称由字母、数字及下划线组成，且以字母开头，至少3位; 2.密码由数字、大小写字母、下划线混合组成，至少6位; 3.账号生成后请及时激活邮箱账号;-->
+<!--</blockquote>-->
+
+<form class="layui-form layui-form-pane">
+
+    <input id="createBy" name="createBy" hidden="hidden" data-th-value="${session.sysUser.getUserName()}">
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">角色名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="roleName" name="roleName" class="layui-input" maxlength="52"
+                       lay-verify="required" placeholder="请输入角色名称">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">角色编码</label>
+            <div class="layui-input-inline">
+                <input type="text" id="roleCode" name="roleCode" class="layui-input" maxlength="32"
+                       lay-verify="required" placeholder="请输入角色编码" disabled>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">角色状态</label>
+            <div class="layui-input-inline">
+                <select id="status" name="status" lay-verify="required">
+                    <option value="0">0-无效</option>
+                    <option value="1" selected>1-有效</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+                <textarea id="description" name="description" placeholder="请输入备注内容" class="layui-textarea" maxlength="50"
+                          style="resize:none;min-height:40px;"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item" style="text-align: center;">
+        <button class="layui-btn" lay-submit="" lay-filter="addData">保存</button>
+        <button type="layui-btn" id="cancle" class="layui-btn layui-btn-primary">取消</button>
+    </div>
+</form>
+
+<script type="text/javascript" src="../../../../../statics/admin/plug/layui_v2.3.0/layui.js"
+        data-th-src="@{/statics/admin/plug/layui_v2.3.0/layui.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: "/statics/admin/js/"
+    }).use(['form', 'layer', 'jquery', 'common'], function () {
+        var $ = layui.$,
+            form = layui.form,
+            common = layui.common,
+            layer = parent.layer === undefined ? layui.layer : parent.layer;
+
+        init();
+
+        function init() {
+            $("#roleCode").val(createPerCode());
+        }
+
+        //验证角色名称
+        $('#roleName').blur(function () {
+            //验证规则:3-50位，以字母开头，数字、字母、下划线至少两者混合
+            var pattern =  /^[(a-zA-Z0-9\u4e00-\u9fa5){1}]{2,16}$/;
+            var roleName = $(this).val();
+
+            if (roleName == null || roleName.length == 0) {
+                return false;
+            }
+            if (roleName.length > 16) {
+                layer.msg('角色名太长');
+                this.focus();
+                return false;
+            }
+            if (!(pattern.test(roleName))) {
+                layer.msg('角色由2-16位中文、字母、数字组成')
+                this.focus();
+                return false;
+            }
+            var checkRoleNameLoading = top.layer.msg('角色验证中，请稍候', {icon: 16, time: false, shade: 0.8});
+            //判断角色名称是否存在
+            $.ajax({
+                url: '/admin/role/checkRoleNameIsExist',
+                type: 'post',
+                dataType: 'json',
+                data: {roleName: roleName},
+                //验证角色名称是否可用
+                success: function (data) {
+                    top.layer.close(checkRoleNameLoading);
+                    if (data.returnCode != "SUCCESS") {
+                        layer.msg(data.returnMessage)
+                    }
+                }, error: function (data) {
+                    top.layer.close(checkRoleNameLoading);
+                    layer.msg(data.returnMessage);
+                }
+            })
+        });
+
+        //生成角色编码
+        function createPerCode() {
+            return "ROLE-" + Math.random().toString(36).substr(2);
+        }
+
+        /**保存角色信息*/
+        form.on("submit(addData)", function (data) {
+            var addLoading = top.layer.msg('数据提交中，请稍候', {icon: 16, time: false, shade: 0.8});
+            var jsonData = JSON.stringify(data.field);
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+
+            $.ajax({
+                url: '/admin/role/add',
+                type: 'post',
+                async: false,
+                dataType: 'json',
+                contentType: 'application/json',
+                data: jsonData,
+                success: function (data) {
+                    top.layer.close(addLoading);
+                    if (data.returnCode == "SUCCESS") {
+                        location.reload();
+                        common.cmsLaySuccessMsg("保存成功")
+                        parent.layer.close(index); //再执行关闭
+                        parent.location.reload();
+                    } else {
+                        common.cmsLayErrorMsg(data.returnMessage);
+                    }
+                }, error: function (data) {
+                    top.layer.close(addLoading);
+                    common.cmsLayErrorMsg(data.returnMessage);
+                    top.layer.close(index);
+                }
+            });
+            return false;
+        });
+
+        /**取消*/
+        $("#cancle").click(function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        });
+    });
+</script>
+</body>
+</html>

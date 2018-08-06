@@ -18,7 +18,7 @@
 <form class="layui-form layui-form-pane">
 
     <input id="pageFlag" hidden="hidden" data-th-value="${pageFlag}">
-    <input id="permissionId" name="permissionId" hidden="hidden" data-th-value="${permission.getPermissionId()}">
+    <input id="permissionId" name="permissionId" hidden="hidden" data-th-value="${sysPermission.getPermissionId()}">
     <input id="modifyBy" name="modifyBy" hidden="hidden" data-th-value="${session.sysUser.getUserName()}">
 
     <div class="layui-form-item">
@@ -26,7 +26,7 @@
             <label class="layui-form-label">权限名称</label>
             <div class="layui-input-inline">
                 <input type="text" id="perName" name="perName" class="layui-input" maxlength="20"
-                       lay-verify="required|perName" data-th-value="${permission.getPerName()}">
+                       lay-verify="required|perName" data-th-value="${sysPermission.getPerName()}">
             </div>
         </div>
         <div class="layui-inline">
@@ -46,12 +46,12 @@
             <label class="layui-form-label">权限级别</label>
             <div class="layui-input-inline">
                 <select id="perLevel" name="perLevel" lay-filter="perLevelFilter" lay-verify="required"
-                        data-th-switch="${permission.getPerType()}">
+                        data-th-switch="${sysPermission.getPerType()}">
                     <div data-th-case="0">
                         <option value="0" selected>目录</option>
                     </div>
                     <div data-th-case="1">
-                        <div data-th-switch="${permission.getPerLevel()}">
+                        <div data-th-switch="${sysPermission.getPerLevel()}">
                             <div data-th-case="1">
                                 <option value="1" selected>一级菜单</option>
                                 <option value="2">二级菜单</option>
@@ -75,7 +75,7 @@
             <label class="layui-form-label">父级权限</label>
             <div class="layui-input-inline">
                 <select id="parentId" name="parentId" lay-filter="parentIdFilter" lay-verify="parentId">
-                    <option data-th-value="${permission.getParentId()}" data-th-text="${permission.getParentName()}"
+                    <option data-th-value="${sysPermission.getParentId()}" data-th-text="${sysPermission.getParentName()}"
                             selected></option>
                 </select>
             </div>
@@ -86,14 +86,14 @@
             <label class="layui-form-label">权限地址</label>
             <div class="layui-input-inline">
                 <input type="text" id="uri" name="uri" class="layui-input" maxlength="50"
-                       lay-verify="uri" lay-filter="uriFilter" data-th-value="${permission.getUri()}">
+                       lay-verify="uri" lay-filter="uriFilter" data-th-value="${sysPermission.getUri()}">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">权限图标</label>
             <div class="layui-input-inline">
                 <input type="text" class="layui-input" id="iconName" name="iconName"
-                       data-th-value="${permission.getIconName()}" lay-verify="required"
+                       data-th-value="${sysPermission.getIconName()}" lay-verify="required"
                        disabled>
             </div>
             <div class="layui-word-aux" style="float: left;display: block;" data-th-if="${pageFlag} == 'edit'">
@@ -107,7 +107,7 @@
             <label class="layui-form-label">权限状态</label>
             <div id="status" class="layui-input-inline"
                  style="border: 1px solid #e6e6e6;background-color: #fff;height: 36px;"
-                 data-th-switch="${permission.getStatus()}">
+                 data-th-switch="${sysPermission.getStatus()}">
                 <div data-th-case="1">
                     <input class="status" type="radio" name="status" value="1" title="有效" checked>
                     <input class="status" type="radio" name="status" value="0" title="无效">
@@ -122,7 +122,7 @@
             <label class="layui-form-label">权限编码</label>
             <div class="layui-input-inline">
                 <input type="text" id="perCode" name="perCode" class="layui-input" maxlength="20"
-                       lay-verify="required" disabled data-th-value="${permission.getPerCode()}">
+                       lay-verify="required" disabled data-th-value="${sysPermission.getPerCode()}">
             </div>
         </div>
     </div>
@@ -132,14 +132,14 @@
             <label class="layui-form-label">创建人</label>
             <div class="layui-input-inline">
                 <input type="text" id="createBy" class="layui-input"
-                       disabled data-th-value="${permission.getCreateBy()}">
+                       disabled data-th-value="${sysPermission.getCreateBy()}">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">创建时间</label>
             <div class="layui-input-inline">
                 <input type="text" id="createTime" class="layui-input"
-                       disabled data-th-value="${#dates.format(permission.getCreateTime(),'yyyy-MM-dd HH:mm:ss')}">
+                       disabled data-th-value="${#dates.format(sysPermission.getCreateTime(),'yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
     </div>
@@ -148,14 +148,14 @@
             <label class="layui-form-label">修改人</label>
             <div class="layui-input-inline">
                 <input type="text" id="modifyBy2" class="layui-input"
-                       disabled data-th-value="${permission.getModifyBy()}">
+                       disabled data-th-value="${sysPermission.getModifyBy()}">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">修改时间</label>
             <div class="layui-input-inline">
                 <input type="text" id="modifyTime" class="layui-input"
-                       disabled data-th-value="${#dates.format(permission.getModifyTime(),'yyyy-MM-dd HH:mm:ss')}">
+                       disabled data-th-value="${#dates.format(sysPermission.getModifyTime(),'yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
     </div>
@@ -164,7 +164,7 @@
         <label class="layui-form-label">备注</label>
         <div class="layui-input-block">
                 <textarea id="description" name="description" class="layui-textarea" maxlength="50"
-                          style="resize:none;min-height:40px;" data-th-text="${permission.getDescription()}"></textarea>
+                          style="resize:none;min-height:40px;" data-th-text="${sysPermission.getDescription()}"></textarea>
         </div>
     </div>
     </div>
@@ -190,7 +190,7 @@
         //初始化
         function init() {
 
-            $("#perType").val([[${permission.getPerType()}]]);
+            $("#perType").val([[${sysPermission.getPerType()}]]);
             $("#perType").attr("disabled", "disabled");
 
             var pageFlag = $("#pageFlag").val();
@@ -285,9 +285,7 @@
         /**更新权限信息*/
         form.on("submit(updatePermission)", function (data) {
             var updateLoading = top.layer.msg('更新权限信息，数据提交中，请稍候', {icon: 16, time: false, shade: 0.8});
-
             var jsonData = JSON.stringify(data.field);
-
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 
             $.ajax({

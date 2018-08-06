@@ -14,6 +14,8 @@ public class SysOrganization extends PageDto implements Serializable {
 
     private String orgName;
 
+    private Byte status;
+
     private String description;
 
     private Byte isDelete;
@@ -58,6 +60,14 @@ public class SysOrganization extends PageDto implements Serializable {
 
     public void setOrgName(String orgName) {
         this.orgName = orgName == null ? null : orgName.trim();
+    }
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
     }
 
     public String getDescription() {
@@ -118,6 +128,7 @@ public class SysOrganization extends PageDto implements Serializable {
         sb.append(", parentId=").append(parentId);
         sb.append(", orgCode=").append(orgCode);
         sb.append(", orgName=").append(orgName);
+        sb.append(", status=").append(status);
         sb.append(", description=").append(description);
         sb.append(", isDelete=").append(isDelete);
         sb.append(", createBy=").append(createBy);
@@ -127,29 +138,5 @@ public class SysOrganization extends PageDto implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
-    }
-    /**
-     * 查询项
-     */
-    private String searchTerm;
-    /**
-     * 查询内容
-     */
-    private String searchContent;
-
-    public String getSearchTerm() {
-        return searchTerm;
-    }
-
-    public void setSearchTerm(String searchTerm) {
-        this.searchTerm = searchTerm == null ? null : searchTerm.trim();
-    }
-
-    public String getSearchContent() {
-        return searchContent;
-    }
-
-    public void setSearchContent(String searchContent) {
-        this.searchContent = searchContent== null ? null : searchContent.trim();
     }
 }

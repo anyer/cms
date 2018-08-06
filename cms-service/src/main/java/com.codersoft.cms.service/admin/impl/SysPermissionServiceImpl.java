@@ -1,6 +1,5 @@
 package com.codersoft.cms.service.admin.impl;
 
-import com.codersoft.cms.common.bean.MessageCode;
 import com.codersoft.cms.dao.dto.DirectoryPermissionDto;
 import com.codersoft.cms.dao.dto.MenuPermissionDto;
 import com.codersoft.cms.dao.entity.SysPermission;
@@ -24,6 +23,28 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermission, Lon
 
     @Autowired
     private SysPermissionMapper sysPermissionMapper;
+
+    @Override
+    public SysPermission selectBytId(Long id) {
+        return selectSysPermissionById(id);
+    }
+
+    @Override
+    public int addSelective(SysPermission sysPermission) {
+        if(StringUtils.isEmpty(sysPermission.getUri())) {
+            sysPermission.setUri("#");
+        }
+        return super.addSelective(sysPermission);
+    }
+
+    @Override
+    public int updateByIdSelective(SysPermission sysPermission) {
+        if(StringUtils.isEmpty(sysPermission.getUri())) {
+            sysPermission.setUri("#");
+        }
+        sysPermission.setModifyTime(new Date());
+        return super.updateByIdSelective(sysPermission);
+    }
 
     /**
      * 获取目录类型权限集合

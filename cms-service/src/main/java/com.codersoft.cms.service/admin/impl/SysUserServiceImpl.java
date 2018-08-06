@@ -1,6 +1,5 @@
 package com.codersoft.cms.service.admin.impl;
 
-import com.codersoft.cms.common.bean.MessageCode;
 import com.codersoft.cms.common.utils.MD5SaltUtils;
 import com.codersoft.cms.dao.entity.SysUser;
 import com.codersoft.cms.dao.mapper.admin.system.SysUserMapper;
@@ -8,11 +7,9 @@ import com.codersoft.cms.service.admin.SysUserService;
 import com.codersoft.cms.service.common.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.Date;
 /**
  * @program: SysUserServiceImpl
  * @author: Alex.D
@@ -60,43 +57,47 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, Long> implement
 
         sysUser.setSalt(salt);
         sysUser.setPassword(password);
-        sysUser.setCreateBy(sysUser.getUserName());
-//        sysUser.setModifyBy(sysUser.getUserName());
 
         return sysUserMapper.insertSelective(sysUser);
     }
 
-
-    /**
-     * 获取分页的用户集合
-     *
-     * @param sysUser
-     * @return
-     */
     @Override
-    public Map<String, Object> selectUserPageList(SysUser sysUser) {
-
-        List<SysUser> sysUserList = null;
-        int count = 0;
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        try {
-            if(sysUserList != null) {
-                count = sysUserList.size();
-            }
-//            sysUserList = sysUserMapper.selectUserPageList(sysUser);
-
-            map.put("code", 0);
-            map.put("msg", MessageCode.SUCCESS.getMsg());
-            map.put("count", count);
-            map.put("data", sysUserList);
-            return map;
-        } catch (Exception ex) {
-            map.put("msg", MessageCode.EXCEPTION.getMsg() + " : " + ex.getMessage());
-            map.put("code", MessageCode.EXCEPTION.getCode());
-            map.put("data", null);
-            map.put("count", count);
-            return map;
+    public int addSelective(SysUser sysUser) {
+        String salt = MD5SaltUtils.getSalt();
+        //密码加密：  MD5(MD5(用户密码)+salt)
+        String password = MD5SaltUtils.getMD5String(MD5SaltUtils.getMD5String(sysUser.getPassword()) + salt);
+        if (StringUtils.isEmpty(sysUser.getHeaderImg())) {
+            sysUser.setHeaderImg("face.jpg");
         }
+        sysUser.setSalt(salt);
+        sysUser.setPassword(password);
+        return super.addSelective(sysUser);
+    }
+
+    @Override
+    public int updateByIdSelective(SysUser sysUser) {
+
+        int passwordLength = sysUser.getPassword().length();
+        //密码修改
+        if(passwordLength >= 6 && passwordLength <= 20) {
+            String salt = MD5SaltUtils.getSalt();
+            //密码加密：  MD5(MD5(用户密码)+salt)
+            String password = MD5SaltUtils.getMD5String(MD5SaltUtils.getMD5String(sysUser.getPassword()) + salt);
+            //更新密码及盐值
+            sysUser.setSalt(salt);
+            sysUser.setPassword(password);
+        }
+
+        if (StringUtils.isEmpty(sysUser.getHeaderImg())) {
+            sysUser.setHeaderImg("face.jpg");
+        }
+        sysUser.setModifyTime(new Date());
+        return super.updateByIdSelective(sysUser);
+    }
+
+    @Override
+    public int updateLastLoginTime(SysUser sysUser) {
+        sysUser.setLastLoginTime(new Date());
+        return super.updateByIdSelective(sysUser);
     }
 }

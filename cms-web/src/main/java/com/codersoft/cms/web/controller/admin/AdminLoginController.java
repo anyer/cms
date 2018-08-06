@@ -83,7 +83,7 @@ public class AdminLoginController {
                 //验证成功，用户名存放session
                 httpSession.setAttribute("sysUser", user);
                 user.setLastLoginTime(new Date());
-                int updateRes = sysUserService.updateByIdSelective(user);
+                int updateRes = sysUserService.updateLastLoginTime(user);
                 if(updateRes == 0) {
                     return ResultMessageUtils.returnResultMessage(MessageCode.UPDATE_DATE_FAIL);
                 }

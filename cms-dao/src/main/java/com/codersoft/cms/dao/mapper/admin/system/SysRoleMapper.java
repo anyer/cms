@@ -19,4 +19,11 @@ public interface SysRoleMapper extends BaseMapper<SysRole, Long> {
 
     int updateByExample(@Param("record") SysRole record, @Param("example") SysRoleExample example);
 
+    /**
+     * 查找对应角色名的角色信息
+     * @param roleName 角色名称
+     * @return
+     */
+    SysRole findRoleByRoleName(String roleName);
+
 }

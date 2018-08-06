@@ -19,4 +19,11 @@ public interface SysOrganizationMapper extends BaseMapper<SysOrganization, Long>
 
     int updateByExample(@Param("record") SysOrganization record, @Param("example") SysOrganizationExample example);
 
+    /**
+     * 查找对应组织名的组织信息
+     * @param orgName 组织名称
+     * @return
+     */
+    SysOrganization findOrganizationByOrgName(String orgName);
+
 }
