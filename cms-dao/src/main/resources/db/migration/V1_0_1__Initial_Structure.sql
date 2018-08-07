@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-07-12 22:53:44
+Date: 2018-08-06 18:46:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,19 +24,15 @@ CREATE TABLE `t_sys_data` (
   `cate_id` int(10) unsigned NOT NULL COMMENT '基础数据类别ID',
   `data_code` varchar(255) DEFAULT NULL COMMENT '基础数据Code',
   `data_name` varchar(255) DEFAULT NULL COMMENT '基础数据名称',
-  `dataSort` int(11) unsigned DEFAULT NULL COMMENT '基础数据排序',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：隐藏；1：显示）',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
-  `is_delete` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
-  `create_by` varchar(100) NOT NULL COMMENT '创建于',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  `modify_by` varchar(100) NOT NULL COMMENT '更新于',
-  `modify_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
+  `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
+  `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`data_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='基础数据表';
-
--- ----------------------------
--- Records of t_sys_data
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_sys_data_category
@@ -46,18 +42,15 @@ CREATE TABLE `t_sys_data_category` (
   `cate_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '基础数据类别ID',
   `cate_code` varchar(255) DEFAULT NULL COMMENT '类别Code',
   `cate_name` varchar(255) DEFAULT NULL COMMENT '类别名称',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：隐藏；1：显示）',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
-  `is_delete` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
-  `create_by` varchar(100) NOT NULL COMMENT '创建于',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  `modify_by` varchar(100) NOT NULL COMMENT '更新于',
-  `modify_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
+  `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
+  `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`cate_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='基础数据类别表';
-
--- ----------------------------
--- Records of t_sys_data_category
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_sys_log
@@ -76,7 +69,7 @@ CREATE TABLE `t_sys_log` (
   `method_return` varchar(255) DEFAULT NULL COMMENT '方法返回',
   `deal_time` bigint(11) unsigned DEFAULT NULL COMMENT '处理时间（ms）',
   `exception_info` varchar(255) DEFAULT NULL COMMENT '异常信息',
-  `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否有效（0：无效；1：有效）',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '是否有效（0：无效；1：有效）',
   `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
   `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
@@ -86,30 +79,23 @@ CREATE TABLE `t_sys_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of t_sys_log
--- ----------------------------
-
--- ----------------------------
 -- Table structure for t_sys_organization
 -- ----------------------------
 DROP TABLE IF EXISTS `t_sys_organization`;
 CREATE TABLE `t_sys_organization` (
   `org_id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '组织ID',
-  `parent_id` bigint(11) unsigned NOT NULL COMMENT '父ID',
+  `parent_id` bigint(11) unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
   `org_code` varchar(255) NOT NULL COMMENT '组织编码',
   `org_name` varchar(255) NOT NULL COMMENT '组织名称',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：隐藏；1：显示）',
   `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
   `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
   `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
   `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`org_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='组织信息表';
-
--- ----------------------------
--- Records of t_sys_organization
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='组织信息表';
 
 -- ----------------------------
 -- Table structure for t_sys_permission
@@ -123,8 +109,8 @@ CREATE TABLE `t_sys_permission` (
   `uri` varchar(255) NOT NULL DEFAULT '#' COMMENT '地址',
   `icon_name` varchar(100) DEFAULT NULL COMMENT '图标名称',
   `per_type` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '类型（0：目录；1：菜单；2：按钮；3：API）',
-  `order_num` int(11) unsigned NOT NULL COMMENT '优先级',
-  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '显示隐藏（0：隐藏；1：显示）',
+  `per_level` tinyint(2) unsigned NOT NULL COMMENT '权限级别',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：隐藏；1：显示）',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
   `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
@@ -132,20 +118,7 @@ CREATE TABLE `t_sys_permission` (
   `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
   `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`permission_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='权限表';
-
--- ----------------------------
--- Records of t_sys_permission
--- ----------------------------
-INSERT INTO `t_sys_permission` VALUES ('1', '0', 'XTGL000', '系统管理', '#', null, '0', '1', '1', null, '0', 'admin', '2018-07-12 11:51:47', 'admin', '2018-07-12 11:51:47');
-INSERT INTO `t_sys_permission` VALUES ('2', '1', 'XTGL100', '基础管理', '#', null, '1', '1', '1', null, '0', 'admin', '2018-07-12 12:31:33', 'admin', '2018-07-12 12:31:33');
-INSERT INTO `t_sys_permission` VALUES ('3', '2', 'XTGL101', '用户管理', '#', 'larry-10103', '1', '1', '1', '', '0', 'admin', '2018-07-12 12:31:33', 'admin', '2018-07-12 12:31:33');
-INSERT INTO `t_sys_permission` VALUES ('4', '2', 'XTGL102', '角色管理', '#', 'larry-jiaoseguanli1', '1', '2', '1', '', '0', 'admin', '2018-07-12 12:32:39', 'admin', '2018-07-12 12:32:39');
-INSERT INTO `t_sys_permission` VALUES ('5', '2', 'XTGL103', '菜单管理', '#', 'larry-caidanguanli', '1', '3', '1', '', '0', 'admin', '2018-07-12 12:36:13', 'admin', '2018-07-12 12:36:13');
-INSERT INTO `t_sys_permission` VALUES ('6', '1', 'XTGL200', '数据管理', '#', null, '1', '1', '1', null, '0', 'admin', '2018-07-12 15:44:13', 'admin', '2018-07-12 15:44:13');
-INSERT INTO `t_sys_permission` VALUES ('8', '6', 'XTGL201', '数据类别管理', '#', 'larry-shujuleibieguanli', '1', '1', '1', null, '0', 'admin', '2018-07-12 15:45:49', 'admin', '2018-07-12 15:45:49');
-INSERT INTO `t_sys_permission` VALUES ('9', '6', 'XTGL202', '基础数据管理', '#', 'larry-jichushujuguanli', '1', '2', '1', null, '0', 'admin', '2018-07-12 15:46:37', 'admin', '2018-07-12 15:46:37');
-INSERT INTO `t_sys_permission` VALUES ('10', '6', 'XTGL203', '接口管理', '#', 'larry-jiekouguanli', '1', '3', '1', null, '0', 'admin', '2018-07-12 15:48:11', 'admin', '2018-07-12 15:48:11');
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='权限表';
 
 -- ----------------------------
 -- Table structure for t_sys_role
@@ -155,18 +128,15 @@ CREATE TABLE `t_sys_role` (
   `role_id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '角色ID',
   `role_code` varchar(255) NOT NULL COMMENT '角色编码',
   `role_name` varchar(100) NOT NULL COMMENT '角色名',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：隐藏；1：显示）',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
-  `is_delete` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
-  `create_by` varchar(100) NOT NULL COMMENT '创建于',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  `modify_by` varchar(100) NOT NULL COMMENT '更新于',
-  `modify_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
+  `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
+  `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色表';
-
--- ----------------------------
--- Records of t_sys_role
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='角色表';
 
 -- ----------------------------
 -- Table structure for t_sys_role_permission
@@ -187,10 +157,6 @@ CREATE TABLE `t_sys_role_permission` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色菜单关联表';
 
 -- ----------------------------
--- Records of t_sys_role_permission
--- ----------------------------
-
--- ----------------------------
 -- Table structure for t_sys_user
 -- ----------------------------
 DROP TABLE IF EXISTS `t_sys_user`;
@@ -201,20 +167,16 @@ CREATE TABLE `t_sys_user` (
   `salt` varchar(255) DEFAULT NULL COMMENT '加密盐值',
   `phone_number` varchar(50) DEFAULT NULL COMMENT '手机号',
   `email` varchar(100) NOT NULL COMMENT '邮箱',
-  `status` tinyint(2) unsigned DEFAULT NULL COMMENT '状态',
-  `is_delete` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
-  `last_login_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后登录时间',
-  `create_by` varchar(100) NOT NULL COMMENT '创建于',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  `modify_by` varchar(100) NOT NULL COMMENT '更新于',
-  `modify_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态（0：正常；1：未激活；2：停用）',
+  `header_img` varchar(255) DEFAULT 'face.jpg' COMMENT '头像图片',
+  `is_delete` tinyint(2) unsigned DEFAULT '0' COMMENT '删除标识（0：不删除； 1：删除）',
+  `last_login_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '最后登录时间',
+  `create_by` varchar(100) DEFAULT NULL COMMENT '创建于',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  `modify_by` varchar(100) DEFAULT NULL COMMENT '更新于',
+  `modify_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='用户表';
-
--- ----------------------------
--- Records of t_sys_user
--- ----------------------------
-INSERT INTO `t_sys_user` VALUES ('1', 'admin', 'admin', null, null, 'maple_6392@163.com', null, '0', '2018-07-07 18:00:47', 'system', '2018-07-07 18:00:47', 'system', '2018-07-07 18:00:47');
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 -- ----------------------------
 -- Table structure for t_sys_user_role
@@ -233,7 +195,3 @@ CREATE TABLE `t_sys_user_role` (
   KEY `FK_UR_UID` (`user_id`),
   KEY `KF_UR_RID` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户角色表';
-
--- ----------------------------
--- Records of t_sys_user_role
--- ----------------------------
