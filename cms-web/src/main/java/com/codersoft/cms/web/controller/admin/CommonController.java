@@ -1,6 +1,8 @@
 package com.codersoft.cms.web.controller.admin;
 
 import com.codersoft.cms.common.utils.CaptchaUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpSession;
  **/
 @Controller
 @RequestMapping("/common")
+@Api(description = "公共处理操作")
 public class CommonController {
 
     /**
@@ -25,6 +28,7 @@ public class CommonController {
      */
     @ResponseBody
     @RequestMapping(value="/getCaptcha")
+    @ApiOperation(value = "生成验证码", notes = "生成数字、字母、短线混合的验证码图片", httpMethod = "GET")
     public void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws Exception{
         // 设置响应的类型格式为图片格式
         response.setContentType("image/jpeg");
@@ -45,6 +49,7 @@ public class CommonController {
      * @return
      */
     @RequestMapping(value="/icon")
+    @ApiOperation(value = "图标选择页面", notes = "跳转到Larry-icon图标的选择页面", httpMethod = "GET")
     public String toIconList() {
         return "admin/common/icon";
     }
@@ -54,6 +59,7 @@ public class CommonController {
      * @return
      */
     @RequestMapping(value="/toImgUpload")
+    @ApiOperation(value = "图片上传界面", notes = "跳转到图片上传页面", httpMethod = "GET")
     public String toImageUploadPage() {
         return "admin/common/upload";
     }

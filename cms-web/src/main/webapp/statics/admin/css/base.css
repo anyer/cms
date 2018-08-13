@@ -23,34 +23,66 @@ a:hover {
     margin: auto 0;
 }
 
+#notification {
+    width: 100%;
+    line-height: 35px;
+    margin: 0 auto;
+    background: #1E9FFF;
+    color: #fff;
+    font-size: 12px;
+    position: relative;
+    top: -45px;
+}
+
+#msg, #close {
+    height: 35px;
+    display: inline-block;
+    line-height: 35px;
+    text-align: center;
+}
+
+#msg {
+    width: 88%;
+}
+
+#close {
+    width: 10%;
+    cursor: pointer;
+}
+
 .login-box, .forget-box, .reset-box, .register-box {
-    position: absolute; left: 50%; top: 50%;
-    /*border: 1px saddlebrown solid;*/
+    position: absolute;
+    left: 50%;
+    top: 50%;
 }
 
 .login-box {
     width: 310px;
     height: 300px;
-    margin-left: -155px;    /* 宽度的一半 */
-    margin-top: -180px;    /* 高度的一半 */
+    margin-left: -155px; /* 宽度的一半 */
+    margin-top: -180px; /* 高度的一半 */
 }
+
 .forget-box {
-    width: 310px;
-    height: 180px;
-    margin-left: -155px;    /* 宽度的一半 */
-    margin-top: -120px;    /* 高度的一半 */
+    width: 500px;
+    height: 400px;
+    margin-left: -215px; /* 宽度的一半 */
+    margin-top: -200px; /* 高度的一半 */
+    border: 1px seagreen solid;
 }
+
 .reset-box {
     width: 310px;
     height: 180px;
-    margin-left: -155px;    /* 宽度的一半 */
-    margin-top: -120px;    /* 高度的一半 */
+    margin-left: -155px; /* 宽度的一半 */
+    margin-top: -120px; /* 高度的一半 */
 }
+
 .register-box {
     width: 310px;
     height: 400px;
-    margin-left: -160px;    /* 宽度的一半 */
-    margin-top: -230px;    /* 高度的一半 */
+    margin-left: -160px; /* 宽度的一半 */
+    margin-top: -230px; /* 高度的一半 */
 }
 
 header {
@@ -63,31 +95,44 @@ header {
 .layui-form-pane {
     margin: 0 auto;
 }
+
 .layui-form-item {
     text-align: center;
 }
 
-.validate-code-box {
+.validate-code-box, email-code-box {
     position: relative;
 }
-.validate-code-box a,img {
+
+.validate-code-box a, img {
     position: absolute;
     top: 0;
     right: 0;
     cursor: pointer;
 }
+
 .validate-code-box img {
     border: 1px solid #E6E6E6;
 }
+
+.email-code-box button {
+    position: absolute;
+    top: 0;
+    right: -100px;
+    cursor: pointer;
+}
+
 .forgot-password-box {
     /*text-align: right;*/
     position: relative;
 }
+
 .forgot-password-box input {
     position: absolute;
     top: 0;
     left: 0;
 }
+
 .forgot-password-box a {
     position: absolute;
     top: 0;
@@ -96,16 +141,25 @@ header {
     vertical-align: middle;
     line-height: 36px;
 }
+
+.getCode {
+    width: 150px;
+    display: inline-block;
+}
+
 .return-login {
     text-align: left;
 }
+
 .check-box {
     text-align: left;
 }
+
 .check-box input {
     width: 85%;
     display: inline-block;
 }
+
 .i-icon {
     width: 12%;
     height: 36px;
@@ -116,6 +170,12 @@ header {
 .i-red {
     color: red;
 }
+
 .i-green {
     color: green;
 }
+
+.input-w200{
+    width: 200px;
+}
+

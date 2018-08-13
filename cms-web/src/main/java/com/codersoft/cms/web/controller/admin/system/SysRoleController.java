@@ -6,6 +6,9 @@ import com.codersoft.cms.common.utils.ResultMessageUtils;
 import com.codersoft.cms.dao.entity.SysRole;
 import com.codersoft.cms.service.admin.SysRoleService;
 import com.codersoft.cms.web.controller.admin.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
  **/
 @Controller
 @RequestMapping("/admin/role")
+@Api(description = "角色相关操作")
 public class SysRoleController extends BaseController<SysRole, Long> {
 
     public SysRoleController() {
@@ -40,8 +44,10 @@ public class SysRoleController extends BaseController<SysRole, Long> {
      * @param roleName 角色名
      * @return
      */
+    @ApiOperation(value = "验证角色名是否存在", notes = "后台添加角色信息时Ajax验证角色名称是否存在", httpMethod = "POST")
+    @ApiImplicitParam(name = "roleName", value = "角色名称", required = true, dataType = "String")
     @ResponseBody
-    @RequestMapping("/checkRoleNameIsExist")
+    @RequestMapping(value = "/checkRoleNameIsExist", method = RequestMethod.POST)
     public ResultMessage checkRoleNameIsExist(@RequestParam("roleName") String roleName) {
         SysRole sysRole = sysRoleService.checkRoleNameIsExist(roleName);
         try {

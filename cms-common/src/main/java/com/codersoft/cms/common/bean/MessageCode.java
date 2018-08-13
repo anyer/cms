@@ -78,6 +78,16 @@ public enum MessageCode {
     ORG_DATA_LOAD_FAIL("ORG_DATA_LOAD_FAIL", "组织数据加载失败"),
     ORG_NAME_EXIST("ORG_NAME_EXIST", "组织名称已存在，请重新输入"),
 
+    /**
+     *  邮箱相关
+     */
+    EMAIL_SEND_SUCCESS("EMAIL_SEND_SUCCESS", "邮件发送成功"),
+    EMAIL_SEND_ERROR("EMAIL_SEND_ERROR", "邮件发送异常"),
+    EMAIL_ACTIVE_FAIL("EMAIL_ACTIVE_FAIL", "邮箱激活失败"),
+    EMAIL_ACTIVE_TIMEOUT("EMAIL_ACTIVE_TIMEOUT", "邮箱激活链接超时失效，重新登录，发送新激活邮件"),
+
+    CODE_NULL_OR_WARNNING("CODE_NULL_OR_WARNNING","校验码为空或错误，检查是否正确输入"),
+
     ANNOUNCEMENT_SAVE_ERROR("ANNOUNCEMENT_SAVE_ERROR", "公告信息保存失败"),
     ANNOUNCEMENT_DEL_ERROR("ANNOUNCEMENT_DEL_ERROR", "删除公告失败,程序异常"),
     ANNOUNCEMENT_USER_INSERT_ERROR("ANNOUNCEMENT_USER_INSERT_ERROR", "标记为已读失败,程序异常"),

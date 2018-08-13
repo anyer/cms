@@ -4,6 +4,7 @@ import com.codersoft.cms.common.bean.MessageCode;
 import com.codersoft.cms.dao.entity.SysUser;
 import com.codersoft.cms.service.admin.SysUserService;
 import com.codersoft.cms.web.controller.admin.BaseController;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
  **/
 @Controller
 @RequestMapping("/admin/user")
+@Api(description = "用户相关操作")
 public class SysUserController extends BaseController<SysUser, Long> {
 
     public SysUserController() {

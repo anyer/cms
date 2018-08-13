@@ -16,6 +16,11 @@
 </head>
 <body class="base-body">
 <div class="base-main">
+    <input id="result" type="hidden" data-th-value="${result?.returnCode}" >
+    <div id="notification">
+        <span id="msg"></span>
+        <span id="close" class="layui-icon layui-icon-close"></span>
+    </div>
     <div class="login-box">
         <header class="layui-form-item">
             xx后台系统
@@ -38,7 +43,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label"><i class="layui-icon layui-icon-vercode" style="color: #1E9FFF;"></i></label>
                 <div class="layui-input-inline validate-code-box">
-                    <input style="width: 88px" type="text" id="captchaInput" name="captcha" class="layui-input"
+                    <input style="width: 88px" type="text" id="captchaInput" name="captcha" class="layui-input "
                            lay-verify="captchaInput"
                            placeholder="验证码"/>
                     <img id="captcha" style="width: 100px" src="/common/getCaptcha" title="单击刷新验证码"
@@ -53,6 +58,9 @@
                 <a href="/admin/toRegister" class="fl" style="padding-right: 100px">没有账号？立即注册</a>
                 <a href="/admin/toForgetPassword">忘记密码？</a>
             </div>
+            <div class="layui-form-item">
+
+            </div>
         </form>
     </div>
 </div>
@@ -62,6 +70,23 @@
         base: "/statics/admin/js/"
     }).use(['jquery','form', 'layer', 'common'], function () {
         var $ = layui.jquery, form = layui.form, layer = layui.layer, common = layui.common;
+
+        init();
+
+        function init() {
+            var returnCode = $("#result").val();
+            if(returnCode != null && returnCode != "") {
+                if(returnCode == "SUCCESS") {
+                    $("#msg").text("邮箱激活[[${result?.returnMessage}]]！！！");
+                } else {
+                    $("#msg").text("[[${result?.returnMessage}]]");
+                }
+                $('#notification').animate({'top':0});
+            }
+
+        }
+
+
         // 验证
         form.verify({
             username: function (value) {
@@ -84,9 +109,9 @@
         // 提交监听
         form.on('submit(sub)', function (data) {
             var jsonData = JSON.stringify(data.field);
-            layer.alert(jsonData, {
-                title: '最终的提交信息'
-            });
+            // layer.alert(jsonData, {
+            //     title: '最终的提交信息'
+            // });
             $.ajax({
                 url: '/admin/userNameLogin',
                 type: 'post',
@@ -98,13 +123,14 @@
                     console.log(data);
                     if (data.returnCode == "SUCCESS") {
                         common.cmsLaySuccessMsg('登陆成功');
-                        window.location.href="/admin/index";
-                        return false;
+                    } else if (data.returnCode == "EMAIL_SEND_SUCCESS") {
+                        common.cmsLaySuccessMsg('账号未激活，已发送激活邮件，请到邮箱激活！！！');
+                        toEmailLoginPage(data.returnData);
                     } else {
                         if(data.returnData == null) {
                             common.cmsLayErrorMsg(data.returnMessage);
                         } else {
-                            common.cmsLayErrorMsg(data.returnExpectionMsg);
+                            common.cmsLayErrorMsg(data.returnMessage);
                         }
                         //清空填写的数据
                         //$("#reset").click();
@@ -125,6 +151,51 @@
             var timestamp = (new Date()).valueOf();
             var imgSrc = "/common/getCaptcha?timestamp=" + timestamp
             captchaImg.attr("src", imgSrc);
+        });
+
+        /**
+         * 跳转到对应的邮箱登陆页面
+         */
+        function toEmailLoginPage(url) {
+            var emailAddress = url.split('@')[1];
+            for (var i in urlHash){
+                if(i == emailAddress) {
+                    console.log(urlHash[emailAddress]);
+                    window.location.href = urlHash[emailAddress];
+                    return;
+                }
+            }
+            //邮箱不在匹配列表中，则跳转到后台登陆页面
+            window.location.href = "/admin/toLogin";
+        }
+
+        var urlHash={
+            'qq.com': 'https://mail.qq.com',
+            'gmail.com': 'https://mail.google.com',
+            'sina.com': 'http://mail.sina.com.cn/',
+            '163.com': 'https://mail.163.com/',
+            '126.com': 'https://mail.126.com/',
+            'yeah.net': 'https://www.yeah.net/',
+            'sohu.com': 'https://mail.sohu.com/',
+            'tom.com': 'http://mail.tom.com/',
+            'sogou.com': 'https://account.sogou.com',
+            '139.com': 'http://mail.10086.cn/',
+            'hotmail.com': 'https://outlook.live.com',
+            'live.com': 'https://login.live.com/',
+            'live.cn': 'https://login.live.com/',
+            'live.com.cn': 'https://login.live.com',
+            '189.com': 'https://webmail30.189.cn',
+            'yahoo.com.cn': 'https://overview.mail.yahoo.com/',
+            'yahoo.cn': 'https://overview.mail.yahoo.com/',
+            'eyou.com': 'http://www.eyou.com/',
+            '21cn.com': 'http://mail.21cn.com',
+            '188.com': 'http://www.188.com/',
+            'foxmail.com': 'http://mail.foxmail.com/',
+            'aliyun.com':'https://mail.aliyun.com/'
+        };
+
+        $('#close').off('click').on('click',function(){
+            $('#notification').animate({'top':-45});
         });
     })
 </script>

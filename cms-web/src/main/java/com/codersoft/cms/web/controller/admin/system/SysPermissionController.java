@@ -7,6 +7,9 @@ import com.codersoft.cms.dao.dto.DirectoryPermissionDto;
 import com.codersoft.cms.dao.entity.SysPermission;
 import com.codersoft.cms.service.admin.SysPermissionService;
 import com.codersoft.cms.web.controller.admin.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +27,7 @@ import java.util.List;
  **/
 @Controller
 @RequestMapping("/admin/permission")
+@Api(description = "权限相关操作")
 public class SysPermissionController extends BaseController<SysPermission, Long> {
 
     public SysPermissionController() {
@@ -45,6 +49,7 @@ public class SysPermissionController extends BaseController<SysPermission, Long>
      *
      * @return
      */
+    @ApiOperation(value = "获取目录列表", notes = "获取目录类型权限列表", httpMethod = "GET")
     @RequestMapping("/directoryList")
     public @ResponseBody
     List<DirectoryPermissionDto> getDirectoryList() {
@@ -52,10 +57,12 @@ public class SysPermissionController extends BaseController<SysPermission, Long>
     }
 
     /**
-     * 获取目录列表
-     *
+     * 获取对应父IDd的权限菜单列表
+     * @param parentId 父权限ID
      * @return
      */
+    @ApiOperation(value = "父级菜单权限列表", notes = "加载对应父ID的父类菜单权限列表", httpMethod = "POST")
+    @ApiImplicitParam(name = "parentId", value = "父权限ID", required = true, dataType = "Integer")
     @RequestMapping(value = "/menuList", method = RequestMethod.POST)
     public @ResponseBody
     List<DirectoryPermissionDto> getMenuList(@RequestParam("parentId") Long parentId) {
@@ -63,8 +70,13 @@ public class SysPermissionController extends BaseController<SysPermission, Long>
     }
 
     /**
-     * 加载父级权限列表
+     * 加载对应权限级别的父级权限列表
+     *
+     * @param perLevel 权限级别
+     * @return
      */
+    @ApiOperation(value = "父级权限列表", notes = "加载对应权限级别的父类权限列表", httpMethod = "POST")
+    @ApiImplicitParam(name = "perLevel", value = "权限级别", required = true, dataType = "Integer")
     @RequestMapping(value = "/parentList", method = RequestMethod.POST)
     @ResponseBody
     public ResultMessage loadParentPermission(@RequestParam("perLevel") Integer perLevel) {

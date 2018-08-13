@@ -4,6 +4,10 @@ import com.codersoft.cms.common.bean.MessageCode;
 import com.codersoft.cms.common.bean.ResultMessage;
 import com.codersoft.cms.common.utils.ResultMessageUtils;
 import com.codersoft.cms.service.common.BaseService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,7 @@ import java.util.Map;
 @Getter
 @Controller
 @Scope("prototype")
+@Api(description = "基础请求处理操作")
 public class BaseController<T, Long> {
 
     private String sessionKey;
@@ -45,6 +50,7 @@ public class BaseController<T, Long> {
      *
      * @return
      */
+    @ApiOperation(value = "跳转到数据管理界面", notes = "公告接口：跳转到数据的管理界面", httpMethod = "GET")
     @RequestMapping("/toListPage")
     public String toListPage() {
         return getListPagePath();
@@ -56,6 +62,8 @@ public class BaseController<T, Long> {
      * @param t
      * @return
      */
+    @ApiOperation(value = "获取数据列表", notes = "公告接口：根据数据对象获取对应的数据对象集合列表", httpMethod = "POST")
+    @ApiImplicitParam(name = "t", value = "数据对象", required = true, dataType = "T")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getList(T t) {
@@ -67,7 +75,8 @@ public class BaseController<T, Long> {
      *
      * @return
      */
-    @RequestMapping("/toAddPage")
+    @ApiOperation(value = "数据添加界面", notes = "公告接口：跳转到对应数据的添加界面")
+    @RequestMapping(value = "/toAddPage", method = RequestMethod.GET)
     public String toAddPage() {
         return getAddPagePath();
     }
@@ -78,6 +87,8 @@ public class BaseController<T, Long> {
      * @param t 数据对象
      * @return
      */
+    @ApiOperation(value = "添加数据信息", notes = "公告接口：添加对应数据信息", httpMethod = "POST")
+    @ApiImplicitParam(name = "t", value = "数据对象", required = true, dataType = "T")
     @RequestMapping("/add")
     @ResponseBody
     public ResultMessage addData(@RequestBody T t) {
@@ -100,6 +111,8 @@ public class BaseController<T, Long> {
      * @param id 数据ID
      * @return
      */
+    @ApiOperation(value = "数据详情页面", notes = "公告接口：跳转到对应数据的详情界面", httpMethod = "GET")
+    @ApiImplicitParam(name = "id", value = "数据ID", required = true, dataType = "Long")
     @RequestMapping("/toDetailPage")
     public String toDetailPage(Model model, @RequestParam("id") Long id) {
 
@@ -117,6 +130,8 @@ public class BaseController<T, Long> {
      * @param id 数据ID
      * @return
      */
+    @ApiOperation(value = "数据修改页面", notes = "公告接口：跳转到对应数据的修改界面", httpMethod = "GET")
+    @ApiImplicitParam(name = "id", value = "数据ID", required = true, dataType = "Long")
     @RequestMapping("/toEditPage")
     public String toEditPage(Model model, @RequestParam("id") Long id) {
 
@@ -133,7 +148,9 @@ public class BaseController<T, Long> {
      * @param t 数据对象
      * @return
      */
-    @RequestMapping("/update")
+    @ApiOperation(value = "更新数据信息", notes = "公告接口：更新对应数据信息", httpMethod = "POST")
+    @ApiImplicitParam(name = "t", value = "数据对象", required = true, dataType = "T")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public ResultMessage updateData(@RequestBody T t) {
 
@@ -155,6 +172,8 @@ public class BaseController<T, Long> {
      * @param id 数据ID
      * @return
      */
+    @ApiOperation(value = "删除数据信息", notes = "公告接口：删除对应数据信息", httpMethod = "POST")
+    @ApiImplicitParam(name = "id", value = "数据ID", required = true, dataType = "Long")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
     public ResultMessage deleteData(@RequestParam("id") Long id) {

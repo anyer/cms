@@ -33,7 +33,10 @@
 
     <!--静态资源默认servlet配置  启用该标签代表 spring mvc 不拦截css、js、jpg等相关的静态资源-->
     <mvc:default-servlet-handler/>
-
+    <!-- swagger -->
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
+    <bean class="com.codersoft.cms.web.controller.config.Swagger2Config" />
     <!-- 处理静态资源 -->
     <!--<mvc:resources mapping="/statics/**" location="/statics/"/>-->
     <!--<mvc:resources mapping="/statics/images/**" location="/statics/images/" />-->

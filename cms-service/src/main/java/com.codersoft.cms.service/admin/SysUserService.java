@@ -3,8 +3,6 @@ package com.codersoft.cms.service.admin;
 import com.codersoft.cms.dao.entity.SysUser;
 import com.codersoft.cms.service.common.BaseService;
 
-import java.util.Map;
-
 /**
  * @program: SysUserService
  * @author: Alex.D
@@ -41,7 +39,7 @@ public interface SysUserService extends BaseService<SysUser, Long> {
     /**
      * 用户注册
      *
-     * @param sysUser
+     * @param sysUser 用户对象
      * @return
      */
     int register(SysUser sysUser);
@@ -53,4 +51,22 @@ public interface SysUserService extends BaseService<SysUser, Long> {
      * @return
      */
     int updateLastLoginTime(SysUser sysUser);
+
+    /**
+     * 邮箱激活后更新对应用户名的用户信息状态
+     *
+     * @param userName 用户名
+     * @param status   状态值
+     * @return
+     */
+    int emailActiveUpdateStatusByName(String userName, int status);
+
+    /**
+     * 更新对应邮箱地址的用户密码
+     *
+     * @param email    邮箱
+     * @param password 密码
+     * @return
+     */
+    int updatePasswordByEmail(String email, String password);
 }

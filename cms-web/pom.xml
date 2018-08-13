@@ -145,6 +145,16 @@
             <artifactId>druid</artifactId>
         </dependency>
 
+        <!-- Swagger2 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+
         <!-- shiro begin-->
         <dependency>
             <groupId>org.apache.shiro</groupId>

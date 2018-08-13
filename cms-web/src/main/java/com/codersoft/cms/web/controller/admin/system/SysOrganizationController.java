@@ -6,6 +6,9 @@ import com.codersoft.cms.common.utils.ResultMessageUtils;
 import com.codersoft.cms.dao.entity.SysOrganization;
 import com.codersoft.cms.service.admin.SysOrganizationService;
 import com.codersoft.cms.web.controller.admin.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
  **/
 @Controller
 @RequestMapping("/admin/organization")
+@Api(description = "组织相关操作")
 public class SysOrganizationController extends BaseController<SysOrganization, Long> {
 
     public SysOrganizationController() {
@@ -40,6 +44,8 @@ public class SysOrganizationController extends BaseController<SysOrganization, L
      * @param orgName 组织名称
      * @return
      */
+    @ApiOperation(value = "验证组织名是否存在", notes = "后台添加组织信息时Ajax验证组织名称是否存在", httpMethod = "POST")
+    @ApiImplicitParam(name = "orgName", value = "组织名称", required = true, dataType = "String")
     @ResponseBody
     @RequestMapping("/checkOrgNameIsExist")
     public ResultMessage checkOrgNameIsExist(@RequestParam("orgName") String orgName) {

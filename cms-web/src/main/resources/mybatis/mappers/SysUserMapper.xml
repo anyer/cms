@@ -406,4 +406,19 @@
         <!--</if>-->
     </select>
 
+    <!-- 修改对应名称的用户状态值 -->
+    <update id="updateStatusByName">
+        UPDATE `t_sys_user`
+        SET `status`= #{userStatus,jdbcType=TINYINT}
+        WHERE `user_name`= #{userName,jdbcType=VARCHAR}
+    </update>
+
+    <!-- 修改 -->
+    <update id="updatePasswordByEmail">
+        UPDATE `t_sys_user`
+        SET `status`= #{userStatus,jdbcType=TINYINT}
+        WHERE `user_name`= #{userName,jdbcType=VARCHAR}
+    </update>
+
+
 </mapper>

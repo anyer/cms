@@ -140,6 +140,7 @@
                 $('#parentId').empty().append("<option value='0'>请选择</option>");
                 $('#perLevel').empty().append("<option value='1'>一级菜单</option><option value='2'>二级菜单</option>");
                 $("#perCode").val(createPerCode(1));
+                loadParentPermission();
             } else if (data.value == 2) {
                 //类型为按钮
                 $('#parentId').empty().append("<option value='0'>按钮</option>");
@@ -211,7 +212,7 @@
                         $('#parentId').empty();
                         $(data.returnData).each(function (index, item) {
                             $("#parentId").append(
-                                '<option value="' + item.parentId + '">' + item.perName + '</option>'
+                                '<option value="' + item.permissionId + '">' + item.perName + '</option>'
                             );
                         });
                         //刷新父类权限id下拉框
