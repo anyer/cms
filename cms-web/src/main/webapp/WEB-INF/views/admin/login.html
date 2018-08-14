@@ -77,15 +77,14 @@
             var returnCode = $("#result").val();
             if(returnCode != null && returnCode != "") {
                 if(returnCode == "SUCCESS") {
-                    $("#msg").text("邮箱激活[[${result?.returnMessage}]]！！！");
+                    // $("#msg").text("邮箱激活[[${result?.returnMessage}]]！！！");
+                    return false;
                 } else {
                     $("#msg").text("[[${result?.returnMessage}]]");
                 }
                 $('#notification').animate({'top':0});
             }
-
         }
-
 
         // 验证
         form.verify({
@@ -108,6 +107,7 @@
 
         // 提交监听
         form.on('submit(sub)', function (data) {
+            var loading = top.layer.msg('账户验证中，请稍候', {icon: 16, time: false, shade: 0.8});
             var jsonData = JSON.stringify(data.field);
             // layer.alert(jsonData, {
             //     title: '最终的提交信息'
@@ -120,18 +120,16 @@
                 data: jsonData,
                 async: true,
                 success: function (data) {
+                    top.layer.close(loading);
                     console.log(data);
                     if (data.returnCode == "SUCCESS") {
                         common.cmsLaySuccessMsg('登陆成功');
+                        window.location.href = '/admin/index';
                     } else if (data.returnCode == "EMAIL_SEND_SUCCESS") {
                         common.cmsLaySuccessMsg('账号未激活，已发送激活邮件，请到邮箱激活！！！');
                         toEmailLoginPage(data.returnData);
                     } else {
-                        if(data.returnData == null) {
-                            common.cmsLayErrorMsg(data.returnMessage);
-                        } else {
-                            common.cmsLayErrorMsg(data.returnMessage);
-                        }
+                        common.cmsLayErrorMsg(data.returnMessage);
                         //清空填写的数据
                         //$("#reset").click();
                         //清除填写的验证码
@@ -140,6 +138,10 @@
                         $("#captcha").click();
                         return false;
                     }
+                }
+                , error: function (data) {
+                    top.layer.close(loading);
+                    common.cmsLayErrorMsg(data.returnExpectionMsg);
                 }
             })
             //防止页面跳转

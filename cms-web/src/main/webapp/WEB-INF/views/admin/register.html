@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>注册页</title>
+    <title>账号注册</title>
     <link rel="shortcut icon" href="../../../statics/admin/images/favicon.ico"
           th:href="@{/statics/admin/images/favicon.ico}">
     <link rel="stylesheet" href="../../../statics/admin/css/base.css">
@@ -17,7 +17,7 @@
 <div class="base-main">
     <div class="register-box">
         <header class="layui-form-item">
-            注册页
+            账号注册
         </header>
         <!-- 表单选项 -->
         <form id="register-form" class="layui-form layui-form-pane">
@@ -75,11 +75,11 @@
 
             <div class="layui-form-item">
                 <button id="register_submit" type="button" class="layui-btn btn-submit" lay-submit="" lay-filter="register">注 册</button>
-                <button id="reset" type="reset" class="layui-btn layui-btn-danger btn-reset">重 置</button>
+                <button id="reset" type="reset" class="layui-btn layui-btn-danger btn-reset" style="margin-right: 10px">重 置</button>
             </div>
             <div class="layui-form-item">
-                <a href="/admin/toLogin" class="fl" style="padding-right: 100px">已有账号？立即登录</a>
-                <a href="/admin/toForgetPassword" class="fr">忘记密码？</a>
+                <a href="/admin/toLogin" style="padding-right: 100px">已有账号？立即登录</a>
+                <a href="/admin/toForgetPassword">忘记密码？</a>
             </div>
         </form>
     </div>
@@ -99,27 +99,28 @@
             var userName = $(this).val();
 
             if (userName == null || userName.length == 0) {
-                // $('#uwr').removeAttr('hidden');
-                // $('#uri').attr('hidden', 'hidden');
                 return false;
             }
 
             if (userName.length < 3) {
                 $('#uwr').removeAttr('hidden');
                 $('#uri').attr('hidden', 'hidden');
-                layer.msg('用户名太短')
+                layer.msg('用户名太短');
+                this.focus();
                 return false;
             }
             if (userName.length > 50) {
                 $('#urr').removeAttr('hidden');
                 $('#uwi').attr('hidden', 'hidden');
-                layer.msg('用户名太长')
+                layer.msg('用户名太长');
+                this.focus();
                 return false;
             }
             if (!(pattern.test(userName))) {
                 $('#urr').removeAttr('hidden');
                 $('#uwi').attr('hidden', 'hidden');
-                layer.msg('用户名由字母、数字及下划线组成，且以字母开头')
+                layer.msg('用户名由字母、数字及下划线组成，且以字母开头');
+                this.focus();
                 return false;
             }
 
@@ -137,7 +138,8 @@
                     } else {
                         $('#uwr').removeAttr('hidden');
                         $('#uri').attr('hidden', 'hidden');
-                        layer.msg(data.returnMessage)
+                        layer.msg(data.returnMessage);
+                        $('#userName').focus();
                     }
                 }
             })
@@ -148,15 +150,13 @@
             var pattern = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
             var email = $('#email').val();
             if (email == null || email.length == 0) {
-                // $('#ewr').removeAttr('hidden');
-                // $('#eri').attr('hidden', 'hidden');
-                // layer.msg('请输入邮箱');
                 return false;
             }
             if (!(pattern.test(email))) {
                 $('#ewr').removeAttr('hidden');
                 $('#eri').attr('hidden', 'hidden');
                 layer.msg('请检查邮箱格式是否正确');
+                this.focus();
                 return false;
             }
 
@@ -174,6 +174,7 @@
                         $('#ewr').removeAttr('hidden');
                         $('#eri').attr('hidden', 'hidden');
                         layer.msg(data.returnMessage);
+                        $('#email').focus();
                     }
                 }
             })
@@ -189,16 +190,18 @@
                 return false;
             }
             if (pwd.length < 6 || pwd.length > 20) {
-                $('#pwr').removeAttr('hidden');
-                $('#pri').attr('hidden', 'hidden');
+                $('#pri').removeAttr('hidden');
+                $('#pre').attr('hidden', 'hidden');
+                this.focus();
                 layer.msg('请填写6到20位密码')
             } else if (!(pwd.match(reg))) {
-                $('#pwr').removeAttr('hidden');
-                $('#pri').attr('hidden', 'hidden');
+                $('#pri').removeAttr('hidden');
+                $('#pre').attr('hidden', 'hidden');
+                this.focus();
                 layer.msg('密码由数字、大小写字母、下划线混合组成');
             } else {
                 $('#pri').removeAttr('hidden');
-                $('#pwr').attr('hidden', 'hidden');
+                $('#pre').attr('hidden', 'hidden');
             }
         });
 
@@ -212,6 +215,7 @@
                 $('#rpwr').removeAttr('hidden');
                 $('#rpri').attr('hidden', 'hidden');
                 layer.msg('两次输入密码不一致!');
+                this.focus();
             } else {
                 $('#rpri').removeAttr('hidden');
                 $('#rpwr').attr('hidden', 'hidden');
@@ -220,9 +224,8 @@
 
         //添加表单监听事件,提交注册信息
         form.on('submit(register)', function (data) {
-
             var jsonData = JSON.stringify(data.field);
-
+            console.log(jsonData);
             $.ajax({
                 url: '/admin/register',
                 type: 'post',

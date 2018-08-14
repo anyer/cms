@@ -32,8 +32,8 @@ public interface SendEmailService {
     /**
      * 发送密码找回邮件（发送验证码）
      *
-     * @param code    验证码
      * @param toEmail 邮箱
+     * @param code    验证码
      */
-    void sendPasswordRecoveryEmail(String code, String toEmail);
+    void sendPasswordRecoveryEmail(String toEmail, Integer code);
 }

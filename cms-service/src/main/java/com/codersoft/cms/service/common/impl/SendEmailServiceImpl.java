@@ -55,11 +55,11 @@ public class SendEmailServiceImpl implements SendEmailService {
     /**
      * 发送密码找回邮件（发送验证码）
      *
-     * @param code    验证码
      * @param toEmail 邮箱
+     * @param code    验证码
      */
     @Override
-    public void sendPasswordRecoveryEmail(String code, String toEmail) {
+    public void sendPasswordRecoveryEmail(String toEmail, Integer code) {
         Long timestamp = DateAndTimestampUtils.getAfterMinutesTimestampValue(30);
 //        int code = RandomUtils.randomCreateNumberOfDigits(6);
         MailInfo mailInfo = new MailInfo();

@@ -2,6 +2,7 @@ package com.codersoft.cms.web.controller.admin;
 
 import com.codersoft.cms.common.bean.MessageCode;
 import com.codersoft.cms.common.bean.ResultMessage;
+import com.codersoft.cms.common.utils.DateAndTimestampUtils;
 import com.codersoft.cms.common.utils.MD5SaltUtils;
 import com.codersoft.cms.common.utils.RandomUtils;
 import com.codersoft.cms.common.utils.ResultMessageUtils;
@@ -57,7 +58,10 @@ public class AdminLoginController {
      * @return
      */
     @ApiOperation(value = "登陆验证", notes = "用户名登陆时的登陆验证", httpMethod = "POST")
-    @ApiImplicitParam(name = "sysUser", value = "用户对象", required = true, dataType = "SysUser")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sysUser", value = "用户对象", required = true, dataType = "SysUser"),
+            @ApiImplicitParam(name = "httpSession", value = "session", required = true, dataType = "HttpSession")
+    })
     @ResponseBody
     @RequestMapping(value = "/userNameLogin", method = RequestMethod.POST)
     public ResultMessage checkLoginByUserName(@RequestBody SysUser sysUser, HttpSession httpSession) {
@@ -164,7 +168,7 @@ public class AdminLoginController {
     /**
      * 注册时验证用户名是否存在
      *
-     * @param userName
+     * @param userName 用户名称
      * @return
      */
     @ApiOperation(value = "验证用户名是否存在", notes = "后台注册时Ajax验证用户名是否存在", httpMethod = "POST")
@@ -227,6 +231,7 @@ public class AdminLoginController {
     /**
      * 发送邮箱激活链接
      *
+     * @param httpSession
      * @return
      */
     @ApiOperation(value = "邮箱激活链接", notes = "点击发送邮箱激活链接，用于激活账号", httpMethod = "GET")
@@ -247,6 +252,9 @@ public class AdminLoginController {
     /**
      * 邮箱激活
      *
+     * @param model
+     * @param userName  用户名称
+     * @param timestamp 时间戳
      * @return
      */
     @ApiOperation(value = "邮箱激活", notes = "邮件点击激活链接，用于激活账号", httpMethod = "GET")
@@ -294,30 +302,79 @@ public class AdminLoginController {
     }
 
     /**
-     * 邮件验证处理
+     * 发送密码找回验证码
+     *
+     * @param email       邮箱地址
+     * @param captcha     验证码
+     * @param httpSession
+     * @return
+     */
+    @ApiOperation(value = "发送验证码", notes = "密码找回，发送验证码", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "email", value = "邮箱地址", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "captcha", value = "验证码", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "httpSession", value = "session", required = true, dataType = "HttpSession")
+    })
+    @RequestMapping(value = "/passwordEmail", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMessage recoveryPasswordEmail(@RequestParam("email") String email, @RequestParam("captcha") String captcha, HttpSession httpSession) {
+
+        ResultMessage resultMessage = ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS);
+        //验证码不为空
+        if (StringUtils.isEmpty(captcha)) {
+            return ResultMessageUtils.returnResultMessage(MessageCode.CAPTCHA_IS_NULL);
+        }
+        //获取Session内存储的验证码
+        String sessionCaptcha = (String) httpSession.getAttribute("captcha");
+        //验证码校验
+        if (!captcha.toLowerCase().equals(sessionCaptcha.toLowerCase())) {
+            return ResultMessageUtils.returnResultMessage(MessageCode.CAPTCHA_IS_ERROR);
+        }
+        //生成验证码
+        int code = RandomUtils.randomCreateNumberOfDigits(6);
+        long timestamp = DateAndTimestampUtils.getAfterMinutesTimestampValue(30);
+
+        //存储验证码到session中，用户后续校验
+        httpSession.setAttribute("recoveryPasswordCode", code + "");
+        httpSession.setAttribute("recoveryPasswordTimestamp", timestamp);
+
+        try {
+            sendEmailService.sendPasswordRecoveryEmail(email, code);
+            resultMessage.setReturnData(email);
+            httpSession.setAttribute("email", email);
+            return resultMessage;
+        } catch (Exception ex) {
+            return ResultMessageUtils.returnExpectionResultMessage(MessageCode.EMAIL_SEND_ERROR, ex.getMessage());
+        }
+    }
+
+    /**
+     * 跳转到密码找回页面
      *
      * @return
      */
-    @RequestMapping(value = "/passwordEmail", method = RequestMethod.POST)
-    @ResponseBody
-    public String recoveryPasswordEmail(@RequestParam("email") String email, Model model, HttpSession httpSession) {
-
-        //生成验证码
-        int code = RandomUtils.randomCreateNumberOfDigits(6);
-        //存储验证码到session中，用户后续校验
-        httpSession.setAttribute("recoveryPasswordCode", code);
-        ResultMessage resultMessage = ResultMessageUtils.returnResultMessage(MessageCode.SUCCESS);
-
-        model.addAttribute("result", resultMessage);
-
+    @ApiOperation(value = "密码重置页面", notes = "跳转到后台密码重置页面", httpMethod = "GET")
+    @RequestMapping("/toResetPassword")
+    public String toResetPassword() {
         return "admin/reset_password";
     }
 
     /**
-     * 邮件验证处理
+     * 密码重置处理
      *
+     * @param email       邮箱地址
+     * @param code        验证码
+     * @param password    密码
+     * @param httpSession
      * @return
      */
+    @ApiOperation(value = "密码重置", notes = "通过验证码实现对应邮箱账号的密码重置", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "email", value = "邮箱地址", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "captcha", value = "验证码", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "httpSession", value = "session", required = true, dataType = "HttpSession")
+    })
     @RequestMapping(value = "/recovery", method = RequestMethod.POST)
     @ResponseBody
     public ResultMessage recoveryPassword(@RequestParam("email") String email, @RequestParam("code") String code, @RequestParam("pwd") String password, HttpSession httpSession) {
@@ -326,6 +383,12 @@ public class AdminLoginController {
         //校验验证码
         try {
             if (code != null && code.equals((String) httpSession.getAttribute("recoveryPasswordCode"))) {
+                Long currentTimestamp = System.currentTimeMillis();
+                Long timestamp = (Long) httpSession.getAttribute("recoveryPasswordTimestamp");
+                //判断激活时间是否在有效范围内
+                if (currentTimestamp >= timestamp) {
+                    return ResultMessageUtils.returnResultMessage(MessageCode.EMAIL_ACTIVE_TIMEOUT);
+                }
                 int updateRes = sysUserService.updatePasswordByEmail(email, password);
                 if (updateRes != 0) {
                     return resultMessage;

@@ -151,6 +151,7 @@
             $(this).attr('type','password');
             //密码验证规则： 6到20位，数字、大小写字母及下划线混合
             var reg = /^(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[_])[0-9A-Za-z_)]{5,19}$/;
+            // var reg = /^[\w]{6,20}$/;
             var pwd = $('#password').val();
             if (pwd == null || pwd.length == 0) {
                 return false;
