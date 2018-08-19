@@ -11,7 +11,10 @@
 
     <link rel="stylesheet" href="../../../../../statics/admin/plug/layui_v2.3.0/css/layui.css"
           data-th-href="@{/statics/admin/plug/layui_v2.3.0/css/layui.css}">
-    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_9h680jcse4620529.css">
+    <link rel="stylesheet" href="../../../../../statics/admin/js/formSelects/formSelects-v4.css"
+          data-th-href="@{/statics/admin/js/formSelects/formSelects-v4.css}">
+    <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/larry.css"
+          data-th-href="@{/statics/admin/css/larry.css}">
 </head>
 <body class="childrenBody" style="font-size: 12px;margin: 10px 10px 0;">
 
@@ -61,7 +64,6 @@
             <label class="layui-form-label">账号类型</label>
             <div class="layui-input-inline">
                 <select id="status" name="status" lay-verify="required" disabled>
-                    <option value="">请选择</option>
                     <option value="0">0-正常</option>
                     <option value="1" selected>1-未激活</option>
                     <option value="2">2-停用</option>
@@ -79,7 +81,16 @@
                         class="layui-icon larry-icon larry-tupianguanli"></i></a>
             </div>
         </div>
-    </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分配角色</label>
+            <div class="layui-input-block">
+                <select id="roleIdStr" name="roleIdStr" xm-select="roleIdStr" lay-verify="required">
+                    <div data-th-each="role:${roles}">
+                        <option data-th-value="${role.roleId}" data-th-text="${role.roleName}"></option>
+                    </div>
+                </select>
+            </div>
+        </div>
     </div>
     <div class="layui-form-item" style="text-align: center;">
         <button class="layui-btn" lay-submit="" lay-filter="addData">保存</button>
@@ -92,10 +103,13 @@
 <script type="text/javascript">
     layui.config({
         base: "/statics/admin/js/"
-    }).use(['form', 'layer', 'jquery', 'common'], function () {
+    }).extend({ //设定模块别名
+        formSelects: 'formSelects/formSelects-v4' //相对于上述 base 目录的子目录
+    }).use(['form', 'layer', 'jquery', 'common', 'formSelects'], function () {
         var $ = layui.$,
             form = layui.form,
             common = layui.common,
+            formSelects = layui.formSelects,
             layer = parent.layer === undefined ? layui.layer : parent.layer;
 
         //验证账号名称
@@ -212,7 +226,7 @@
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 
             $.ajax({
-                url: '/admin/user/add',
+                url: '/admin/user/addAndRole',
                 type: 'post',
                 async: false,
                 dataType: 'json',

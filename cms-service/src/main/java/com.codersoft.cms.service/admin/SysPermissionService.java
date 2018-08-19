@@ -5,6 +5,7 @@ import com.codersoft.cms.dao.entity.SysPermission;
 import com.codersoft.cms.service.common.BaseService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: SysPermissionService
@@ -30,14 +31,6 @@ public interface SysPermissionService extends BaseService<SysPermission, Long> {
     List<DirectoryPermissionDto> selectMenuPermissionListByParentId(Long parentId);
 
     /**
-     * 获取对应ID的权限信息
-     *
-     * @param permissionId 权限ID
-     * @return
-     */
-    SysPermission selectSysPermissionById(Long permissionId);
-
-    /**
      * 获取菜单权限级别对应的父权限
      *
      * @param perLevel 权限级别
@@ -45,4 +38,19 @@ public interface SysPermissionService extends BaseService<SysPermission, Long> {
      */
     List<SysPermission> selectParentPermissionListByPerLevel(Integer perLevel);
 
+    /**
+     * 获取对应角色ID的权限树
+     *
+     * @param roleId 角色ID
+     * @return
+     */
+    List<Map<String, Object>> permissionTree(Long roleId);
+
+    /**
+     * 删除对应权限ID的权限及权限角色关系
+     *
+     * @param permissionId
+     * @return
+     */
+    int deleteAndRoleById(Long permissionId);
 }

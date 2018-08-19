@@ -50,4 +50,30 @@ public interface SysPermissionMapper extends BaseMapper<SysPermission, Long> {
      * @return
      */
     List<SysPermission> selectParentListByPerLevel(@Param("perLevel") Integer perLevel);
+
+    /**
+     * 查询对应用户ID的权限集合
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    List<SysPermission> selectListByUserId(@Param("userId") Long userId);
+
+
+
+    /**
+     * 查询对应角色ID的权限集合
+     *
+     * @param roleId
+     * @return
+     */
+    List<SysPermission> selectListByRoleId(@Param("roleId") Long roleId);
+
+    /**
+     * 查询对应角色ID集合的权限集合
+     *
+     * @param roleIdList
+     * @return
+     */
+    List<SysPermission> selectListByRoleIdList(@Param("roleIdList") List<Long> roleIdList);
 }

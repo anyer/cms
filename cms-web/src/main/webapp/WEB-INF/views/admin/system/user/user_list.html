@@ -13,7 +13,8 @@
           data-th-href="@{/statics/admin/plug/layui_v2.3.0/css/layui.css}">
     <link rel="stylesheet" href="../../../../../statics/admin/css/global.css"
           data-th-href="@{/statics/admin/css/global.css}">
-    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_9h680jcse4620529.css">
+    <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/larry.css"
+          data-th-href="@{/statics/admin/css/larry.css}">
 
     <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/common.css" media="all"
           data-th-href="@{/statics/admin/css/common.css}">
@@ -98,7 +99,7 @@
                         sort: true,
                         align: 'center',
                         templet: '#lastLoginTimeTpl'
-                    } ,
+                    },
                     {
                         field: 'createTime',
                         title: '创建时间',
@@ -106,7 +107,7 @@
                         align: 'center',
                         templet: '#createTimeTpl'
                     },
-                    {title: '操作', align: 'center', toolbar: '#toolBar'}
+                    {title: '操作', align: 'center', toolbar: '#toolBar', width: 150, fixed: 'right'}
                 ]
             ],
             page: true
@@ -139,21 +140,24 @@
 
         /**新增用户*/
         $(".add_btn").click(function () {
-            var url = "/admin/user/toAddPage";
+            var url = "/admin/user/toAdd";
             common.cmsLayOpen('新增用户', url, '750px', '380px');
         });
 
         /**监听工具条*/
         table.on('tool(tableFilter)', function (obj) {
             var data = obj.data; //获得当前行数据
+            console.log('current data: ' + data);
             var layEvent = obj.event; //获得 lay-event 对应的值
             var userId = data.userId;
+            //缓存当前行数据
+            common.putTempData("user", data);
             if (layEvent === 'detail') {
-                var url = "/admin/user/toDetailPage?id=" + userId;
-                common.cmsLayOpen('查看用户', url, '680px', '400px');
+                var url = "/admin/user/toDetail";
+                common.cmsLayOpen('查看用户', url, '680px', '500px');
             } else if (layEvent === 'edit') {
-                var url = "/admin/user/toEditPage?id=" + userId;
-                common.cmsLayOpen('修改用户', url, '750px', '300px');
+                var url = "/admin/user/toEdit";
+                common.cmsLayOpen('修改用户', url, '750px', '400px');
             } else if (layEvent === 'delete') {
                 layer.confirm('确认删除吗？', function (index) {
                     deleteData(userId, obj);
@@ -166,7 +170,7 @@
         function deleteData(userId, obj) {
             var delLoading = top.layer.msg('数据删除中，请稍候', {icon: 16, time: false, shade: 0.8});
             $.ajax({
-                url: '/admin/user/delete',
+                url: '/admin/user/delAndRole',
                 type: 'post',
                 dataType: 'json',
                 async: false,
@@ -204,12 +208,12 @@
 
 <script type="text/html" id="lastLoginTimeTpl">
     {{#
-        return d.lastLoginTime ? layui.util.toDateString(d.lastLoginTime) : "";
+    return d.lastLoginTime ? layui.util.toDateString(d.lastLoginTime) : "";
     }}
 </script>
 <script type="text/html" id="createTimeTpl">
     {{#
-        return d.createTime ? layui.util.toDateString(d.createTime) : "";
+    return d.createTime ? layui.util.toDateString(d.createTime) : "";
     }}
 </script>
 
@@ -217,13 +221,13 @@
 <!--工具条 -->
 <script type="text/html" id="toolBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" lay-tips="查看">
             <i class="layui-icon larry-icon larry-gongzuoneirong"></i>
         </a>
-        <a class="layui-btn layui-btn-xs" lay-event="edit">
+        <a class="layui-btn layui-btn-xs" lay-event="edit" lay-tips="编辑">
             <i class="layui-icon larry-icon larry-bianji3"></i>
         </a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete" lay-tips="删除">
             <i class="layui-icon larry-icon larry-ttpodicon"></i>
         </a>
     </div>

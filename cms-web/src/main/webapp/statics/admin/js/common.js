@@ -96,8 +96,30 @@ layui.define(['layer'], function (exports) {
             $(window).resize(function(){
                 $(".layui-table-view .layui-table").css("width", "100%");
             });
+        },
+        // 缓存临时数据
+        putTempData: function (key, value) {
+            if (value) {
+                layui.sessionData('tempData', {key: key, value: value});
+            } else {
+                layui.sessionData('tempData', {key: key, remove: true});
+            }
+        },
+        // 获取缓存临时数据
+        getTempData: function (key) {
+            return layui.sessionData('tempData')[key];
         }
     };
+
+    // 所有lay-tips处理
+    $('body').on('mouseenter', '*[lay-tips]', function () {
+        var tipText = $(this).attr('lay-tips');
+        var dt = $(this).attr('lay-direction');
+        layer.tips(tipText, this, {tips: dt || 1, time: -1});
+    }).on('mouseleave', '*[lay-tips]', function () {
+        layer.closeAll('tips');
+    });
+
     exports('common', CmsCommon)
 })
 

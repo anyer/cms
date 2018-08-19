@@ -1,17 +1,17 @@
 package com.codersoft.cms.service.admin.impl;
 
+import com.codersoft.cms.common.bean.MessageCode;
 import com.codersoft.cms.common.utils.MD5SaltUtils;
-import com.codersoft.cms.dao.entity.SysUser;
-import com.codersoft.cms.dao.entity.SysUserExample;
+import com.codersoft.cms.dao.entity.*;
 import com.codersoft.cms.dao.mapper.admin.system.SysUserMapper;
+import com.codersoft.cms.dao.mapper.admin.system.SysUserRoleMapper;
 import com.codersoft.cms.service.admin.SysUserService;
 import com.codersoft.cms.service.common.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @program: SysUserServiceImpl
@@ -24,6 +24,67 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, Long> implement
 
     @Autowired
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
+
+    /**
+     * 获取分页数据集合
+     *
+     * @param sysUser
+     * @return
+     */
+    @Override
+    public Map<String, Object> selectPageList(SysUser sysUser) {
+
+        List<SysUser> userList = null;
+        Long count = null;
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        try {
+            userList = sysUserMapper.selectPageList(sysUser);
+            count = sysUserMapper.selectCount(sysUser);
+
+            if (userList != null && userList.size() > 0) {
+                // 查询user的角色
+                List<SysUserRole> userRoles = sysUserRoleMapper.selectUserRoleByUserIdList(getUserIds(userList));
+                for (SysUser user : userList) {
+                    List<SysRole> tempURs = new ArrayList<>();
+                    for (SysUserRole userRole : userRoles) {
+                        if (user.getUserId().equals(userRole.getUserId())) {
+                            tempURs.add(new SysRole(userRole.getRoleId(), userRole.getRoleName()));
+                        }
+                    }
+                    user.setRoleList(tempURs);
+                }
+            }
+
+            map.put("code", 0);
+            map.put("msg", MessageCode.SUCCESS.getMsg());
+            map.put("count", count == null ? 0L : count);
+            map.put("data", userList);
+            return map;
+        } catch (Exception ex) {
+            map.put("msg", MessageCode.EXCEPTION.getMsg() + " : " + ex.getMessage());
+            map.put("code", MessageCode.EXCEPTION.getCode());
+            map.put("data", null);
+            map.put("count", count == null ? 0L : count);
+        }
+        return map;
+    }
+
+    /**
+     * 获取id集合
+     *
+     * @param userList
+     * @return
+     */
+    private List<Long> getUserIds(List<SysUser> userList) {
+        List<Long> userIds = new ArrayList<>();
+        for (SysUser sysUser : userList) {
+            userIds.add(sysUser.getUserId());
+        }
+        return userIds;
+    }
 
     @Override
     public SysUser checkLogin(String username, String password) {
@@ -71,6 +132,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, Long> implement
         return sysUserMapper.insertSelective(sysUser);
     }
 
+    /**
+     * 处理添加时密码加密
+     *
+     * @param sysUser
+     * @return
+     */
     @Override
     public int addSelective(SysUser sysUser) {
         String salt = MD5SaltUtils.getSalt();
@@ -84,6 +151,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, Long> implement
         return super.addSelective(sysUser);
     }
 
+    /**
+     * 更新时密码加密处理
+     *
+     * @param sysUser
+     * @return
+     */
     @Override
     public int updateByIdSelective(SysUser sysUser) {
 
@@ -101,8 +174,82 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, Long> implement
         if (StringUtils.isEmpty(sysUser.getHeaderImg())) {
             sysUser.setHeaderImg("face.jpg");
         }
-        sysUser.setModifyTime(new Date());
+
         return super.updateByIdSelective(sysUser);
+    }
+
+    /**
+     * 添加用户信息及分配角色
+     *
+     * @param sysUser
+     * @return
+     */
+    @Override
+    public int addAndRoleSelective(SysUser sysUser) {
+
+        int res = addSelective(sysUser);
+        if (res > 0) {
+            SysUser user = sysUserMapper.findUserByUsername(sysUser.getUserName());
+            res = sysUserRoleMapper.insertBatch(user.getUserId(), getRoleIdList(sysUser.getRoleIdStr()), sysUser.getModifyBy());
+        } else {
+            res = 0;
+        }
+        return res;
+    }
+
+    /**
+     * 更新用户信息及分配角色
+     *
+     * @param sysUser 用户信息
+     * @return
+     */
+    @Override
+    public int updateAndRoleByIdSelective(SysUser sysUser) {
+
+        sysUser.setModifyTime(new Date());
+        int res = updateByIdSelective(sysUser);
+        if (res > 0) {
+            SysUserRoleExample sysUserRoleExample = new SysUserRoleExample();
+            sysUserRoleExample.createCriteria().andUserIdEqualTo(sysUser.getUserId());
+            res = sysUserRoleMapper.deleteByExample(sysUserRoleExample);
+            if(res >= 0) {
+                res = sysUserRoleMapper.insertBatch(sysUser.getUserId(), getRoleIdList(sysUser.getRoleIdStr()), sysUser.getModifyBy());
+            } else {
+                res = 0;
+            }
+        } else {
+            res = 0;
+        }
+        return res;
+    }
+
+    /**
+     * 删除对应ID用户及用户角色关系
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    @Override
+    public int deleteAndRoleById(Long userId) {
+
+        int res = sysUserMapper.deleteByPrimaryKey(userId);
+        if (res > 0) {
+            SysUserRoleExample sysUserRoleExample = new SysUserRoleExample();
+            sysUserRoleExample.createCriteria().andUserIdEqualTo(userId);
+            res = sysUserRoleMapper.deleteByExample(sysUserRoleExample);
+        } else {
+            res = 0;
+        }
+        return res;
+    }
+
+    private List<Long> getRoleIdList(String roleIdStr) {
+        List<Long> roleIdList = new ArrayList<>();
+        String[] roleStrArray = roleIdStr.split(",");
+        for (String roleId : roleStrArray) {
+            roleIdList.add(Long.parseLong(roleId));
+        }
+        return roleIdList;
     }
 
     /**
@@ -139,8 +286,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, Long> implement
     /**
      * 更新对应邮箱地址的用户密码
      *
-     * @param email 邮箱
-     * @param password   密码
+     * @param email    邮箱
+     * @param password 密码
      * @return
      */
     @Override
@@ -149,7 +296,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, Long> implement
         //查询对应邮箱的用户信息
         SysUser sysUser = sysUserMapper.findUserByEmail(email);
 
-        if(sysUser == null) {
+        if (sysUser == null) {
             return 0;
         }
         String salt = MD5SaltUtils.getSalt();

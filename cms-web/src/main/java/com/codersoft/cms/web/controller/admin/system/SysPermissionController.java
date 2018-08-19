@@ -12,12 +12,9 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @program: SysPermissionController
@@ -58,6 +55,7 @@ public class SysPermissionController extends BaseController<SysPermission, Long>
 
     /**
      * 获取对应父IDd的权限菜单列表
+     *
      * @param parentId 父权限ID
      * @return
      */
@@ -89,4 +87,39 @@ public class SysPermissionController extends BaseController<SysPermission, Long>
             return ResultMessageUtils.returnExpectionResultMessage(MessageCode.PER_DATA_LOAD_FAIL, ex.getMessage());
         }
     }
+
+    /**
+     * 获取对应角色ID的权限树
+     *
+     * @param roleId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/permissionTree", method = RequestMethod.GET)
+    public List<Map<String, Object>> permissionTree(@RequestParam("roleId") Long roleId) {
+        return sysPermissionService.permissionTree(roleId);
+    }
+
+    /**
+     * 删掉对应权限ID的权限及权限角色对应关系
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/delAndRole")
+    @ResponseBody
+    public ResultMessage delAndRole(@RequestParam("id") Long id) {
+
+        int deleteRes = 0;
+        try {
+            deleteRes = sysPermissionService.deleteAndRoleById(id);
+            if (deleteRes == 0) {
+                return ResultMessageUtils.returnResultMessage(MessageCode.DELETE_ROLE_PERMISSION_FAIL);
+            }
+            return ResultMessageUtils.returnResultMessage(getSuccessMsg());
+        } catch (Exception e) {
+            return ResultMessageUtils.returnExpectionResultMessage(MessageCode.DELETE_ROLE_PERMISSION_FAIL, e.getMessage());
+        }
+    }
+
 }

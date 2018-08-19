@@ -28,6 +28,18 @@ public class SysRole extends PageDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public SysRole() {
+    }
+
+    public SysRole(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public SysRole(Long roleId, String roleName) {
+        this.roleId = roleId;
+        this.roleName = roleName;
+    }
+
     public Long getRoleId() {
         return roleId;
     }

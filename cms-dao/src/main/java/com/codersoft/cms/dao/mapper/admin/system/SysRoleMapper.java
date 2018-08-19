@@ -26,4 +26,6 @@ public interface SysRoleMapper extends BaseMapper<SysRole, Long> {
      */
     SysRole findRoleByRoleName(String roleName);
 
+
+
 }

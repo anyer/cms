@@ -13,12 +13,15 @@
           data-th-href="@{/statics/admin/plug/layui_v2.3.0/css/layui.css}">
     <link rel="stylesheet" href="../../../../../statics/admin/css/global.css"
           data-th-href="@{/statics/admin/css/global.css}">
-    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_9h680jcse4620529.css">
+    <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/larry.css"
+          data-th-href="@{/statics/admin/css/larry.css}">
 
     <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/common.css" media="all"
           data-th-href="@{/statics/admin/css/common.css}">
     <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/personal.css" media="all"
           data-th-href="@{/statics/admin/css/personal.css}">
+    <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/js/zTree/css/zTreeStyle/zTreeStyle.css" media="all"
+          data-th-href="@{/statics/admin/js/zTree/css/zTreeStyle/zTreeStyle.css}">
 <body>
 <div class="larry-grid layui-anim layui-anim-upbit larryTheme-A">
     <div class="larry-personal">
@@ -59,12 +62,15 @@
 
 <script type="text/javascript" src="../../../../../statics/admin/plug/layui_v2.3.0/layui.js"
         data-th-src="@{/statics/admin/plug/layui_v2.3.0/layui.js}"></script>
+<script type="text/javascript" src="../../../../../statics/admin/js/jquery-1.8.3.js"
+        data-th-src="@{/statics/admin/js/jquery-1.8.3.js}"></script>
+<script type="text/javascript" src="../../../../../statics/admin/js/zTree/js/jquery.ztree.all-3.5.min.js"
+        data-th-src="@{/statics/admin/js/zTree/js/jquery.ztree.all-3.5.min.js}"></script>
 <script type="text/javascript">
     layui.config({
         base: "/statics/admin/js/"
     }).use(['form', 'table', 'layer', 'common', 'util'], function () {
-        var $ = layui.$,
-            form = layui.form,
+        var form = layui.form,
             table = layui.table,
             layer = layui.layer,
             common = layui.common,
@@ -89,6 +95,7 @@
                     {field: 'roleName', title: '角色名称', align: 'center'},
                     {field: 'roleCode', title: '角色编码', align: 'center'},
                     {field: 'status', title: '角色状态', align: 'center', templet: '#statusTpl'},
+                    {field: 'description', title: '角色描述', align: 'center'},
                     {field: 'createBy', title: '创建人', align: 'center'},
                     {
                         field: 'createTime',
@@ -97,7 +104,7 @@
                         align: 'center',
                         templet: '#createTimeTpl'
                     },
-                    {title: '操作', align: 'center', toolbar: '#toolBar'}
+                    {title: '操作', align: 'center', toolbar: '#toolBar', width: 150, fixed: 'right'}
                 ]
             ],
             page: true
@@ -151,13 +158,15 @@
                     //obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                     layer.close(index);
                 });
+            }else if (layEvent === 'auth') {
+                permissionDialog(roleId);
             }
         });
 
         function deleteData(id, obj) {
             var delLoading = top.layer.msg('数据删除中，请稍候', {icon: 16, time: false, shade: 0.8});
             $.ajax({
-                url: '/admin/role/delete',
+                url: '/admin/role/delAndPermission',
                 type: 'post',
                 dataType: 'json',
                 async: false,
@@ -168,12 +177,66 @@
                         obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                         common.cmsLaySuccessMsg("删除成功")
                     } else {
+                        if($("#status").val() == 2) {
+                            common.cmsLayErrorMsg("角色失效，不可分配权限！！！")
+                            return false;
+                        }
                         common.cmsLayErrorMsg(data.returnMessage);
                     }
                 }
                 , error: function (data) {
                     top.layer.close(delLoading);
                     common.cmsLayErrorMsg(data.returnExpectionMsg);
+                }
+            });
+        }
+
+        // 权限分配
+        function permissionDialog(roleId) {
+            layer.open({
+                type: 1,
+                title: '权限分配',
+                area: ['450px', '380px'],
+                offset: '75px',
+                content: '<ul id="treeAuth" class="ztree" style="padding: 25px 0px 20px 60px;"></ul>',
+                btn: ['保存', '关闭'],
+                btnAlign: 'c',
+                success: function (layero, index) {
+                    $(layero).children('.layui-layer-content').css('overflow-y', 'auto');
+                    layer.load(2);
+                    var setting = {
+                        check: {enable: true},
+                        data: {
+                            simpleData: {enable: true}
+                        }
+                    };
+                    $.get('/admin/permission/permissionTree', {
+                        roleId: roleId
+                    }, function (data) {
+                        $.fn.zTree.init($('#treeAuth'), setting, data);
+                        layer.closeAll('loading');
+                    }, 'json');
+                },
+                yes: function (index) {
+                    layer.load(1);
+                    var treeObj = $.fn.zTree.getZTreeObj('treeAuth');
+                    var nodes = treeObj.getCheckedNodes(true);
+                    var ids = new Array();
+                    for (var i = 0; i < nodes.length; i++) {
+                        ids[i] = nodes[i].id;
+                    }
+                    $.post('/admin/role/addPermission', {
+                        roleId: roleId,
+                        perIDs: JSON.stringify(ids)
+                    }, function (data) {
+                        layer.closeAll('loading');
+                        if (data.returnCode == "SUCCESS") {
+                            common.cmsLaySuccessMsg("权限分配成功")
+                            layer.close(index);
+                        } else {
+                            common.cmsLayErrorMsg("权限分配失败: " + data.returnMessage);
+                        }
+                    }, 'json');
                 }
             });
         }
@@ -199,14 +262,17 @@
 <!--工具条 -->
 <script type="text/html" id="toolBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">
-            <i class="layui-icon larry-icon larry-gongzuoneirong"></i>
-        </a>
-        <a class="layui-btn layui-btn-xs" lay-event="edit">
+        <!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" lay-tips="查看">-->
+            <!--<i class="layui-icon larry-icon larry-gongzuoneirong"></i>-->
+        <!--</a>-->
+        <a class="layui-btn layui-btn-xs" lay-event="edit" lay-tips="编辑">
             <i class="layui-icon larry-icon larry-bianji3"></i>
         </a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete" lay-tips="删除">
             <i class="layui-icon larry-icon larry-ttpodicon"></i>
+        </a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="auth" lay-tips="权限分配">
+            <i class="layui-icon larry-icon larry-caidanguanli"></i>
         </a>
     </div>
 </script>

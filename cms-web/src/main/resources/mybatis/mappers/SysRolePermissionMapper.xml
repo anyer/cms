@@ -255,4 +255,12 @@
       modify_time = #{modifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <insert id="insertBatch">
+    INSERT INTO t_sys_role_permission (role_id, permission_id, create_by, create_time) VALUES
+    <foreach collection="perIdList" item="permissionId" separator=",">
+      (#{roleId, jdbcType=BIGINT},#{permissionId, jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR},SYSDATE())
+    </foreach>
+  </insert>
+
 </mapper>

@@ -13,7 +13,8 @@
           data-th-href="@{/statics/admin/plug/layui_v2.3.0/css/layui.css}">
     <link rel="stylesheet" href="../../../../../statics/admin/css/global.css"
           data-th-href="@{/statics/admin/css/global.css}">
-    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_9h680jcse4620529.css">
+    <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/larry.css"
+          data-th-href="@{/statics/admin/css/larry.css}">
 
     <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/common.css" media="all"
           data-th-href="@{/statics/admin/css/common.css}">
@@ -87,7 +88,7 @@
             size: 'sm',
             cols: [
                 [
-                    {type: "numbers"},
+                    {type: "numbers", width:40},
                     {type: "checkbox"},
                     // {field: 'permissionId', title: 'ID', align: 'center'},
                     // {field: 'parentId', title: '父ID', align: 'center'},
@@ -104,7 +105,7 @@
                         align: 'center',
                         templet: '#createTimeTpl'
                     },
-                    {title: '操作', align: 'center', toolbar: '#perToolBar'}
+                    {title: '操作', align: 'center', toolbar: '#perToolBar', width:150,fixed: 'right'}
                 ]
             ],
             page: true
@@ -164,7 +165,7 @@
         function delPermission(id, obj) {
             var delLoading = top.layer.msg('数据删除中，请稍候', {icon: 16, time: false, shade: 0.8});
             $.ajax({
-                url: '/admin/permission/delete',
+                url: '/admin/permission/delAndRole',
                 type: 'post',
                 dataType: 'json',
                 async: false,
@@ -243,13 +244,13 @@
 <!--工具条 -->
 <script type="text/html" id="perToolBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="per_detail">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="per_detail" lay-tips="查看">
             <i class="layui-icon larry-icon larry-gongzuoneirong"></i>
         </a>
-        <a class="layui-btn layui-btn-xs" lay-event="per_edit">
+        <a class="layui-btn layui-btn-xs" lay-event="per_edit" lay-tips="编辑">
             <i class="layui-icon larry-icon larry-bianji3"></i>
         </a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="per_del">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="per_del" lay-tips="删除">
             <i class="layui-icon larry-icon larry-ttpodicon"></i>
         </a>
     </div>

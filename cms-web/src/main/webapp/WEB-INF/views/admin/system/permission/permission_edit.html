@@ -11,7 +11,8 @@
 
     <link rel="stylesheet" href="../../../../../statics/admin/plug/layui_v2.3.0/css/layui.css"
           data-th-href="@{/statics/admin/plug/layui_v2.3.0/css/layui.css}">
-    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_9h680jcse4620529.css">
+    <link rel="stylesheet" type="text/css" href="../../../../../statics/admin/css/larry.css"
+          data-th-href="@{/statics/admin/css/larry.css}">
 </head>
 <body class="childrenBody" style="font-size: 12px;margin: 10px 10px 0;">
 
@@ -195,17 +196,12 @@
 
             var pageFlag = $("#pageFlag").val();
             if (pageFlag == "detail") {
-                $("#perName").attr("disabled", "disabled");
-                $("#perLevel").attr("disabled", "disabled");
-                $("#parentId").attr("disabled", "disabled");
-                $("#status").attr("disabled", "disabled");
-                $("#uri").attr("disabled", "disabled");
-                $("#select_icon").attr("disabled", "disabled");
-                // $("#description").attr("disabled", "disabled");
+                $("#data-form input").attr("disabled", "disabled");
+                $("#data-form select").attr("disabled", "disabled");
             }
 
-            //初始化表单
-            form.render('select');
+            //渲染表单
+            form.render();
         }
 
         //加载父级权限

@@ -12,6 +12,30 @@ import com.codersoft.cms.service.common.BaseService;
 public interface SysUserService extends BaseService<SysUser, Long> {
 
     /**
+     * 添加用户信息及分配角色
+     *
+     * @param sysUser
+     * @return
+     */
+    int addAndRoleSelective(SysUser sysUser);
+
+    /**
+     * 更新用户信息及分配角色
+     *
+     * @param sysUser 用户信息
+     * @return
+     */
+    int updateAndRoleByIdSelective(SysUser sysUser);
+
+    /**
+     * 删除对应ID用户及用户角色关系
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    int deleteAndRoleById(Long userId);
+
+    /**
      * 登录验证
      *
      * @param username 用户名

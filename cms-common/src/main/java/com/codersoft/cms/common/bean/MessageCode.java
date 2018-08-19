@@ -69,8 +69,14 @@ public enum MessageCode {
     ROLE_RES_SAVE_ERROR("ROLE_RES_SAVE_ERROR", "角色分配菜单失败"),
     ROLE_NAME_EXIST("ROLE_NAME_EXIST", "角色名称已存在，请重新输入"),
 
+    SAVE_USER_ROLE_FAIL("SAVE_USER_ROLE_FAIL", "添加用户角色失败"),
+    DELETE_USER_ROLE_FAIL("DELETE_USER_ROLE_FAIL", "删除用户角色失败"),
+
+    SAVE_ROLE_PERMISSION_FAIL("SAVE_ROLE_PERMISSION_FAIL", "添加角色权限失败"),
+    DELETE_ROLE_PERMISSION_FAIL("DELETE_ROLE_PERMISSION_FAIL", "删除角色权限失败"),
+
     /**
-     * 权限相关
+     * 组织相关
      */
     ORG_SAVE_FAIL("ORG_SAVE_FAIL", "组织信息保存失败"),
     ORG_DELETE_FAIL("ORG_DELETE_FAIL", "组织信息删除失败"),

@@ -4,6 +4,7 @@ import com.codersoft.cms.dao.dto.PageDto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class SysUser extends PageDto implements Serializable {
     private Long userId;
@@ -97,7 +98,8 @@ public class SysUser extends PageDto implements Serializable {
     }
 
     public void setHeaderImg(String headerImg) {
-        this.headerImg = headerImg == null ? null : headerImg.trim();;
+        this.headerImg = headerImg == null ? null : headerImg.trim();
+        ;
     }
 
     public Byte getIsDelete() {
@@ -186,4 +188,40 @@ public class SysUser extends PageDto implements Serializable {
         this.captcha = captcha == null ? null : captcha.trim();
     }
 
+    /**
+     * 角色集合
+     */
+    private List<SysRole> roleList;
+    /**
+     * 角色ID集合
+     */
+    private List<Long> roleLongList;
+    /**
+     * 角色ID字符串
+     */
+    private String roleIdStr;
+
+    public List<SysRole> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<SysRole> roleList) {
+        this.roleList = roleList;
+    }
+
+    public List<Long> getRoleLongList() {
+        return roleLongList;
+    }
+
+    public void setRoleLongList(List<Long> roleLongList) {
+        this.roleLongList = roleLongList;
+    }
+
+    public String getRoleIdStr() {
+        return roleIdStr;
+    }
+
+    public void setRoleIdStr(String roleIdStr) {
+        this.roleIdStr = roleIdStr;
+    }
 }

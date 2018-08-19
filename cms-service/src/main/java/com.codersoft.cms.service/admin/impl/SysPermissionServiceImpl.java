@@ -1,9 +1,13 @@
 package com.codersoft.cms.service.admin.impl;
 
+import com.codersoft.cms.common.bean.ResultMessage;
 import com.codersoft.cms.dao.dto.DirectoryPermissionDto;
 import com.codersoft.cms.dao.dto.MenuPermissionDto;
 import com.codersoft.cms.dao.entity.SysPermission;
+import com.codersoft.cms.dao.entity.SysPermissionExample;
+import com.codersoft.cms.dao.entity.SysRolePermissionExample;
 import com.codersoft.cms.dao.mapper.admin.system.SysPermissionMapper;
+import com.codersoft.cms.dao.mapper.admin.system.SysRolePermissionMapper;
 import com.codersoft.cms.service.admin.SysPermissionService;
 import com.codersoft.cms.service.common.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +27,12 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermission, Lon
 
     @Autowired
     private SysPermissionMapper sysPermissionMapper;
-
-    @Override
-    public SysPermission selectBytId(Long id) {
-        return selectSysPermissionById(id);
-    }
+    @Autowired
+    private SysRolePermissionMapper sysRolePermissionMapper;
 
     @Override
     public int addSelective(SysPermission sysPermission) {
-        if(StringUtils.isEmpty(sysPermission.getUri())) {
+        if (StringUtils.isEmpty(sysPermission.getUri())) {
             sysPermission.setUri("#");
         }
         return super.addSelective(sysPermission);
@@ -39,7 +40,7 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermission, Lon
 
     @Override
     public int updateByIdSelective(SysPermission sysPermission) {
-        if(StringUtils.isEmpty(sysPermission.getUri())) {
+        if (StringUtils.isEmpty(sysPermission.getUri())) {
             sysPermission.setUri("#");
         }
         sysPermission.setModifyTime(new Date());
@@ -116,13 +117,53 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermission, Lon
     }
 
     /**
-     * 获取对应ID的权限信息
+     * 获取对应角色ID的权限树
      *
-     * @param permissionId 权限ID
+     * @param roleId 角色ID
      * @return
      */
     @Override
-    public SysPermission selectSysPermissionById(Long permissionId) {
-        return sysPermissionMapper.selectPermissionAndParentNameByPrimaryKey(permissionId);
+    public List<Map<String, Object>> permissionTree(Long roleId) {
+
+        List<SysPermission> rolePermission = sysPermissionMapper.selectListByRoleId(roleId);
+        List<SysPermission> permissionList = sysPermissionMapper.selectByExample(new SysPermissionExample());
+        List<Map<String, Object>> permissionTreeList = new ArrayList<>();
+        for (SysPermission sysPermission : permissionList) {
+            Map<String, Object> permissionTree = new HashMap<>();
+            permissionTree.put("id", sysPermission.getPermissionId());
+            permissionTree.put("name", sysPermission.getPerName() + "  " + sysPermission.getPerCode());
+            permissionTree.put("pId", sysPermission.getParentId());
+            permissionTree.put("open", true);
+            permissionTree.put("checked", false);
+            for (SysPermission permission : rolePermission) {
+                if (permission.getPermissionId().equals(sysPermission.getPermissionId())) {
+                    permissionTree.put("checked", true);
+                    break;
+                }
+            }
+            permissionTreeList.add(permissionTree);
+        }
+        return permissionTreeList;
     }
+
+    /**
+     * 删除对应权限ID的权限及权限角色关系
+     *
+     * @param permissionId
+     * @return
+     */
+    @Override
+    public int deleteAndRoleById(Long permissionId) {
+
+        int res = sysPermissionMapper.deleteByPrimaryKey(permissionId);
+        if (res > 0) {
+            SysRolePermissionExample sysRolePermissionExample = new SysRolePermissionExample();
+            sysRolePermissionExample.createCriteria().andPermissionIdEqualTo(permissionId);
+            res = sysRolePermissionMapper.deleteByExample(sysRolePermissionExample);
+        } else {
+            res = 0;
+        }
+        return res;
+    }
+
 }

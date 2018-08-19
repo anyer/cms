@@ -6,7 +6,6 @@ import com.codersoft.cms.common.utils.ResultMessageUtils;
 import com.codersoft.cms.service.common.BaseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
 import lombok.Setter;

@@ -19,4 +19,21 @@ public interface SysRoleService extends BaseService<SysRole, Long> {
      */
     SysRole checkRoleNameIsExist(String roleName);
 
+    /**
+     * 添加对应ID角色的角色权限关系
+     *
+     * @param roleId        角色ID
+     * @param permissionIds 权限ID集合字符串
+     * @param userName      用户名称
+     * @return
+     */
+    int addRolePermission(Long roleId, String permissionIds, String userName);
+
+    /**
+     * 删除角色信息及角色权限对应关系
+     *
+     * @param roleId 角色ID
+     * @return
+     */
+    int deleteAndPermissionById(Long roleId);
 }

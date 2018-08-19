@@ -20,6 +20,9 @@ public class SysUserRole implements Serializable {
 
     private Date modifyTime;
 
+    //角色名称
+    private String roleName;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -86,6 +89,14 @@ public class SysUserRole implements Serializable {
         this.modifyTime = modifyTime;
     }
 
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -95,6 +106,7 @@ public class SysUserRole implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", userId=").append(userId);
         sb.append(", roleId=").append(roleId);
+        sb.append(", roleName=").append(roleName);
         sb.append(", isDelete=").append(isDelete);
         sb.append(", createBy=").append(createBy);
         sb.append(", createTime=").append(createTime);
