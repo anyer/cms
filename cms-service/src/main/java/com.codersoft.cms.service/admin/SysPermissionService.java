@@ -16,6 +16,14 @@ import java.util.Map;
 public interface SysPermissionService extends BaseService<SysPermission, Long> {
 
     /**
+     * 获取对应用户ID的权限集合
+     *
+     * @param userId
+     * @return
+     */
+    List<SysPermission> selectPermissionListByUserId(Long userId);
+
+    /**
      * 获取目录类型权限集合
      *
      * @return

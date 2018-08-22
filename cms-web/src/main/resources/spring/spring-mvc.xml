@@ -99,4 +99,5 @@
         <!--DispatcherServlet子容器必须排除扫描注入service,否则service没有事务加强处理 -->
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
     </context:component-scan>
+
 </beans>

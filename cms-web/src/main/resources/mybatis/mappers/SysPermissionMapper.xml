@@ -472,9 +472,10 @@
     <select id="selectParentListByPerLevel" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM t_sys_permission WHERE per_type &lt;2 AND per_level = #{perLevel,jdbcType=TINYINT}
+        FROM t_sys_permission WHERE status = 1 AND per_type &lt;2 AND per_level = #{perLevel,jdbcType=TINYINT}
     </select>
 
+    <!-- 获取对应用户ID的权限集合 -->
     <select id="selectListByUserId" parameterType="Long" resultType="com.codersoft.cms.dao.entity.SysPermission">
         SELECT
           <include refid="Base_Column_List"/>
@@ -488,10 +489,11 @@
             LEFT JOIN t_sys_user_role ur ON rp.role_id = ur.role_id
             WHERE
               ur.user_id = #{userId, jdbcType=BIGINT}
-            ) AS rp ON p.permission_id = rp.permission_id
+            ) AS rp ON p.permission_id = rp.permission_id AND  p.status = 1
         ORDER BY p.permission_id ASC
     </select>
 
+    <!-- 获取对应角色ID的权限集合 -->
     <select id="selectListByRoleId" resultType="com.codersoft.cms.dao.entity.SysPermission">
         SELECT
         p.*
@@ -499,9 +501,12 @@
         t_sys_permission p
         LEFT JOIN t_sys_role_permission rp ON p.permission_id = rp.permission_id
         WHERE
+        p.status = 1
+        AND
         rp.role_id = #{roleId, jdbcType=BIGINT}
     </select>
 
+    <!-- 获取对应角色ID集合的权限集合 -->
     <select id="selectListByRoleIdList" resultType="com.codersoft.cms.dao.entity.SysPermission">
         SELECT
           p.*
@@ -509,6 +514,7 @@
           t_sys_permission p
         LEFT JOIN t_sys_role_permission rp ON p.permission_id = rp.permission_id
         WHERE
+            p.status = 1 AND
             rp.role_id IN (
                 <foreach collection="roleIdList" separator="," item="roleId">
                     #{roleId, jdbcType=BIGINT}

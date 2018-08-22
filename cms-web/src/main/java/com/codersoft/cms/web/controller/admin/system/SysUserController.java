@@ -108,7 +108,9 @@ public class SysUserController extends BaseController<SysUser, Long> {
     @RequestMapping("/toDetail")
     public String toDetail(Model model) {
 
-        List<SysRole> roles = sysRoleMapper.selectByExample(new SysRoleExample());
+        SysRoleExample sysRoleExample = new SysRoleExample();
+        sysRoleExample.createCriteria().andStatusEqualTo((byte)1);
+        List<SysRole> roles = sysRoleMapper.selectByExample(sysRoleExample);
         model.addAttribute("roles", roles);
         model.addAttribute("pageFlag", "detail");
 

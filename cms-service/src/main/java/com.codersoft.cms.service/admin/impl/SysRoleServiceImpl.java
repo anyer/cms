@@ -43,7 +43,29 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRole, Long> implement
     @Override
     public int updateByIdSelective(SysRole sysRole) {
         sysRole.setModifyTime(new Date());
+
+        //TODO 角色状态改变时，角色权限关系表对应处理
+        //判断是否修改角色状态，角色状态设置为0，则删除对应角色分配关系
+        if(sysRole.getStatus() == 0) {
+            SysRolePermissionExample sysRolePermissionExample = new SysRolePermissionExample();
+            sysRolePermissionExample.createCriteria().andRoleIdEqualTo(sysRole.getRoleId());
+            if(sysRolePermissionMapper.deleteByExample(sysRolePermissionExample) < 0) {
+                return -2;
+            }
+        }
+
         return super.updateByIdSelective(sysRole);
+    }
+
+    /**
+     * 获取对应用户ID的角色集合
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    @Override
+    public List<SysRole> selectRoleListByUserId(Long userId) {
+        return sysRoleMapper.selectByUserId(userId);
     }
 
     /**

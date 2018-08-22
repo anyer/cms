@@ -59,8 +59,6 @@ public interface SysPermissionMapper extends BaseMapper<SysPermission, Long> {
      */
     List<SysPermission> selectListByUserId(@Param("userId") Long userId);
 
-
-
     /**
      * 查询对应角色ID的权限集合
      *

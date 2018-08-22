@@ -21,6 +21,12 @@ public class SysOrganizationServiceImpl extends BaseServiceImpl<SysOrganization,
     @Autowired
     private SysOrganizationMapper sysOrganizationMapper;
 
+    @Override
+    public int updateByIdSelective(SysOrganization sysOrganization) {
+        sysOrganization.setModifyTime(new Date());
+        return super.updateByIdSelective(sysOrganization);
+    }
+
     /**
      * 验证组织名称是否存在
      *
@@ -30,11 +36,5 @@ public class SysOrganizationServiceImpl extends BaseServiceImpl<SysOrganization,
     @Override
     public SysOrganization checkOrgNameIsExist(String orgName) {
         return sysOrganizationMapper.findOrganizationByOrgName(orgName);
-    }
-
-    @Override
-    public int updateByIdSelective(SysOrganization sysOrganization) {
-        sysOrganization.setModifyTime(new Date());
-        return super.updateByIdSelective(sysOrganization);
     }
 }

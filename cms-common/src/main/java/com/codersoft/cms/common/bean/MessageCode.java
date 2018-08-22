@@ -27,6 +27,7 @@ public enum MessageCode {
     UPDATE_DATE_FAIL("UPDATE_DATE_FAIL", "更新最后登陆时间失败"),
     LOGIN_FAIL("LOGIN_FAIL", "用户名或密码不匹配"),
     LOGIN_ERROR("LOGIN_ERROR", "系统登录异常"),
+    LOGIN_EXPIRED("LOGIN_EXPIRED", "登录过期，请重新登录"),
     CAPTCHA_IS_NULL("CAPTCHA_IS_NULL", "验证码不能为空"),
     CAPTCHA_IS_ERROR("CAPTCHA_IS_ERROR", "验证码输入错误"),
     ACCOUNT_DISABLE("ACCOUNT_DISABLE", "您的账号已停用，请联系管理员处理"),

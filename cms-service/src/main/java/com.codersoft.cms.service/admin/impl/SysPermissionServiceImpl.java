@@ -40,9 +40,21 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermission, Lon
 
     @Override
     public int updateByIdSelective(SysPermission sysPermission) {
+
+        //TODO 权限状态改变时，角色权限关系表处理
+        //权限状态为0时，清除对应角色权限关系
+        if(sysPermission.getStatus() == 0) {
+            SysRolePermissionExample sysRolePermissionExample = new SysRolePermissionExample();
+            sysRolePermissionExample.createCriteria().andPermissionIdEqualTo(sysPermission.getPermissionId());
+            if(sysRolePermissionMapper.deleteByExample(sysRolePermissionExample) < 0) {
+                return -2;
+            }
+        }
+
         if (StringUtils.isEmpty(sysPermission.getUri())) {
             sysPermission.setUri("#");
         }
+
         sysPermission.setModifyTime(new Date());
         return super.updateByIdSelective(sysPermission);
     }
@@ -60,6 +72,11 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermission, Lon
             return directoryPermissionDtoList;
         }
         return null;
+    }
+
+    @Override
+    public List<SysPermission> selectPermissionListByUserId(Long userId) {
+        return sysPermissionMapper.selectListByUserId(userId);
     }
 
     /**

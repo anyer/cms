@@ -2,6 +2,7 @@ package com.codersoft.cms.dao.mapper.admin.system;
 
 import com.codersoft.cms.dao.entity.SysRole;
 import com.codersoft.cms.dao.entity.SysRoleExample;
+
 import java.util.List;
 
 import com.codersoft.cms.dao.mapper.common.BaseMapper;
@@ -21,11 +22,18 @@ public interface SysRoleMapper extends BaseMapper<SysRole, Long> {
 
     /**
      * 查找对应角色名的角色信息
+     *
      * @param roleName 角色名称
      * @return
      */
     SysRole findRoleByRoleName(String roleName);
 
-
+    /**
+     * 获取对应用户ID的角色集合
+     *
+     * @param userId
+     * @return
+     */
+    List<SysRole> selectByUserId(@Param("userId") Long userId);
 
 }

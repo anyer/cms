@@ -10,8 +10,7 @@
     <!-- 启用缓存注解功能(请将其配置在Spring主配置文件中) -->
     <cache:annotation-driven cache-manager="cacheManager"/>
 
-    <bean id="cacheManagerFactory"
-          class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    <bean id="cacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation" value="classpath:config/ehcache.xml"/>
         <property name="shared" value="true"></property> <!-- 这里是关键！！！没有必错  -->
     </bean>

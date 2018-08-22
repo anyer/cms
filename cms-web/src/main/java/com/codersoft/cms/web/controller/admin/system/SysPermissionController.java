@@ -5,6 +5,7 @@ import com.codersoft.cms.common.bean.ResultMessage;
 import com.codersoft.cms.common.utils.ResultMessageUtils;
 import com.codersoft.cms.dao.dto.DirectoryPermissionDto;
 import com.codersoft.cms.dao.entity.SysPermission;
+import com.codersoft.cms.dao.entity.SysUser;
 import com.codersoft.cms.service.admin.SysPermissionService;
 import com.codersoft.cms.web.controller.admin.BaseController;
 import io.swagger.annotations.Api;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -98,6 +100,16 @@ public class SysPermissionController extends BaseController<SysPermission, Long>
     @RequestMapping(value = "/permissionTree", method = RequestMethod.GET)
     public List<Map<String, Object>> permissionTree(@RequestParam("roleId") Long roleId) {
         return sysPermissionService.permissionTree(roleId);
+    }
+
+    @RequestMapping(value = "/updatePermission", method = RequestMethod.GET)
+    @ResponseBody
+    public ResultMessage permissionTree(@RequestBody SysPermission sysPermission, HttpSession httpSession) {
+
+        SysUser sysUser = (SysUser)httpSession.getAttribute("sysUser");
+        sysPermission.setModifyBy(sysUser.getUserName());
+
+        return updateData(sysPermission);
     }
 
     /**

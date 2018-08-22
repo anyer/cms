@@ -201,4 +201,5 @@
     <!--</bean>-->
 
     <import resource="spring-ehcache.xml"/>
+    <import resource="spring-shiro.xml"/>
 </beans>

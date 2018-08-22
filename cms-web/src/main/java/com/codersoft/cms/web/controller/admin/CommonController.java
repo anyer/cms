@@ -23,6 +23,17 @@ import javax.servlet.http.HttpSession;
 public class CommonController {
 
     /**
+     * 错误页
+     */
+    @RequestMapping("/error")
+    public String error(String code) {
+        if ("403".equals(code)) {
+            return "admin/common/403";
+        }
+        return "admin/common/404";
+    }
+
+    /**
      * 生成验证码
      * @return
      */
@@ -63,4 +74,6 @@ public class CommonController {
     public String toImageUploadPage() {
         return "admin/common/upload";
     }
+
+
 }

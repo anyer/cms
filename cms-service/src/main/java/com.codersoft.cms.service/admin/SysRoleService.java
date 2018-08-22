@@ -3,6 +3,8 @@ package com.codersoft.cms.service.admin;
 import com.codersoft.cms.dao.entity.SysRole;
 import com.codersoft.cms.service.common.BaseService;
 
+import java.util.List;
+
 /**
  * @program: SysRoleService
  * @author: Alex.D
@@ -36,4 +38,12 @@ public interface SysRoleService extends BaseService<SysRole, Long> {
      * @return
      */
     int deleteAndPermissionById(Long roleId);
+
+    /**
+     * 获取对应用户ID的角色集合
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    List<SysRole> selectRoleListByUserId(Long userId);
 }

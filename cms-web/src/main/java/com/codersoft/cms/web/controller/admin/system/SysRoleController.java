@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 /**
  * @program: SysRoleController
@@ -63,6 +64,16 @@ public class SysRoleController extends BaseController<SysRole, Long> {
         }
     }
 
+    @RequestMapping(value = "/updateRole", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMessage updateRole (@RequestBody SysRole sysRole, HttpSession httpSession) {
+
+        SysUser sysUser = (SysUser)httpSession.getAttribute("sysUser");
+        sysRole.setModifyBy(sysUser.getUserName());
+
+        return updateData(sysRole);
+    }
+
     @RequestMapping(value = "/addPermission",method = RequestMethod.POST)
     @ResponseBody
     public ResultMessage addRolePermission(@RequestParam("roleId") Long roleId, @RequestParam("perIDs")  String permissionIds, HttpSession httpSession) {
@@ -76,6 +87,8 @@ public class SysRoleController extends BaseController<SysRole, Long> {
             return ResultMessageUtils.returnExpectionResultMessage(MessageCode.SAVE_ROLE_PERMISSION_FAIL, ex.getMessage());
         }
     }
+
+
 
     @RequestMapping("/delAndPermission")
     @ResponseBody
