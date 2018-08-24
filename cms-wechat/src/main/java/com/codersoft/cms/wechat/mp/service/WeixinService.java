@@ -26,7 +26,7 @@ import static me.chanjar.weixin.common.api.WxConsts.*;
  * @return:
  * @auther: Yuanw
  * @email: wei.yuan04@mljr.com
- * @date: 2018年19月24日 上午11:19
+ * @date: 2018年8月24日 上午11:19
  */
 @Service
 public class WeixinService extends WxMpServiceImpl {

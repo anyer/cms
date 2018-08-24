@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @return:
  * @auther: Yuanw
  * @email: wei.yuan04@mljr.com
- * @date: 2018年14月24日 上午11:14
+ * @date: 2018年8月24日 上午11:14
  */
 public class WxMenuKey {
 

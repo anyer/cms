@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @return:
  * @auther: Yuanw
  * @email: wei.yuan04@mljr.com
- * @date: 2018年13月24日 上午11:13
+ * @date: 2018年8月24日 上午11:13
  */
 @Configuration
 public class WxMpConfig {

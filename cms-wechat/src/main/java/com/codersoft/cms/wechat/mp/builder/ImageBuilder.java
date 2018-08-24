@@ -13,7 +13,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
  * @return: me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage
  * @auther: Yuanw
  * @email: wei.yuan04@mljr.com
- * @date: 2018年12月24日 上午11:12
+ * @date: 2018年8月24日 上午11:12
  */
 public class ImageBuilder extends AbstractBuilder {
 

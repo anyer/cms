@@ -38,7 +38,7 @@
         容器中通过 <filter-name> 或 "targetBeanName" 参数（初始化默认取<filter-name>值）来查找) -->
     <!--<bean id="shiroFilter123" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">-->
 
-    <bean id="shiroFilter123" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <!--shiro整个的处理，都由securityManger指定和决定 -->
         <property name="securityManager" ref="securityManager"/>
         <!-- loginUrl==>如果登录成功，跳转到哪个页面，或者执行哪个请求 -->

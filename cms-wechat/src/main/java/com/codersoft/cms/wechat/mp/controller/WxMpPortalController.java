@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.*;
  * @return:
  * @auther: Yuanw
  * @email: wei.yuan04@mljr.com
- * @date: 2018年14月24日 上午11:14
+ * @date: 2018年8月24日 上午11:14
  */
 @RestController
 @RequestMapping("/wechat/portal")
 public class WxMpPortalController {
-
   @Autowired
   private WeixinService wxService;
   

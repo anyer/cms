@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @return:
  * @auther: Yuanw
  * @email: wei.yuan04@mljr.com
- * @date: 2018年15月24日 上午11:15
+ * @date: 2018年8月24日 上午11:15
  */
 public abstract class AbstractHandler implements WxMpMessageHandler {
 

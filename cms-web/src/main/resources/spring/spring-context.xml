@@ -107,6 +107,8 @@
                 <value>com.codersoft.cms.dao.*</value>
                 <value>com.codersoft.cms.service.*</value>
                 <value>com.codersoft.cms.web.controller.*</value>
+                <value>com.codersoft.cms.wechat.controller.*</value>
+
             </list>
         </property>
     </bean>

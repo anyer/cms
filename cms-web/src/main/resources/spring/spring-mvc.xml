@@ -93,7 +93,7 @@
     </bean>
 
     <!-- 使用Annotation自动注册Bean,只扫描@Controller -->
-    <context:component-scan base-package="com.codersoft.cms.web"
+    <context:component-scan base-package="com.codersoft.cms.web,com.codersoft.cms.wechat"
                             use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <!--DispatcherServlet子容器必须排除扫描注入service,否则service没有事务加强处理 -->
