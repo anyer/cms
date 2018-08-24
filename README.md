@@ -21,7 +21,7 @@
 |   cms-dao  |   数据库操作相关  |
 |   cms-service  |  业务处理相关   |
 |   cms-web   |   控制操作相关  |
-
+|   cms-wechat   |   微信相关  |
 ## 技术选型
 
 - Spring核心框架：Spring Framework 5.0.2
