@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.1.xsd"
+       default-lazy-init="true">
+
+    <description>Spring Configuration</description>
+
+    <!-- 使用Annotation自动注册Bean，解决事物失效问题：在主容器中不扫描@Controller注解，在SpringMvc中只扫描@Controller注解。  -->
+    <context:component-scan base-package="com.codersoft.cms"><!-- base-package 如果多个，用“,”分隔 -->
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 加载配置属性文件 -->
+    <context:property-placeholder
+            ignore-unresolvable="true"
+            location="classpath:property/app.properties"/>
+
+    <!-- flyway配置 -->
+    <bean id="flywayMigration" class="com.codersoft.cms.dao.flyway.FlywayMigration" init-method="migrate">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="table" value="${flyway.table}"/>
+        <property name="encoding" value="${flyway.encoding}"/>
+        <property name="baselineOnMigrate" value="${flyway.baselineOnMigrate}"/>
+        <property name="location" value="${flyway.location}"/>
+    </bean>
+
+    <!-- 配置数据库连接池：druid -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close" depends-on="flywayMigration">
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="driverClassName" value="${jdbc.driver}"/>
+
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="${druid.initialSize}"/>
+        <property name="minIdle" value="${druid.minIdle}"/>
+        <property name="maxActive" value="${druid.maxActive}"/>
+
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="${druid.maxWait}"/>
+
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}"/>
+
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}"/>
+
+        <property name="validationQuery" value="${druid.validationQuery}"/>
+        <property name="testWhileIdle" value="${druid.testWhileIdle}"/>
+        <property name="testOnBorrow" value="${druid.testOnBorrow}"/>
+        <property name="testOnReturn" value="${druid.testOnReturn}"/>
+
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        <property name="poolPreparedStatements" value="${druid.poolPreparedStatements}"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize"
+                  value="${druid.maxPoolPreparedStatementPerConnectionSize}"/>
+
+        <!-- 配置监控统计拦截的filters -->
+        <property name="filters" value="${druid.filters}"/>
+
+        <!-- 打开removeAbandoned功能 -->
+        <property name="removeAbandoned" value="${druid.removeAbandoned}"/>
+        <!-- 1800秒，也就是30分钟 -->
+        <property name="removeAbandonedTimeout" value="${druid.removeAbandonedTimeout}"/>
+        <!-- 关闭abanded连接时输出错误日志 -->
+        <property name="logAbandoned" value="${druid.logAbandoned}"/>
+        <property name="proxyFilters">
+            <list>
+                <ref bean="stat-filter"/>
+                <ref bean="log-filter"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 慢SQL记录  数据源配置 p:proxyFilters="stat-filter,log-filter"-->
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <!-- 慢sql时间设置,即执行时间大于1秒的都是慢sql -->
+        <property name="slowSqlMillis" value="1000"/>
+        <property name="logSlowSql" value="true"/>
+    </bean>
+    <bean id="log-filter" class="com.alibaba.druid.filter.logging.Log4jFilter">
+        <property name="dataSourceLogEnabled" value="true"/>
+        <property name="statementExecutableSqlLogEnable" value="true"/>
+    </bean>
+
+    <!--Start druid开启spring的监控 需要引入aspectjweaver包-->
+    <!--p:filters="stat,wall,log4j"   stat和wall。一个是用于监控，一个是用于防火墙。如果想使用sql防火墙，必须加上wall-->
+    <!--druid spring monitor setting-->
+    <bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor"/>
+    <bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" scope="prototype">
+        <property name="patterns">
+            <list>
+                <!-- 配置监听的bean路径 支持方法名的拦截 -->
+                <value>com.codersoft.cms.dao.*</value>
+                <value>com.codersoft.cms.service.*</value>
+                <value>com.codersoft.cms.web.controller.*</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 基于AspectJ的自动代理.使用AnnotationAwareAspectJAutoProxyCreator  -->
+    <!--<aop:aspectj-autoproxy proxy-target-class="true"/>-->
+    <aop:config>
+        <aop:advisor advice-ref="druid-stat-interceptor"
+                     pointcut-ref="druid-stat-pointcut"/>
+        <!-- pointcut-ref="druid-stat-pointcut"在idea中报Cannot resolve Spring Pointcut 'druid-stat-pointcut'  不用管它 -->
+    </aop:config>
+
+    <!-- 配置MyBatis的SessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" depends-on="flywayMigration">
+        <!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">-->
+        <!-- 注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 配置MyBaties全局配置文件:mybatis-config.xml -->
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"></property>
+        <!-- 扫描entity包 使用别名 -->
+        <property name="typeAliasesPackage" value="com.codersoft.cms.dao.entity"/>
+        <!-- 扫描mapping.xml文件 -->
+        <property name="mapperLocations" value="classpath:mybatis/mappers/*.xml"></property>
+    </bean>
+
+    <!-- 配置MyBatis的接口扫描 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入sqlSessionFactory -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        <!-- 需要扫描的Dao接口路径 -->
+        <property name="basePackage" value="com.codersoft.cms.dao"></property>
+    </bean>
+
+    <!-- 配置事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          depends-on="flywayMigration">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--事务通知-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--事务传播，默认REQUIRED，这是一个具有事务的方法，没有则创建事务-->
+            <!--事务隔离，默认DEFAULT，此设置是为了解决并发事务中，脏读、不可重复读外、幻读，性能会下降-->
+            <tx:method name="add*" isolation="SERIALIZABLE" propagation="REQUIRED"/>
+            <tx:method name="delete*"/>
+            <tx:method name="update*"/>
+            <!--只读事务，只做查询，不修改数据的事务。JDBC驱动会进行优化-->
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="*" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 开启注解进行事务管理 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+
+    <!-- Mail配置 -->
+    <bean id="javaMailSenderImpl" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail.host}"></property>
+        <property name="port" value="${mail.smtp.port}"></property>
+        <property name="username" value="${mail.username}"></property>
+        <property name="password" value="${mail.password}"></property>
+        <property name="defaultEncoding" value="UTF-8"></property>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.debug">${mail.debug}</prop>
+                <prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
+                <prop key="mail.smtp.timeout">${mail.smtp.timeout}</prop>
+                <!--<prop key="mail.smtp.socketFactory.class">${mail.smtp.socketFactory.class}</prop>-->
+                <!-- 如果是网易邮箱， mail.smtp.starttls.enable 设置为 false-->
+                <prop key="mail.smtp.starttls.enable">${mail.smtp.starttls.enable}</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="simpleMailMessage" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="${mail.from}"></property>
+    </bean>
+    <!--<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>-->
+    <bean id="sendEmailServiceImpl" class="com.codersoft.cms.service.common.impl.SendEmailServiceImpl">
+    </bean>
+
+    <!--文件上传时需要-->
+    <!--<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">-->
+    <!--<property name="defaultEncoding">-->
+    <!--<value>UTF-8</value>-->
+    <!--</property>-->
+    <!--<property name="maxUploadSize">-->
+    <!--<value>32505856</value>&lt;!&ndash; 上传文件大小限制为31M，31*1024*1024 &ndash;&gt;-->
+    <!--</property>-->
+    <!--<property name="maxInMemorySize">-->
+    <!--<value>4096</value>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+    <import resource="spring-ehcache.xml"/>
+    <import resource="spring-shiro.xml"/>
+</beans>
