@@ -107,7 +107,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>4.0.3</version>
                 <configuration>
-                    <url>jdbc:mysql://127.0.0.1:3306/cms?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;allowMultiQueries=true&amp;useSSL=true</url>
+                    <url>jdbc:mysql://cms.codersoft.com:3306/cms?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;allowMultiQueries=true</url>
                     <driver>com.mysql.jdbc.Driver</driver>
                     <user>root</user>
                     <password>admin</password>
