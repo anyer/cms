@@ -13,6 +13,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -87,6 +91,12 @@ public class AdminLoginController {
         }
 
         try {
+            Subject subject = SecurityUtils.getSubject();
+            Session session = subject.getSession();
+            String sessionId = session.getId().toString();
+            UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(sysUser.getUserName(), sysUser.getPassword());
+
+            subject.login(usernamePasswordToken);
             //登陆校验
             SysUser user = sysUserService.checkLogin(sysUser.getUserName(), sysUser.getPassword());
             //若有user则添加到model里并且跳转到成功页面
