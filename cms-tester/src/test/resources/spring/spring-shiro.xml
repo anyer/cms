@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 配置 securityManager -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="cacheManager" ref="shiroCacheManager"/>
+        <property name="authenticator" ref="authenticator" />
+        <!--<property name="realm" ref="myRealm" /> -->
+
+        <!--<property name="rememberMeManager.cookie.maxAge" value="10"></property>-->
+    </bean>
+    <!-- 配置 CacheManager （spring-ehcache.xml中配置） -->
+
+    <!-- 配置 Realm -->
+    <bean id="authenticator"
+          class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+        <property name="authenticationStrategy">
+            <bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"></bean>
+        </property>
+    </bean>
+
+    <!-- 配置 LifecycleBeanPostProcessor  -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <!-- 配置启用 Shiro 注解（必须在配置了 LifecycleBeanPostProcessor 之后才可以使用） -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+    <!-- 配置 ShiroFilter -->
+    <!-- 此处 id 必须和 web.xml 文件中配置的 DelegatingFilterProxy 的 <filter-name> 或 shiro 的<filter> 中配置的 targetBeanName 参数的值一致
+        若不一致, 则会抛出: NoSuchBeanDefinitionException. (DelegatingFilterProxy是 Filter 的一个代理对象，Spring 可以在IOC
+        容器中通过 <filter-name> 或 "targetBeanName" 参数（初始化默认取<filter-name>值）来查找) -->
+    <!--<bean id="shiroFilter123" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">-->
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!--shiro整个的处理，都由securityManger指定和决定 -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- loginUrl==>如果登录成功，跳转到哪个页面，或者执行哪个请求 -->
+        <property name="loginUrl" value="/login.html"/>
+        <!-- 验证通过执行的请求或者跳转 -->
+        <property name="successUrl" value="/index"/>
+        <!-- 验证不通过执行的请求或者跳转 -->
+        <property name="unauthorizedUrl" value="/401.html"/>
+        <!-- 具体的拦截路径和拦截的方式和角色和权限的范围 -->
+        <property name="filterChainDefinitions">
+            <value>
+            </value>
+        </property>
+    </bean>
+</beans>
+

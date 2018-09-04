@@ -14,6 +14,7 @@
         <module>cms-service</module>
         <module>cms-web</module>
         <module>cms-wechat</module>
+        <module>cms-tester</module>
     </modules>
 
     <!-- remote maven repository-->

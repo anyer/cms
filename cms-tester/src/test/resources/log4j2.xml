@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!--Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，你会看到log4j2内部各种详细输出-->
+<!--monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数-->
+<Configuration status="INFO">
+	<!--定义了两个常量方便后面复用 -->
+	<properties>  
+		<!--生成的日志文件目录地址  -->
+        <property name="LOG_HOME">${web:rootDir}/logs</property>
+        <!--日志文件名称 -->
+        <property name="FILE_NAME">cms</property>
+    </properties> 
+	<!--先定义所有的appender-->
+    <Appenders>  
+    	<!-- 定义控制台输出 -->  
+        <Console name="Console" target="SYSTEM_OUT">
+        	<!--输出日志的格式-->
+            <PatternLayout charset="UTF-8"  pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n" />
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+        <!--满足一定条件后，就重命名原日志文件用于备份，并从新生成一个新的日志文件 -->
+        <!--fileName:指定当前日志文件的位置和文件名称   filePattern:指定当发生Rolling时，文件的转移和重命名规则-->
+        <!-- info级别日志滚动输出到文件 -->
+        <RollingFile name="infoRollingFile"
+            fileName="${LOG_HOME}/${FILE_NAME}-info-.log"
+            filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-info-%d{yyyy-MM-dd}-%i.log">  
+            
+            <PatternLayout charset="UTF-8" pattern="[%d{HH:mm:ss:SSS}][%t][%p][%c:%L] - %m%n" />
+            
+            <Policies>  
+            	<!--TimeBasedTriggeringPolicy这个配置需要和filePattern结合使用，
+            	注意filePattern中配置的文件重命名规则是${FILE_NAME}-%d{yyyy-MM-dd HH-mm}-%i，
+            	最小的时间粒度是mm，即分钟，TimeBasedTriggeringPolicy指定的size是1，结合起来就是每1分钟生成一个新文件。
+            	如果改成%d{yyyy-MM-dd HH}，最小粒度为小时，则每一个小时生成一个文件。  -->
+                <TimeBasedTriggeringPolicy interval="1" />  
+                <!--SizeBasedTriggeringPolicy  指定当文件体积大于size指定的值时，触发Rolling-->
+                <SizeBasedTriggeringPolicy size="100 MB" />  
+            </Policies>
+            <Filters>
+                <ThresholdFilter level="trace" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <!--最多保留20个日志文件-->
+            <DefaultRolloverStrategy max="20" />
+        </RollingFile>
+
+		<!-- debug级别日志滚动输出到文件 -->
+        <RollingFile name="debugRollingFile"
+            fileName="${LOG_HOME}/${FILE_NAME}-debug.log"
+            filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-debug-%d{yyyy-MM-dd}-%i.log">  
+            
+            <PatternLayout charset="UTF-8" pattern="[%d{HH:mm:ss:SSS}][%t][%p][%c:%L] - %m%n" />
+
+            <Policies>  
+                <TimeBasedTriggeringPolicy interval="1" />  
+                <SizeBasedTriggeringPolicy size="100 MB" />  
+            </Policies>
+            <Filters>
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <DefaultRolloverStrategy max="20" />
+        </RollingFile>
+
+		<!-- warn级别日志滚动输出到文件 -->
+        <RollingFile name="warnRollingFile"
+            fileName="${LOG_HOME}/${FILE_NAME}-warnning.log"
+            filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-warnning-%d{yyyy-MM-dd}-%i.log">  
+            
+            <PatternLayout charset="UTF-8" pattern="[%d{HH:mm:ss:SSS}][%t][%p][%c:%L] - %m%n" />
+
+            <Policies>  
+                <TimeBasedTriggeringPolicy interval="1" />  
+                <SizeBasedTriggeringPolicy size="100 MB" />  
+            </Policies>
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <DefaultRolloverStrategy max="20" />
+        </RollingFile>
+
+    	<!-- error级别日志滚动输出到文件 -->
+        <RollingFile name="errorRollingFile"
+            fileName="${LOG_HOME}/${FILE_NAME}-error.log"
+            filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-error-%d{yyyy-MM-dd}-%i.log">  
+            
+            <PatternLayout charset="UTF-8" pattern="[%d{HH:mm:ss:SSS}][%t][%p][%c:%L] - %m%n" />
+
+            <Policies>  
+                <TimeBasedTriggeringPolicy interval="1" />  
+                <SizeBasedTriggeringPolicy size="100 MB" />  
+            </Policies>
+            <Filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <DefaultRolloverStrategy max="20" />
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- myibatis log configure -->
+        <logger name="com.apache.ibatis" level="INFO"/>
+        <logger name="org.mybatis.spring" level="DEBUG"/>
+        <logger name="java.sql.Connection" level="DEBUG"/>
+        <logger name="java.sql.Statement" level="DEBUG"/>
+        <logger name="java.sql.PreparedStatement" level="DEBUG"/>
+
+        <!-- 减少部分debug日志 -->
+        <logger name="druid.sql" level="INFO"/>
+        <logger name="org.apache.shiro" level="INFO"/>
+        <logger name="org.mybatis.spring" level="INFO"/>
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="org.springframework.context" level="WARN"/>
+        <logger name="org.springframework.beans" level="WARN"/>
+        <logger name="org.apache.ibatis.io" level="INFO"/>
+        <logger name="org.apache.velocity" level="INFO"/>
+        <logger name="org.hibernate.validator" level="INFO"/>
+
+        <!-- cache INFO -->
+        <logger name="net.sf.ehcache" level="INFO"/>
+        <logger name="org.springframework.cache" level="INFO"/>
+
+        <!-- 业务debug日志 -->
+        <logger name="com.codersoft.cms" level="DEBUG"/>
+
+        <Root level="all">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="infoRollingFile" />
+            <AppenderRef ref="debugRollingFile" />
+            <AppenderRef ref="warnRollingFile" />
+            <AppenderRef ref="errorRollingFile" />
+        </Root>  
+    </Loggers>
+      
+</Configuration> 
