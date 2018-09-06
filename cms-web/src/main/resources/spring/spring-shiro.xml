@@ -46,12 +46,13 @@
         <!-- loginUrl==>如果登录成功，跳转到哪个页面，或者执行哪个请求 -->
         <property name="loginUrl" value="/index"/>
         <!-- 验证通过执行的请求或者跳转 -->
-        <property name="successUrl" value="/index"/>
+        <property name="successUrl" value="/admin/index"/>
         <!-- 验证不通过执行的请求或者跳转 -->
         <property name="unauthorizedUrl" value="/401.html"/>
         <!-- 具体的拦截路径和拦截的方式和角色和权限的范围 -->
         <property name="filterChainDefinitions">
             <value>
+                /admin/userNameLogin = anon
                 /admin/** = authc
                 /** = anon
             </value>
